@@ -61,9 +61,7 @@ describe('ActiveToggle', () => {
     });
 
     it('should apply custom className', () => {
-      const { container } = render(
-        <ActiveToggle {...defaultProps} className="custom-class" />
-      );
+      const { container } = render(<ActiveToggle {...defaultProps} className="custom-class" />);
 
       expect(container.firstChild).toHaveClass('custom-class');
     });
@@ -245,9 +243,12 @@ describe('ActiveToggle', () => {
       await user.click(toggle);
 
       // After error: reverted to checked
-      await waitFor(() => {
-        expect(toggle).toBeChecked();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(toggle).toBeChecked();
+        },
+        { timeout: 3000 }
+      );
     });
 
     it('should show 403 Forbidden error message', async () => {
@@ -259,7 +260,9 @@ describe('ActiveToggle', () => {
       await user.click(screen.getByRole('switch'));
 
       await waitFor(() => {
-        expect(screen.getByText("You don't have permission to perform this action.")).toBeInTheDocument();
+        expect(
+          screen.getByText("You don't have permission to perform this action.")
+        ).toBeInTheDocument();
       });
     });
 
@@ -298,7 +301,9 @@ describe('ActiveToggle', () => {
       await user.click(screen.getByRole('switch'));
 
       await waitFor(() => {
-        expect(screen.getByText('Network error. Please check your connection.')).toBeInTheDocument();
+        expect(
+          screen.getByText('Network error. Please check your connection.')
+        ).toBeInTheDocument();
       });
     });
 
@@ -311,7 +316,9 @@ describe('ActiveToggle', () => {
       await user.click(screen.getByRole('switch'));
 
       await waitFor(() => {
-        expect(screen.getByText('Failed to update source status. Please try again.')).toBeInTheDocument();
+        expect(
+          screen.getByText('Failed to update source status. Please try again.')
+        ).toBeInTheDocument();
       });
     });
 

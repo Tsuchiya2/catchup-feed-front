@@ -79,9 +79,7 @@ describe('SourcesPage', () => {
   });
 
   const renderWithClient = (component: React.ReactElement) => {
-    return render(
-      <QueryClientProvider client={queryClient}>{component}</QueryClientProvider>
-    );
+    return render(<QueryClientProvider client={queryClient}>{component}</QueryClientProvider>);
   };
 
   describe('Role Detection', () => {
@@ -347,9 +345,7 @@ describe('SourcesPage', () => {
     it('should show error message when toggle fails', async () => {
       // Arrange
       const user = userEvent.setup();
-      vi.mocked(sourcesApi.updateSourceActive).mockRejectedValue(
-        new ApiError('Server error', 500)
-      );
+      vi.mocked(sourcesApi.updateSourceActive).mockRejectedValue(new ApiError('Server error', 500));
 
       renderWithClient(<SourcesPage />);
 
@@ -371,9 +367,7 @@ describe('SourcesPage', () => {
     it('should revert toggle state on error', async () => {
       // Arrange
       const user = userEvent.setup();
-      vi.mocked(sourcesApi.updateSourceActive).mockRejectedValue(
-        new Error('Network error')
-      );
+      vi.mocked(sourcesApi.updateSourceActive).mockRejectedValue(new Error('Network error'));
 
       renderWithClient(<SourcesPage />);
 
@@ -398,9 +392,7 @@ describe('SourcesPage', () => {
     it('should show 403 Forbidden error message', async () => {
       // Arrange
       const user = userEvent.setup();
-      vi.mocked(sourcesApi.updateSourceActive).mockRejectedValue(
-        new ApiError('Forbidden', 403)
-      );
+      vi.mocked(sourcesApi.updateSourceActive).mockRejectedValue(new ApiError('Forbidden', 403));
 
       renderWithClient(<SourcesPage />);
 
@@ -413,16 +405,16 @@ describe('SourcesPage', () => {
 
       // Assert
       await waitFor(() => {
-        expect(screen.getByText("You don't have permission to perform this action.")).toBeInTheDocument();
+        expect(
+          screen.getByText("You don't have permission to perform this action.")
+        ).toBeInTheDocument();
       });
     });
 
     it('should show 404 Not Found error message', async () => {
       // Arrange
       const user = userEvent.setup();
-      vi.mocked(sourcesApi.updateSourceActive).mockRejectedValue(
-        new ApiError('Not Found', 404)
-      );
+      vi.mocked(sourcesApi.updateSourceActive).mockRejectedValue(new ApiError('Not Found', 404));
 
       renderWithClient(<SourcesPage />);
 

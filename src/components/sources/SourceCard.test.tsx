@@ -255,13 +255,7 @@ describe('SourceCard', () => {
 
     it('should render ActiveToggle when userRole is "admin" with onUpdateActive', () => {
       const source = createMockSource({ active: true });
-      render(
-        <SourceCard
-          source={source}
-          userRole="admin"
-          onUpdateActive={mockOnUpdateActive}
-        />
-      );
+      render(<SourceCard source={source} userRole="admin" onUpdateActive={mockOnUpdateActive} />);
 
       // Should show toggle
       expect(screen.getByRole('switch')).toBeInTheDocument();
@@ -288,13 +282,7 @@ describe('SourceCard', () => {
         active: false,
       });
 
-      render(
-        <SourceCard
-          source={source}
-          userRole="admin"
-          onUpdateActive={mockOnUpdateActive}
-        />
-      );
+      render(<SourceCard source={source} userRole="admin" onUpdateActive={mockOnUpdateActive} />);
 
       const toggle = screen.getByRole('switch');
 
@@ -327,13 +315,7 @@ describe('SourceCard', () => {
     it('should pass onUpdateActive callback to ActiveToggle', () => {
       const source = createMockSource({ id: 5, active: true });
 
-      render(
-        <SourceCard
-          source={source}
-          userRole="admin"
-          onUpdateActive={mockOnUpdateActive}
-        />
-      );
+      render(<SourceCard source={source} userRole="admin" onUpdateActive={mockOnUpdateActive} />);
 
       // Verify toggle is rendered (ActiveToggle receives the callback)
       const toggle = screen.getByRole('switch');
@@ -344,13 +326,7 @@ describe('SourceCard', () => {
     it('should render ActiveToggle with correct initial state for inactive source', () => {
       const source = createMockSource({ active: false });
 
-      render(
-        <SourceCard
-          source={source}
-          userRole="admin"
-          onUpdateActive={mockOnUpdateActive}
-        />
-      );
+      render(<SourceCard source={source} userRole="admin" onUpdateActive={mockOnUpdateActive} />);
 
       const toggle = screen.getByRole('switch');
       expect(toggle).toBeInTheDocument();
@@ -361,21 +337,11 @@ describe('SourceCard', () => {
       const source = createMockSource();
 
       const { rerender } = render(
-        <SourceCard
-          source={source}
-          userRole="admin"
-          onUpdateActive={mockOnUpdateActive}
-        />
+        <SourceCard source={source} userRole="admin" onUpdateActive={mockOnUpdateActive} />
       );
 
       // Re-render with same onUpdateActive
-      rerender(
-        <SourceCard
-          source={source}
-          userRole="admin"
-          onUpdateActive={mockOnUpdateActive}
-        />
-      );
+      rerender(<SourceCard source={source} userRole="admin" onUpdateActive={mockOnUpdateActive} />);
 
       // Should not cause unnecessary re-renders
       expect(screen.getByRole('switch')).toBeInTheDocument();
@@ -384,25 +350,14 @@ describe('SourceCard', () => {
     it('should handle switching between admin and non-admin roles', () => {
       const source = createMockSource({ active: true });
 
-      const { rerender } = render(
-        <SourceCard
-          source={source}
-          userRole="user"
-        />
-      );
+      const { rerender } = render(<SourceCard source={source} userRole="user" />);
 
       // Initial: non-admin - should show badge
       expect(screen.getByText('Active')).toBeInTheDocument();
       expect(screen.queryByRole('switch')).not.toBeInTheDocument();
 
       // Re-render as admin
-      rerender(
-        <SourceCard
-          source={source}
-          userRole="admin"
-          onUpdateActive={mockOnUpdateActive}
-        />
-      );
+      rerender(<SourceCard source={source} userRole="admin" onUpdateActive={mockOnUpdateActive} />);
 
       // Should now show toggle
       expect(screen.queryByText('Active')).not.toBeInTheDocument();
@@ -412,13 +367,7 @@ describe('SourceCard', () => {
     it('should render correctly for admin with active source', () => {
       const source = createMockSource({ active: true });
 
-      render(
-        <SourceCard
-          source={source}
-          userRole="admin"
-          onUpdateActive={mockOnUpdateActive}
-        />
-      );
+      render(<SourceCard source={source} userRole="admin" onUpdateActive={mockOnUpdateActive} />);
 
       const toggle = screen.getByRole('switch');
       expect(toggle).toBeChecked();
@@ -427,13 +376,7 @@ describe('SourceCard', () => {
     it('should render correctly for admin with inactive source', () => {
       const source = createMockSource({ active: false });
 
-      render(
-        <SourceCard
-          source={source}
-          userRole="admin"
-          onUpdateActive={mockOnUpdateActive}
-        />
-      );
+      render(<SourceCard source={source} userRole="admin" onUpdateActive={mockOnUpdateActive} />);
 
       const toggle = screen.getByRole('switch');
       expect(toggle).not.toBeChecked();

@@ -345,16 +345,15 @@ describe('Sources API Endpoints', () => {
         last_crawled_at: '2025-01-01T12:00:00Z',
       };
 
-      vi.mocked(apiClient.put)
-        .mockImplementation((endpoint, data) => {
-          if (endpoint === '/sources/1') {
-            return Promise.resolve(mockResponse1);
-          }
-          if (endpoint === '/sources/2') {
-            return Promise.resolve(mockResponse2);
-          }
-          return Promise.reject(new Error('Unknown endpoint'));
-        });
+      vi.mocked(apiClient.put).mockImplementation((endpoint, data) => {
+        if (endpoint === '/sources/1') {
+          return Promise.resolve(mockResponse1);
+        }
+        if (endpoint === '/sources/2') {
+          return Promise.resolve(mockResponse2);
+        }
+        return Promise.reject(new Error('Unknown endpoint'));
+      });
 
       // Act
       const [result1, result2] = await Promise.all([
@@ -392,11 +391,10 @@ describe('Sources API Endpoints', () => {
 
     it('should preserve error details in ApiError', async () => {
       // Arrange
-      const mockError = new ApiError(
-        'Validation failed',
-        400,
-        { field: 'active', message: 'Invalid value' }
-      );
+      const mockError = new ApiError('Validation failed', 400, {
+        field: 'active',
+        message: 'Invalid value',
+      });
       vi.mocked(apiClient.put).mockRejectedValue(mockError);
 
       // Act & Assert
