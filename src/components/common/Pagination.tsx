@@ -12,6 +12,7 @@ import * as React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { PAGINATION_CONFIG } from '@/lib/constants/pagination';
 
 /**
  * Props for the Pagination component
@@ -29,6 +30,10 @@ interface PaginationProps {
   itemsPerPage?: number;
   /** Additional CSS classes */
   className?: string;
+  /** Callback when items per page changes */
+  onItemsPerPageChange?: (limit: number) => void;
+  /** Available page size options */
+  availablePageSizes?: readonly number[];
 }
 
 export function Pagination({
@@ -38,6 +43,8 @@ export function Pagination({
   totalItems,
   itemsPerPage,
   className,
+  onItemsPerPageChange,
+  availablePageSizes = PAGINATION_CONFIG.AVAILABLE_PAGE_SIZES,
 }: PaginationProps) {
   // Memoize page numbers calculation to avoid recalculation on every render
   const pageNumbers = React.useMemo(() => {
@@ -159,12 +166,40 @@ export function Pagination({
         </Button>
       </div>
 
-      {/* Items shown text */}
-      {itemsShownText && (
-        <p className="text-sm text-muted-foreground" aria-live="polite">
-          {itemsShownText}
-        </p>
-      )}
+      {/* Bottom section: Items shown text and items per page selector */}
+      <div className="flex flex-col items-center gap-3 sm:flex-row sm:gap-4">
+        {/* Items shown text */}
+        {itemsShownText && (
+          <p className="text-sm text-muted-foreground" aria-live="polite">
+            {itemsShownText}
+          </p>
+        )}
+
+        {/* Items per page selector */}
+        {onItemsPerPageChange && itemsPerPage && (
+          <div className="flex items-center gap-2">
+            <label
+              htmlFor="items-per-page"
+              className="text-sm text-muted-foreground whitespace-nowrap"
+            >
+              Items per page:
+            </label>
+            <select
+              id="items-per-page"
+              value={itemsPerPage.toString()}
+              onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
+              className="h-9 w-[70px] rounded-md border border-input bg-background px-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              aria-label="Select items per page"
+            >
+              {availablePageSizes.map((size) => (
+                <option key={size} value={size.toString()}>
+                  {size}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+      </div>
     </nav>
   );
 }

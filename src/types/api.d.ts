@@ -66,11 +66,46 @@ export interface ArticlesQuery {
   source_id?: number;
 }
 
+// ============================================================================
+// Pagination Types
+// ============================================================================
+
+/**
+ * Pagination metadata from backend API
+ */
+export interface PaginationMetadata {
+  /** Current page number (1-indexed) */
+  page: number;
+  /** Number of items per page */
+  limit: number;
+  /** Total number of items across all pages */
+  total: number;
+  /** Total number of pages */
+  total_pages: number;
+}
+
+/**
+ * Generic paginated response wrapper
+ * Enables pagination for any entity type
+ * @template T - The type of items in the data array
+ */
+export interface PaginatedResponse<T> {
+  /** Array of items for the current page */
+  data: T[];
+  /** Pagination metadata */
+  pagination: PaginationMetadata;
+}
+
+/**
+ * Paginated articles response
+ */
+export interface PaginatedArticlesResponse extends PaginatedResponse<Article> {}
+
 /**
  * Articles list response
- * Backend returns array directly, not wrapped in object
+ * Updated to use paginated format
  */
-export type ArticlesResponse = Article[];
+export type ArticlesResponse = PaginatedArticlesResponse;
 
 /**
  * Single article response
@@ -123,7 +158,7 @@ export interface ApiErrorResponse {
 // ============================================================================
 
 /**
- * Pagination information
+ * Pagination information (frontend format with camelCase)
  */
 export interface PaginationInfo {
   page: number;

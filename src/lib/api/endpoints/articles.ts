@@ -5,7 +5,14 @@
  */
 
 import { apiClient } from '@/lib/api/client';
-import type { Article, ArticlesQuery, ArticlesResponse, ArticleResponse } from '@/types/api';
+import type {
+  Article,
+  ArticlesQuery,
+  ArticlesResponse,
+  ArticleResponse,
+  PaginatedArticlesResponse,
+} from '@/types/api';
+import { validatePaginatedResponse } from '@/lib/api/utils/pagination';
 
 /**
  * Search parameters for article search
@@ -95,7 +102,7 @@ function buildSearchQueryString(params?: ArticleSearchParams): string {
  * Fetch a paginated list of articles
  *
  * @param query - Query parameters (page, limit, sourceId)
- * @returns Promise resolving to articles response with pagination info
+ * @returns Promise resolving to paginated articles response with pagination info
  * @throws {ApiError} When the request fails
  *
  * @example
@@ -107,53 +114,105 @@ function buildSearchQueryString(params?: ArticleSearchParams): string {
  * const response = await getArticles({ sourceId: 'source-id', limit: 20 });
  * ```
  */
-export async function getArticles(query?: ArticlesQuery): Promise<ArticlesResponse> {
+export async function getArticles(query?: ArticlesQuery): Promise<PaginatedArticlesResponse> {
   const queryString = buildQueryString(query);
   const endpoint = `/articles${queryString}`;
 
-  const response = await apiClient.get<ArticlesResponse>(endpoint);
+  // Performance measurement start
+  const perfMarkStart = `api-get-articles-${Date.now()}`;
+  performance.mark(perfMarkStart);
 
-  // Log API response for debugging
-  ArticleMigrationLogger.debugApiResponse(endpoint, response.length);
+  try {
+    const response = await apiClient.get<PaginatedArticlesResponse>(endpoint);
 
-  // Validate and normalize each article
-  const validatedArticles: Article[] = [];
-
-  for (const article of response) {
-    if (!validateArticle(article)) {
-      ArticleMigrationLogger.errorValidationFailed(
-        (article as Article | undefined)?.id ?? 0,
-        'Invalid article structure'
-      );
-      continue; // Skip invalid articles instead of throwing
+    // Validate response structure
+    if (!validatePaginatedResponse<Article>(response, endpoint)) {
+      console.error(`[API] Response validation failed for ${endpoint}`, {
+        timestamp: new Date().toISOString(),
+        query,
+      });
+      throw new Error(`Invalid paginated response from ${endpoint}`);
     }
 
-    // Normalize source_name
-    const originalSourceName = article.source_name;
-    const normalizedSourceName = normalizeSourceName(article.source_name);
+    // Log API response for debugging
+    ArticleMigrationLogger.debugApiResponse(endpoint, response.data.length);
 
-    if (originalSourceName !== normalizedSourceName) {
-      ArticleMigrationLogger.infoSourceNameNormalized(
-        article.id,
-        originalSourceName,
-        normalizedSourceName
-      );
+    // Validate and normalize each article
+    const validatedArticles: Article[] = [];
+
+    for (const article of response.data) {
+      if (!validateArticle(article)) {
+        ArticleMigrationLogger.errorValidationFailed(
+          (article as Article | undefined)?.id ?? 0,
+          'Invalid article structure'
+        );
+        continue; // Skip invalid articles instead of throwing
+      }
+
+      // Normalize source_name
+      const originalSourceName = article.source_name;
+      const normalizedSourceName = normalizeSourceName(article.source_name);
+
+      if (originalSourceName !== normalizedSourceName) {
+        ArticleMigrationLogger.infoSourceNameNormalized(
+          article.id,
+          originalSourceName,
+          normalizedSourceName
+        );
+      }
+
+      validatedArticles.push({
+        ...article,
+        source_name: normalizedSourceName,
+      });
     }
 
-    validatedArticles.push({
-      ...article,
-      source_name: normalizedSourceName,
+    // Performance measurement end
+    const perfMarkEnd = `api-get-articles-end-${Date.now()}`;
+    performance.mark(perfMarkEnd);
+    performance.measure('API: getArticles', perfMarkStart, perfMarkEnd);
+
+    const perfMeasure = performance.getEntriesByName('API: getArticles')[0];
+    if (perfMeasure) {
+      console.log(`[Performance] getArticles completed in ${perfMeasure.duration.toFixed(2)}ms`, {
+        endpoint,
+        itemCount: validatedArticles.length,
+        pagination: response.pagination,
+      });
+    }
+
+    // Clean up performance marks
+    performance.clearMarks(perfMarkStart);
+    performance.clearMarks(perfMarkEnd);
+    performance.clearMeasures('API: getArticles');
+
+    return {
+      data: validatedArticles,
+      pagination: response.pagination,
+    };
+  } catch (error) {
+    // Enhanced error logging
+    console.error(`[API] Error in getArticles`, {
+      timestamp: new Date().toISOString(),
+      endpoint,
+      query,
+      error: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
     });
-  }
 
-  return validatedArticles;
+    // Clean up performance marks on error
+    performance.clearMarks(perfMarkStart);
+    performance.clearMeasures('API: getArticles');
+
+    throw error;
+  }
 }
 
 /**
  * Search articles with various filters
  *
  * @param params - Search parameters (keyword, source_id, from, to, page, limit)
- * @returns Promise resolving to articles response
+ * @returns Promise resolving to paginated articles response
  * @throws {ApiError} When the request fails
  *
  * @example
@@ -172,46 +231,103 @@ export async function getArticles(query?: ArticlesQuery): Promise<ArticlesRespon
  * });
  * ```
  */
-export async function searchArticles(params?: ArticleSearchParams): Promise<ArticlesResponse> {
+export async function searchArticles(
+  params?: ArticleSearchParams
+): Promise<PaginatedArticlesResponse> {
   const queryString = buildSearchQueryString(params);
   const endpoint = `/articles/search${queryString}`;
 
-  const response = await apiClient.get<ArticlesResponse>(endpoint);
+  // Performance measurement start
+  const perfMarkStart = `api-search-articles-${Date.now()}`;
+  performance.mark(perfMarkStart);
 
-  // Log API response for debugging
-  ArticleMigrationLogger.debugApiResponse(endpoint, response.length);
+  try {
+    const response = await apiClient.get<PaginatedArticlesResponse>(endpoint);
 
-  // Validate and normalize each article
-  const validatedArticles: Article[] = [];
-
-  for (const article of response) {
-    if (!validateArticle(article)) {
-      ArticleMigrationLogger.errorValidationFailed(
-        (article as Article | undefined)?.id ?? 0,
-        'Invalid article structure'
-      );
-      continue; // Skip invalid articles instead of throwing
+    // Validate response structure
+    if (!validatePaginatedResponse<Article>(response, endpoint)) {
+      console.error(`[API] Response validation failed for ${endpoint}`, {
+        timestamp: new Date().toISOString(),
+        params,
+      });
+      throw new Error(`Invalid paginated response from ${endpoint}`);
     }
 
-    // Normalize source_name
-    const originalSourceName = article.source_name;
-    const normalizedSourceName = normalizeSourceName(article.source_name);
+    // Log API response for debugging
+    ArticleMigrationLogger.debugApiResponse(endpoint, response.data.length);
 
-    if (originalSourceName !== normalizedSourceName) {
-      ArticleMigrationLogger.infoSourceNameNormalized(
-        article.id,
-        originalSourceName,
-        normalizedSourceName
+    // Validate and normalize each article
+    const validatedArticles: Article[] = [];
+
+    for (const article of response.data) {
+      if (!validateArticle(article)) {
+        ArticleMigrationLogger.errorValidationFailed(
+          (article as Article | undefined)?.id ?? 0,
+          'Invalid article structure'
+        );
+        continue; // Skip invalid articles instead of throwing
+      }
+
+      // Normalize source_name
+      const originalSourceName = article.source_name;
+      const normalizedSourceName = normalizeSourceName(article.source_name);
+
+      if (originalSourceName !== normalizedSourceName) {
+        ArticleMigrationLogger.infoSourceNameNormalized(
+          article.id,
+          originalSourceName,
+          normalizedSourceName
+        );
+      }
+
+      validatedArticles.push({
+        ...article,
+        source_name: normalizedSourceName,
+      });
+    }
+
+    // Performance measurement end
+    const perfMarkEnd = `api-search-articles-end-${Date.now()}`;
+    performance.mark(perfMarkEnd);
+    performance.measure('API: searchArticles', perfMarkStart, perfMarkEnd);
+
+    const perfMeasure = performance.getEntriesByName('API: searchArticles')[0];
+    if (perfMeasure) {
+      console.log(
+        `[Performance] searchArticles completed in ${perfMeasure.duration.toFixed(2)}ms`,
+        {
+          endpoint,
+          itemCount: validatedArticles.length,
+          pagination: response.pagination,
+        }
       );
     }
 
-    validatedArticles.push({
-      ...article,
-      source_name: normalizedSourceName,
+    // Clean up performance marks
+    performance.clearMarks(perfMarkStart);
+    performance.clearMarks(perfMarkEnd);
+    performance.clearMeasures('API: searchArticles');
+
+    return {
+      data: validatedArticles,
+      pagination: response.pagination,
+    };
+  } catch (error) {
+    // Enhanced error logging
+    console.error(`[API] Error in searchArticles`, {
+      timestamp: new Date().toISOString(),
+      endpoint,
+      params,
+      error: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
     });
-  }
 
-  return validatedArticles;
+    // Clean up performance marks on error
+    performance.clearMarks(perfMarkStart);
+    performance.clearMeasures('API: searchArticles');
+
+    throw error;
+  }
 }
 
 /**

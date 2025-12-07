@@ -22,6 +22,15 @@ describe('useArticleSearch', () => {
   };
 
   const mockArticles = createMockArticles(5);
+  const mockPaginatedResponse = {
+    data: mockArticles,
+    pagination: {
+      page: 1,
+      limit: 10,
+      total: 5,
+      total_pages: 1,
+    },
+  };
 
   beforeEach(() => {
     queryClient = new QueryClient({
@@ -41,7 +50,7 @@ describe('useArticleSearch', () => {
 
   describe('Basic Functionality', () => {
     it('should fetch articles with search params', async () => {
-      vi.mocked(articleApi.searchArticles).mockResolvedValue(mockArticles);
+      vi.mocked(articleApi.searchArticles).mockResolvedValue(mockPaginatedResponse);
 
       const params = { keyword: 'React', page: 1, limit: 10 };
       const { result } = renderHook(() => useArticleSearch(params), {
@@ -59,7 +68,16 @@ describe('useArticleSearch', () => {
     });
 
     it('should return empty array when no data', async () => {
-      vi.mocked(articleApi.searchArticles).mockResolvedValue([]);
+      const emptyResponse = {
+        data: [],
+        pagination: {
+          page: 1,
+          limit: 10,
+          total: 0,
+          total_pages: 0,
+        },
+      };
+      vi.mocked(articleApi.searchArticles).mockResolvedValue(emptyResponse);
 
       const { result } = renderHook(() => useArticleSearch({ keyword: 'nonexistent' }), {
         wrapper: createWrapper(),
@@ -73,7 +91,16 @@ describe('useArticleSearch', () => {
     });
 
     it('should calculate pagination correctly', async () => {
-      vi.mocked(articleApi.searchArticles).mockResolvedValue(mockArticles);
+      const paginatedResponse = {
+        data: mockArticles,
+        pagination: {
+          page: 2,
+          limit: 5,
+          total: 20,
+          total_pages: 4,
+        },
+      };
+      vi.mocked(articleApi.searchArticles).mockResolvedValue(paginatedResponse);
 
       const params = { keyword: 'test', page: 2, limit: 5 };
       const { result } = renderHook(() => useArticleSearch(params), {
@@ -86,14 +113,14 @@ describe('useArticleSearch', () => {
 
       expect(result.current.pagination.page).toBe(2);
       expect(result.current.pagination.limit).toBe(5);
-      expect(result.current.pagination.total).toBe(5);
-      expect(result.current.pagination.totalPages).toBe(1);
+      expect(result.current.pagination.total).toBe(20);
+      expect(result.current.pagination.totalPages).toBe(4);
     });
   });
 
   describe('Search Parameters', () => {
     it('should handle keyword search', async () => {
-      vi.mocked(articleApi.searchArticles).mockResolvedValue(mockArticles);
+      vi.mocked(articleApi.searchArticles).mockResolvedValue(mockPaginatedResponse);
 
       const { result } = renderHook(() => useArticleSearch({ keyword: 'TypeScript' }), {
         wrapper: createWrapper(),
@@ -107,7 +134,7 @@ describe('useArticleSearch', () => {
     });
 
     it('should handle source filter', async () => {
-      vi.mocked(articleApi.searchArticles).mockResolvedValue(mockArticles);
+      vi.mocked(articleApi.searchArticles).mockResolvedValue(mockPaginatedResponse);
 
       const { result } = renderHook(() => useArticleSearch({ source_id: 5 }), {
         wrapper: createWrapper(),
@@ -121,7 +148,7 @@ describe('useArticleSearch', () => {
     });
 
     it('should handle date range filter', async () => {
-      vi.mocked(articleApi.searchArticles).mockResolvedValue(mockArticles);
+      vi.mocked(articleApi.searchArticles).mockResolvedValue(mockPaginatedResponse);
 
       const params = { from: '2025-01-01', to: '2025-01-31' };
       const { result } = renderHook(() => useArticleSearch(params), { wrapper: createWrapper() });
@@ -134,7 +161,7 @@ describe('useArticleSearch', () => {
     });
 
     it('should handle combined filters', async () => {
-      vi.mocked(articleApi.searchArticles).mockResolvedValue(mockArticles);
+      vi.mocked(articleApi.searchArticles).mockResolvedValue(mockPaginatedResponse);
 
       const params = {
         keyword: 'React',
@@ -154,7 +181,7 @@ describe('useArticleSearch', () => {
     });
 
     it('should handle undefined params', async () => {
-      vi.mocked(articleApi.searchArticles).mockResolvedValue(mockArticles);
+      vi.mocked(articleApi.searchArticles).mockResolvedValue(mockPaginatedResponse);
 
       const { result } = renderHook(() => useArticleSearch(undefined), {
         wrapper: createWrapper(),
@@ -192,7 +219,7 @@ describe('useArticleSearch', () => {
       const error = new Error('Network error');
       vi.mocked(articleApi.searchArticles)
         .mockRejectedValueOnce(error)
-        .mockResolvedValueOnce(mockArticles);
+        .mockResolvedValueOnce(mockPaginatedResponse);
 
       const { result } = renderHook(() => useArticleSearch({ keyword: 'test' }), {
         wrapper: createWrapper(),
@@ -212,7 +239,7 @@ describe('useArticleSearch', () => {
 
   describe('Enabled Option', () => {
     it('should not fetch when enabled is false', async () => {
-      vi.mocked(articleApi.searchArticles).mockResolvedValue(mockArticles);
+      vi.mocked(articleApi.searchArticles).mockResolvedValue(mockPaginatedResponse);
 
       const { result } = renderHook(
         () => useArticleSearch({ keyword: 'test' }, { enabled: false }),
@@ -226,7 +253,7 @@ describe('useArticleSearch', () => {
     });
 
     it('should fetch when enabled is true', async () => {
-      vi.mocked(articleApi.searchArticles).mockResolvedValue(mockArticles);
+      vi.mocked(articleApi.searchArticles).mockResolvedValue(mockPaginatedResponse);
 
       const { result } = renderHook(
         () => useArticleSearch({ keyword: 'test' }, { enabled: true }),
@@ -242,7 +269,7 @@ describe('useArticleSearch', () => {
     });
 
     it('should default enabled to true', async () => {
-      vi.mocked(articleApi.searchArticles).mockResolvedValue(mockArticles);
+      vi.mocked(articleApi.searchArticles).mockResolvedValue(mockPaginatedResponse);
 
       const { result } = renderHook(() => useArticleSearch({ keyword: 'test' }), {
         wrapper: createWrapper(),
@@ -258,7 +285,7 @@ describe('useArticleSearch', () => {
 
   describe('Caching', () => {
     it('should cache results with same params', async () => {
-      vi.mocked(articleApi.searchArticles).mockResolvedValue(mockArticles);
+      vi.mocked(articleApi.searchArticles).mockResolvedValue(mockPaginatedResponse);
 
       const params = { keyword: 'React' };
       const { result, rerender } = renderHook(() => useArticleSearch(params), {
@@ -277,7 +304,7 @@ describe('useArticleSearch', () => {
     });
 
     it('should use different cache keys for different params', async () => {
-      vi.mocked(articleApi.searchArticles).mockResolvedValue(mockArticles);
+      vi.mocked(articleApi.searchArticles).mockResolvedValue(mockPaginatedResponse);
 
       const { result, rerender } = renderHook(({ params }) => useArticleSearch(params), {
         wrapper: createWrapper(),
@@ -302,7 +329,7 @@ describe('useArticleSearch', () => {
 
   describe('Refetch Function', () => {
     it('should provide refetch function', async () => {
-      vi.mocked(articleApi.searchArticles).mockResolvedValue(mockArticles);
+      vi.mocked(articleApi.searchArticles).mockResolvedValue(mockPaginatedResponse);
 
       const { result } = renderHook(() => useArticleSearch({ keyword: 'test' }), {
         wrapper: createWrapper(),
@@ -316,7 +343,7 @@ describe('useArticleSearch', () => {
     });
 
     it('should refetch when refetch is called', async () => {
-      vi.mocked(articleApi.searchArticles).mockResolvedValue(mockArticles);
+      vi.mocked(articleApi.searchArticles).mockResolvedValue(mockPaginatedResponse);
 
       const { result } = renderHook(() => useArticleSearch({ keyword: 'test' }), {
         wrapper: createWrapper(),
@@ -338,7 +365,7 @@ describe('useArticleSearch', () => {
 
   describe('Return Type', () => {
     it('should return correct shape', async () => {
-      vi.mocked(articleApi.searchArticles).mockResolvedValue(mockArticles);
+      vi.mocked(articleApi.searchArticles).mockResolvedValue(mockPaginatedResponse);
 
       const { result } = renderHook(() => useArticleSearch({ keyword: 'test' }), {
         wrapper: createWrapper(),
@@ -352,7 +379,7 @@ describe('useArticleSearch', () => {
     });
 
     it('should return correct pagination shape', async () => {
-      vi.mocked(articleApi.searchArticles).mockResolvedValue(mockArticles);
+      vi.mocked(articleApi.searchArticles).mockResolvedValue(mockPaginatedResponse);
 
       const { result } = renderHook(
         () => useArticleSearch({ keyword: 'test', page: 1, limit: 10 }),
@@ -367,6 +394,35 @@ describe('useArticleSearch', () => {
       expect(result.current.pagination).toHaveProperty('limit');
       expect(result.current.pagination).toHaveProperty('total');
       expect(result.current.pagination).toHaveProperty('totalPages');
+    });
+
+    it('should extract pagination metadata correctly from response', async () => {
+      const customResponse = {
+        data: createMockArticles(15),
+        pagination: {
+          page: 3,
+          limit: 15,
+          total: 100,
+          total_pages: 7,
+        },
+      };
+      vi.mocked(articleApi.searchArticles).mockResolvedValue(customResponse);
+
+      const { result } = renderHook(() => useArticleSearch({ page: 3, limit: 15 }), {
+        wrapper: createWrapper(),
+      });
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      expect(result.current.articles).toHaveLength(15);
+      expect(result.current.pagination).toEqual({
+        page: 3,
+        limit: 15,
+        total: 100,
+        totalPages: 7,
+      });
     });
   });
 });

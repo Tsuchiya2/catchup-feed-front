@@ -9,17 +9,8 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { getArticles } from '@/lib/api/endpoints/articles';
-import type { Article, ArticlesQuery } from '@/types/api';
-
-/**
- * Pagination information
- */
-interface PaginationInfo {
-  page: number;
-  limit: number;
-  total: number;
-  totalPages: number;
-}
+import { extractPaginationMetadata } from '@/lib/api/utils/pagination';
+import type { Article, ArticlesQuery, PaginationInfo } from '@/types/api';
 
 /**
  * Articles hook return type
@@ -99,31 +90,24 @@ export function useArticles(
     enabled: options?.enabled ?? true,
   });
 
-  // Default pagination values
-  // Note: Backend returns array directly, so we calculate pagination from array length
-  const defaultPagination: PaginationInfo = {
-    page: query?.page ?? 1,
-    limit: query?.limit ?? 10,
-    total: 0,
-    totalPages: 0,
-  };
-
   const refetch = () => {
     refetchQuery();
   };
 
-  // Backend returns array directly, not wrapped in object
-  const articles = Array.isArray(data) ? data : [];
-  const total = articles.length;
+  // Extract articles and pagination from new paginated response format
+  const articles = data?.data ?? [];
+  const pagination = data?.pagination
+    ? extractPaginationMetadata(data.pagination)
+    : {
+        page: query?.page ?? 1,
+        limit: query?.limit ?? 10,
+        total: 0,
+        totalPages: 0,
+      };
 
   return {
     articles,
-    pagination: {
-      page: query?.page ?? 1,
-      limit: query?.limit ?? 10,
-      total,
-      totalPages: Math.ceil(total / (query?.limit ?? 10)),
-    },
+    pagination,
     isLoading,
     error: error as Error | null,
     refetch,

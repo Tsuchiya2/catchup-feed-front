@@ -9,18 +9,9 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { searchArticles } from '@/lib/api/endpoints/articles';
-import type { Article } from '@/types/api';
+import { extractPaginationMetadata } from '@/lib/api/utils/pagination';
+import type { Article, PaginationInfo } from '@/types/api';
 import type { ArticleSearchParams } from '@/lib/api/endpoints/articles';
-
-/**
- * Pagination information
- */
-interface PaginationInfo {
-  page: number;
-  limit: number;
-  total: number;
-  totalPages: number;
-}
 
 /**
  * Article search hook return type
@@ -103,18 +94,20 @@ export function useArticleSearch(
     refetchQuery();
   };
 
-  // Backend returns array directly
-  const articles = Array.isArray(data) ? data : [];
-  const total = articles.length;
+  // Extract articles and pagination from new paginated response format
+  const articles = data?.data ?? [];
+  const pagination = data?.pagination
+    ? extractPaginationMetadata(data.pagination)
+    : {
+        page: params?.page ?? 1,
+        limit: params?.limit ?? 10,
+        total: 0,
+        totalPages: 0,
+      };
 
   return {
     articles,
-    pagination: {
-      page: params?.page ?? 1,
-      limit: params?.limit ?? 10,
-      total,
-      totalPages: Math.ceil(total / (params?.limit ?? 10)),
-    },
+    pagination,
     isLoading,
     error: error as Error | null,
     refetch,

@@ -18,6 +18,8 @@ import {
   toSearchParams,
   hasActiveFilters,
 } from '@/components/articles/ArticleSearch';
+import { PAGINATION_CONFIG } from '@/lib/constants/pagination';
+import { validatePaginationParams } from '@/lib/api/utils/pagination';
 
 /**
  * Articles List Page Content
@@ -28,9 +30,9 @@ function ArticlesPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  // Get pagination parameters from URL
-  const page = Number(searchParams.get('page')) || 1;
-  const limit = Number(searchParams.get('limit')) || 10;
+  // Get pagination parameters from URL with validation
+  const validatedParams = validatePaginationParams(new URLSearchParams(searchParams.toString()));
+  const { page, limit } = validatedParams;
 
   // Get search parameters from URL
   const keyword = searchParams.get('keyword') || '';
@@ -74,6 +76,15 @@ function ArticlesPageContent() {
     ? searchResult
     : listResult;
 
+  // Redirect if page exceeds total pages
+  React.useEffect(() => {
+    if (!isLoading && pagination.totalPages > 0 && pagination.page > pagination.totalPages) {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set('page', pagination.totalPages.toString());
+      router.replace(`/articles?${params.toString()}`);
+    }
+  }, [pagination.page, pagination.totalPages, isLoading, searchParams, router]);
+
   // Update URL when search state changes
   React.useEffect(() => {
     const params = new URLSearchParams();
@@ -100,6 +111,14 @@ function ArticlesPageContent() {
   const handlePageChange = (newPage: number) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set('page', newPage.toString());
+    router.push(`/articles?${params.toString()}`);
+  };
+
+  // Handle items per page change
+  const handleItemsPerPageChange = (newLimit: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('limit', newLimit.toString());
+    params.set('page', '1'); // Reset to first page
     router.push(`/articles?${params.toString()}`);
   };
 
@@ -168,6 +187,8 @@ function ArticlesPageContent() {
                 onPageChange={handlePageChange}
                 totalItems={pagination.total}
                 itemsPerPage={pagination.limit}
+                onItemsPerPageChange={handleItemsPerPageChange}
+                availablePageSizes={PAGINATION_CONFIG.AVAILABLE_PAGE_SIZES}
               />
             </div>
           )}
