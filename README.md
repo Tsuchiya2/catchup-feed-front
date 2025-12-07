@@ -234,6 +234,31 @@ npm run lint
 npm run format
 ```
 
+### Commit Convention
+
+This project uses [Conventional Commits](https://www.conventionalcommits.org/) for automatic versioning and changelog generation.
+
+| Type | Description | Version Impact |
+|------|-------------|----------------|
+| `feat:` | New feature | Minor (0.x.0) |
+| `fix:` | Bug fix | Patch (0.0.x) |
+| `docs:` | Documentation only | Patch |
+| `style:` | Code style (formatting) | No release |
+| `refactor:` | Code refactoring | Patch |
+| `perf:` | Performance improvement | Patch |
+| `test:` | Adding tests | No release |
+| `chore:` | Maintenance tasks | No release |
+| `ci:` | CI/CD changes | No release |
+
+**Breaking Changes**: Add `BREAKING CHANGE:` in commit body or `!` after type (e.g., `feat!:`) for major version bump.
+
+**Examples**:
+```bash
+feat: add article bookmarking
+fix: resolve authentication redirect loop
+feat!: redesign API response format
+```
+
 ---
 
 ## API Endpoints
