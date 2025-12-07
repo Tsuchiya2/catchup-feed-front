@@ -71,7 +71,7 @@ export function clearAuthToken(): void {
  * @param token - JWT token string
  * @returns Decoded payload or null if invalid
  */
-function decodeJWTPayload(token: string): Record<string, unknown> | null {
+export function decodeJWTPayload(token: string): Record<string, unknown> | null {
   try {
     // JWT format: header.payload.signature
     const parts = token.split('.');

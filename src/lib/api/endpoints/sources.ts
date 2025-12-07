@@ -57,6 +57,32 @@ export async function getSource(id: number): Promise<SourceResponse> {
 }
 
 /**
+ * Update source active status
+ *
+ * @param id - Source ID
+ * @param active - New active status
+ * @returns Promise resolving to updated source
+ * @throws {ApiError} When the request fails
+ *
+ * @example
+ * ```typescript
+ * try {
+ *   const updatedSource = await updateSourceActive(1, false);
+ *   console.log('Source updated:', updatedSource);
+ * } catch (error) {
+ *   if (error instanceof ApiError && error.status === 403) {
+ *     console.error('Permission denied');
+ *   }
+ * }
+ * ```
+ */
+export async function updateSourceActive(id: number, active: boolean): Promise<SourceResponse> {
+  const endpoint = `/sources/${id}`;
+  const response = await apiClient.put<SourceResponse>(endpoint, { active });
+  return response;
+}
+
+/**
  * Export types for convenience
  */
 export type { Source, SourcesResponse, SourceResponse };
