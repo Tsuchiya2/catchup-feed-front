@@ -123,6 +123,7 @@ export const ActiveToggle = React.memo(function ActiveToggle({
           disabled={isToggling}
           aria-label={`Toggle ${sourceName} active status`}
           aria-describedby={error ? `error-${sourceId}` : undefined}
+          className="data-[state=checked]:bg-green-500 data-[state=unchecked]:bg-gray-300"
         />
         {isToggling && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
       </div>
