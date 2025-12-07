@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { formatRelativeTime } from '@/lib/utils/formatDate';
 import { truncateText } from '@/lib/utils/truncate';
+import { normalizeSourceName } from '@/utils/article';
 import type { Article } from '@/types/api';
 
 interface ArticleCardProps {
@@ -37,6 +38,7 @@ export const ArticleCard = React.memo(function ArticleCard({
   const title = article.title?.trim() || 'Untitled Article';
   const summary = article.summary?.trim() || '';
   const publishedDate = article.published_at;
+  const displaySourceName = normalizeSourceName(sourceName ?? article.source_name);
 
   return (
     <Link
@@ -65,16 +67,14 @@ export const ArticleCard = React.memo(function ArticleCard({
         {/* Metadata Row */}
         <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
           {/* Source Badge */}
-          {sourceName && (
-            <Badge variant="secondary" className="font-normal">
-              {sourceName}
-            </Badge>
-          )}
+          <Badge variant="secondary" className="font-normal">
+            {displaySourceName}
+          </Badge>
 
           {/* Published Date */}
           {publishedDate && (
             <>
-              {sourceName && <span className="text-muted-foreground/50">·</span>}
+              <span className="text-muted-foreground/50">·</span>
               <time dateTime={publishedDate} className="tabular-nums">
                 {formatRelativeTime(publishedDate)}
               </time>

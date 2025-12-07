@@ -5,6 +5,7 @@ import { createElement } from 'react';
 import { useArticle } from './useArticle';
 import * as articleApi from '@/lib/api/endpoints/articles';
 import type { Article } from '@/types/api';
+import { createMockArticle } from '@/__test__/factories/articleFactory';
 
 // Mock the articles API
 vi.mock('@/lib/api/endpoints/articles', () => ({
@@ -21,15 +22,14 @@ describe('useArticle', () => {
     return Wrapper;
   };
 
-  const mockArticle: Article = {
+  const mockArticle: Article = createMockArticle({
     id: 1,
     title: 'Test Article',
     url: 'https://example.com/article',
     summary: 'Test summary',
-    source_id: 1,
     published_at: '2025-01-15T10:00:00Z',
     created_at: '2025-01-15T10:00:00Z',
-  };
+  });
 
   beforeEach(() => {
     queryClient = new QueryClient({

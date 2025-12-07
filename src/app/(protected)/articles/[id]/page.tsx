@@ -87,7 +87,7 @@ export default function ArticleDetailPage() {
       {!isLoading && !error && article && (
         <div className="mx-auto max-w-3xl space-y-6">
           {/* Article Header */}
-          <ArticleHeader article={article} />
+          <ArticleHeader article={article} sourceName={article.source_name} />
 
           {/* AI Summary Section */}
           <AISummaryCard summary={article.summary} />

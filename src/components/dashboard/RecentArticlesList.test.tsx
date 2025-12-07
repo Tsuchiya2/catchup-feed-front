@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { RecentArticlesList } from './RecentArticlesList';
 import type { Article } from '@/types/api';
+import { createMockArticle, createMockArticles } from '@/__test__/factories/articleFactory';
 
 // Mock Next.js Link component
 vi.mock('next/link', () => ({
@@ -13,19 +14,6 @@ vi.mock('next/link', () => ({
 }));
 
 describe('RecentArticlesList', () => {
-  // Helper function to create mock article with all required fields
-  // Matches backend DTO: internal/handler/http/article/dto.go
-  const createMockArticle = (overrides: Partial<Article> = {}): Article => ({
-    id: 1,
-    title: 'Test Article',
-    url: 'https://example.com/article',
-    summary: 'Test summary',
-    source_id: 1,
-    published_at: new Date().toISOString(),
-    created_at: new Date().toISOString(),
-    ...overrides,
-  });
-
   // Mock article data
   const mockArticles: Article[] = [
     createMockArticle({
@@ -34,7 +22,7 @@ describe('RecentArticlesList', () => {
       summary: 'This is the first article summary',
       url: 'https://example.com/article1',
       published_at: new Date(Date.now() - 60 * 60 * 1000).toISOString(), // 1 hour ago
-      source_id: 1,
+      source_name: 'Tech Blog',
     }),
     createMockArticle({
       id: 2,
@@ -43,7 +31,7 @@ describe('RecentArticlesList', () => {
         'This is the second article with a very long summary that should be truncated when displayed in the list to prevent the UI from breaking and to maintain a clean layout',
       url: 'https://example.com/article2',
       published_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
-      source_id: 2,
+      source_name: 'News Site',
     }),
     createMockArticle({
       id: 3,
@@ -51,7 +39,7 @@ describe('RecentArticlesList', () => {
       summary: '',
       url: 'https://example.com/article3',
       published_at: new Date(Date.now() - 30 * 60 * 1000).toISOString(), // 30 minutes ago
-      source_id: 3,
+      source_name: 'Dev Blog',
     }),
   ];
 

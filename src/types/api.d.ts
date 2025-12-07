@@ -49,6 +49,7 @@ export interface TokenValidationResponse {
 export interface Article {
   id: number;
   source_id: number;
+  source_name: string;
   title: string;
   url: string;
   summary: string;

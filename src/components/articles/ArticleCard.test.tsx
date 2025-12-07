@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { ArticleCard } from './ArticleCard';
 import type { Article } from '@/types/api';
+import { createMockArticle } from '@/__test__/factories/articleFactory';
 
 // Mock Next.js Link component
 vi.mock('next/link', () => ({
@@ -13,17 +14,6 @@ vi.mock('next/link', () => ({
 }));
 
 describe('ArticleCard', () => {
-  const createMockArticle = (overrides: Partial<Article> = {}): Article => ({
-    id: 1,
-    title: 'Test Article Title',
-    url: 'https://example.com/article',
-    summary: 'This is a test article summary that describes the content.',
-    source_id: 1,
-    published_at: new Date().toISOString(),
-    created_at: new Date().toISOString(),
-    ...overrides,
-  });
-
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -57,7 +47,7 @@ describe('ArticleCard', () => {
     });
 
     it('should not render source badge when sourceName not provided', () => {
-      const article = createMockArticle();
+      const article = createMockArticle({ source_name: undefined as unknown as string });
       render(<ArticleCard article={article} />);
       expect(screen.queryByText('Tech Blog')).not.toBeInTheDocument();
     });
