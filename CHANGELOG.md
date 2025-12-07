@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/Tsuchiya2/catchup-feed-front/compare/v0.3.0...v0.4.0) (2025-12-07)
+
+
+### Features
+
+* replace landing page logo text with custom icon ([c5dd50a](https://github.com/Tsuchiya2/catchup-feed-front/commit/c5dd50a6fa3bd0b47c3b051f716a1269eb0999e1))
+
 ## [0.3.0](https://github.com/Tsuchiya2/catchup-feed-front/compare/v0.2.0...v0.3.0) (2025-12-07)
 
 
