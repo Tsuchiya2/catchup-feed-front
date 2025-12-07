@@ -2,48 +2,50 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Light mode - clean with cyan accent */
+    --background: 210 20% 98%;
+    --foreground: 220 30% 10%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 220 30% 10%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 199.4 89.1% 48.4%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 199.4 89.1% 48.4%;
+    --popover-foreground: 220 30% 10%;
+    --primary: 190 95% 45%;
+    --primary-foreground: 220 30% 5%;
+    --secondary: 210 25% 93%;
+    --secondary-foreground: 220 30% 15%;
+    --muted: 210 20% 94%;
+    --muted-foreground: 215 15% 45%;
+    --accent: 190 90% 92%;
+    --accent-foreground: 190 95% 25%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 25% 88%;
+    --input: 214 25% 88%;
+    --ring: 190 95% 45%;
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 199.4 89.1% 48.4%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 199.4 89.1% 48.4%;
+    /* Dark mode - matching logo theme */
+    --background: 220 40% 5%;
+    --foreground: 210 30% 95%;
+    --card: 220 35% 8%;
+    --card-foreground: 210 30% 95%;
+    --popover: 220 35% 8%;
+    --popover-foreground: 210 30% 95%;
+    --primary: 190 95% 50%;
+    --primary-foreground: 220 40% 5%;
+    --secondary: 220 30% 15%;
+    --secondary-foreground: 210 30% 95%;
+    --muted: 220 30% 12%;
+    --muted-foreground: 215 20% 60%;
+    --accent: 190 80% 15%;
+    --accent-foreground: 190 95% 70%;
+    --destructive: 0 70% 45%;
+    --destructive-foreground: 210 30% 95%;
+    --border: 220 30% 18%;
+    --input: 220 30% 15%;
+    --ring: 190 95% 50%;
   }
 
   * {

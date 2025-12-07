@@ -20,7 +20,7 @@ export default function ProtectedLayout({
   return (
     <div className="min-h-screen bg-background">
       <Header onLogout={logout} />
-      <main className="pb-8">{children}</main>
+      <main className="px-4 pb-8 sm:px-6 lg:px-8">{children}</main>
     </div>
   );
 }
