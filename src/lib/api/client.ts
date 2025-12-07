@@ -113,6 +113,11 @@ class ApiClient {
         );
       }
 
+      // Handle 204 No Content responses
+      if (response.status === 204) {
+        return undefined as T;
+      }
+
       // Parse successful response
       const data = await response.json();
       return data as T;
