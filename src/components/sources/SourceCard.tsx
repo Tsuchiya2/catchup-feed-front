@@ -4,7 +4,7 @@
  * Displays a source (RSS feed) in a card format with:
  * - Source name and RSS icon
  * - Feed URL (truncated with tooltip)
- * - Active/Inactive status badge
+ * - Active/Inactive status badge (non-admin) or toggle (admin)
  * - Last crawled timestamp
  */
 import * as React from 'react';
@@ -13,7 +13,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { formatRelativeTime } from '@/lib/utils/formatDate';
 import type { Source } from '@/types/api';
+import type { UserRole } from '@/lib/auth/role';
 import { StatusBadge } from './StatusBadge';
+import { ActiveToggle } from './ActiveToggle';
 
 /**
  * Props for the SourceCard component
@@ -23,6 +25,10 @@ interface SourceCardProps {
   source: Source;
   /** Additional CSS classes */
   className?: string;
+  /** User role for conditional rendering */
+  userRole: UserRole;
+  /** Callback when active status is updated (admin only) */
+  onUpdateActive?: (sourceId: number, active: boolean) => Promise<void>;
 }
 
 /**
@@ -32,13 +38,37 @@ interface SourceCardProps {
  *
  * @example
  * ```tsx
- * <SourceCard source={source} />
+ * <SourceCard
+ *   source={source}
+ *   userRole={userRole}
+ *   onUpdateActive={handleUpdateActive}
+ * />
  * ```
  */
-export const SourceCard = React.memo(function SourceCard({ source, className }: SourceCardProps) {
+export const SourceCard = React.memo(function SourceCard({
+  source,
+  className,
+  userRole,
+  onUpdateActive,
+}: SourceCardProps) {
   const lastCrawled = source.last_crawled_at
     ? formatRelativeTime(source.last_crawled_at)
     : 'Never crawled';
+
+  const isAdmin = userRole === 'admin';
+
+  /**
+   * Handle toggle callback
+   * Wraps onUpdateActive to match ActiveToggle's expected signature
+   */
+  const handleToggle = React.useCallback(
+    async (sourceId: number, active: boolean) => {
+      if (onUpdateActive) {
+        await onUpdateActive(sourceId, active);
+      }
+    },
+    [onUpdateActive]
+  );
 
   return (
     <Card
@@ -70,7 +100,17 @@ export const SourceCard = React.memo(function SourceCard({ source, className }: 
 
         {/* Status and Last Crawled */}
         <div className="flex items-center justify-between gap-2 pt-2">
-          <StatusBadge active={source.active} />
+          {/* Conditional rendering: Toggle for admin, Badge for non-admin */}
+          {isAdmin && onUpdateActive ? (
+            <ActiveToggle
+              sourceId={source.id}
+              sourceName={source.name}
+              initialActive={source.active}
+              onToggle={handleToggle}
+            />
+          ) : (
+            <StatusBadge active={source.active} />
+          )}
           <time
             className="text-xs text-muted-foreground"
             dateTime={source.last_crawled_at || undefined}
