@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.0](https://github.com/Tsuchiya2/catchup-feed-front/compare/v0.2.0...v0.3.0) (2025-12-07)
+
+
+### Features
+
+* replace header logo text with custom icon ([078cc97](https://github.com/Tsuchiya2/catchup-feed-front/commit/078cc971cf8c72d43bb19c6c54ea78e2263b49a9))
+* replace header logo text with custom icon ([5273ba5](https://github.com/Tsuchiya2/catchup-feed-front/commit/5273ba539851711c0492554880d4c0199e5573f9))
+
 ## [0.2.0](https://github.com/Tsuchiya2/catchup-feed-front/compare/v0.1.0...v0.2.0) (2025-12-07)
 
 
