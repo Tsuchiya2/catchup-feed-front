@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { formatRelativeTime } from '@/lib/utils/formatDate';
+import { normalizeSourceName } from '@/utils/article';
 import type { Article } from '@/types/api';
 
 interface ArticleHeaderProps {
@@ -31,6 +32,9 @@ export function ArticleHeader({ article, sourceName, className }: ArticleHeaderP
   const url = article.url || '#';
   const publishedDate = article.published_at;
 
+  // Normalize source name with fallback to article.source_name
+  const displaySourceName = normalizeSourceName(sourceName ?? article.source_name);
+
   return (
     <header className={cn('flex flex-col space-y-6', className)}>
       {/* Article Title */}
@@ -41,16 +45,18 @@ export function ArticleHeader({ article, sourceName, className }: ArticleHeaderP
       {/* Metadata Row */}
       <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
         {/* Source Badge */}
-        {sourceName && (
+        {displaySourceName && displaySourceName !== 'Unknown Source' && (
           <Badge variant="secondary" className="font-normal">
-            {sourceName}
+            {displaySourceName}
           </Badge>
         )}
 
         {/* Published Date */}
         {publishedDate && (
           <>
-            {sourceName && <span className="text-muted-foreground/50">·</span>}
+            {displaySourceName && displaySourceName !== 'Unknown Source' && (
+              <span className="text-muted-foreground/50">·</span>
+            )}
             <time dateTime={publishedDate} className="tabular-nums">
               Published {formatRelativeTime(publishedDate)}
             </time>
@@ -65,7 +71,7 @@ export function ArticleHeader({ article, sourceName, className }: ArticleHeaderP
           variant="default"
           size="lg"
           className="w-full sm:w-auto"
-          aria-label={`Read original article${sourceName ? ` on ${sourceName}` : ''}`}
+          aria-label={`Read original article${displaySourceName && displaySourceName !== 'Unknown Source' ? ` on ${displaySourceName}` : ''}`}
         >
           <a href={url} target="_blank" rel="noopener noreferrer">
             <ExternalLink className="h-4 w-4" />

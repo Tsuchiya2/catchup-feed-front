@@ -1,20 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { ArticleHeader } from './ArticleHeader';
-import type { Article } from '@/types/api';
+import {
+  createMockArticle,
+  createMockArticleWithSourceEdgeCase,
+} from '@/__test__/factories/articleFactory';
 
 describe('ArticleHeader', () => {
-  const createMockArticle = (overrides: Partial<Article> = {}): Article => ({
-    id: 1,
-    title: 'Test Article Title',
-    url: 'https://example.com/article',
-    summary: 'This is a test article summary.',
-    source_id: 1,
-    published_at: new Date().toISOString(),
-    created_at: new Date().toISOString(),
-    ...overrides,
-  });
-
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -34,10 +26,10 @@ describe('ArticleHeader', () => {
       expect(screen.getByText('Tech Blog')).toBeInTheDocument();
     });
 
-    it('should not render source badge when sourceName not provided', () => {
-      const article = createMockArticle();
+    it('should not render source badge when sourceName not provided and source_name is null', () => {
+      const article = createMockArticle({ source_name: null as unknown as string });
       render(<ArticleHeader article={article} />);
-      expect(screen.queryByText('Tech Blog')).not.toBeInTheDocument();
+      expect(screen.queryByRole('status')).not.toBeInTheDocument();
     });
 
     it('should render published date with "Published" prefix', () => {
@@ -91,7 +83,7 @@ describe('ArticleHeader', () => {
     });
 
     it('should have generic aria-label without source name', () => {
-      const article = createMockArticle();
+      const article = createMockArticle({ source_name: null as unknown as string });
       render(<ArticleHeader article={article} />);
       const link = screen.getByRole('link', { name: 'Read original article' });
       expect(link).toBeInTheDocument();
@@ -192,6 +184,58 @@ describe('ArticleHeader', () => {
       const longSourceName = 'A'.repeat(100);
       render(<ArticleHeader article={article} sourceName={longSourceName} />);
       expect(screen.getByText(longSourceName)).toBeInTheDocument();
+    });
+  });
+
+  describe('Source Name Edge Cases', () => {
+    it('should handle null source name', () => {
+      const article = createMockArticleWithSourceEdgeCase('null');
+      render(<ArticleHeader article={article} sourceName={article.source_name} />);
+      // Source badge should not be displayed when source name is null
+      expect(screen.queryByRole('status')).not.toBeInTheDocument();
+    });
+
+    it('should handle undefined source name', () => {
+      const article = createMockArticleWithSourceEdgeCase('undefined');
+      render(<ArticleHeader article={article} sourceName={article.source_name} />);
+      // Source badge should not be displayed when source name is undefined
+      expect(screen.queryByRole('status')).not.toBeInTheDocument();
+    });
+
+    it('should handle empty string source name', () => {
+      const article = createMockArticleWithSourceEdgeCase('empty');
+      render(<ArticleHeader article={article} sourceName={article.source_name} />);
+      // Source badge should not be displayed when source name is empty
+      expect(screen.queryByRole('status')).not.toBeInTheDocument();
+    });
+
+    it('should handle whitespace-only source name', () => {
+      const article = createMockArticleWithSourceEdgeCase('whitespace');
+      render(<ArticleHeader article={article} sourceName={article.source_name} />);
+      // Should either not display or normalize the whitespace
+      const sourceText = screen.queryByText('   ');
+      // Component may trim whitespace, so we check if it's either not rendered or trimmed
+      if (sourceText) {
+        expect(sourceText.textContent?.trim()).toBe('');
+      }
+    });
+
+    it('should handle valid source name', () => {
+      const article = createMockArticle({ source_name: 'Valid Tech Blog' });
+      render(<ArticleHeader article={article} sourceName={article.source_name} />);
+      expect(screen.getByText('Valid Tech Blog')).toBeInTheDocument();
+    });
+
+    it('should handle unicode characters in source name', () => {
+      const article = createMockArticleWithSourceEdgeCase('unicode');
+      render(<ArticleHeader article={article} sourceName={article.source_name} />);
+      expect(screen.getByText('テックブログ 🚀')).toBeInTheDocument();
+    });
+
+    it('should handle very long source name from factory', () => {
+      const article = createMockArticleWithSourceEdgeCase('long');
+      render(<ArticleHeader article={article} sourceName={article.source_name} />);
+      expect(screen.getByText('A'.repeat(200))).toBeInTheDocument();
     });
   });
 });

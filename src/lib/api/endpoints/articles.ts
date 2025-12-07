@@ -6,6 +6,8 @@
 
 import { apiClient } from '@/lib/api/client';
 import type { Article, ArticlesQuery, ArticlesResponse, ArticleResponse } from '@/types/api';
+import { validateArticle, normalizeSourceName } from '@/utils/article';
+import { ArticleMigrationLogger } from '@/utils/logger';
 
 /**
  * Build query string from query parameters
@@ -57,7 +59,41 @@ export async function getArticles(query?: ArticlesQuery): Promise<ArticlesRespon
   const endpoint = `/articles${queryString}`;
 
   const response = await apiClient.get<ArticlesResponse>(endpoint);
-  return response;
+
+  // Log API response for debugging
+  ArticleMigrationLogger.debugApiResponse(endpoint, response.length);
+
+  // Validate and normalize each article
+  const validatedArticles: Article[] = [];
+
+  for (const article of response) {
+    if (!validateArticle(article)) {
+      ArticleMigrationLogger.errorValidationFailed(
+        (article as Article | undefined)?.id ?? 0,
+        'Invalid article structure'
+      );
+      continue; // Skip invalid articles instead of throwing
+    }
+
+    // Normalize source_name
+    const originalSourceName = article.source_name;
+    const normalizedSourceName = normalizeSourceName(article.source_name);
+
+    if (originalSourceName !== normalizedSourceName) {
+      ArticleMigrationLogger.infoSourceNameNormalized(
+        article.id,
+        originalSourceName,
+        normalizedSourceName
+      );
+    }
+
+    validatedArticles.push({
+      ...article,
+      source_name: normalizedSourceName,
+    });
+  }
+
+  return validatedArticles;
 }
 
 /**
@@ -82,8 +118,35 @@ export async function getArticles(query?: ArticlesQuery): Promise<ArticlesRespon
 export async function getArticle(id: number): Promise<ArticleResponse> {
   const endpoint = `/articles/${id}`;
 
-  const response = await apiClient.get<ArticleResponse>(endpoint);
-  return response;
+  const article = await apiClient.get<ArticleResponse>(endpoint);
+
+  // Validate article structure
+  if (!validateArticle(article)) {
+    ArticleMigrationLogger.errorValidationFailed(
+      (article as Article | undefined)?.id ?? id,
+      'Invalid article structure'
+    );
+    throw new Error('Invalid article response');
+  }
+
+  // Normalize source_name
+  const originalSourceName = article.source_name;
+  const normalizedSourceName = normalizeSourceName(article.source_name);
+
+  if (originalSourceName !== normalizedSourceName) {
+    ArticleMigrationLogger.infoSourceNameNormalized(
+      article.id,
+      originalSourceName,
+      normalizedSourceName
+    );
+  }
+
+  const normalizedArticle = {
+    ...article,
+    source_name: normalizedSourceName,
+  };
+
+  return normalizedArticle;
 }
 
 /**
