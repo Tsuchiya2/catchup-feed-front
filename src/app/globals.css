@@ -1,5 +1,58 @@
 @import 'tailwindcss';
 
+/* Theme configuration using @theme inline for CSS variable references */
+@theme inline {
+  /* shadcn/ui colors - referencing CSS variables */
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  /* Glow colors */
+  --color-glow-primary: hsl(var(--glow-primary));
+  --color-glow-secondary: hsl(var(--glow-secondary));
+}
+
+/* Direct color values (no CSS variable reference needed) */
+@theme {
+  /* Cyber theme colors */
+  --color-cyber-blue: #00d4ff;
+  --color-cyber-blue-dark: #0099cc;
+  --color-cyber-blue-light: #66e5ff;
+  --color-cyber-glow: #a0ffff;
+  --color-cyber-glow-base: #00ffff;
+
+  /* Font family */
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+
+  /* Border radius */
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
+
 @layer base {
   :root {
     /* Light mode - clean with cyan accent */
@@ -67,6 +120,21 @@
 }
 
 @layer utilities {
+  /* Container utility - Tailwind v4 doesn't support container config in CSS yet */
+  .container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  @media (min-width: 1536px) {
+    .container {
+      max-width: 1400px;
+    }
+  }
+
   /* Glow effects inspired by the logo */
   .glow-sm {
     box-shadow: 0 0 10px hsl(var(--glow-primary) / 0.3),
