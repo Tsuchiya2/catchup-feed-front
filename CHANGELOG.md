@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/Tsuchiya2/catchup-feed-front/compare/v0.4.0...v0.5.0) (2025-12-08)
+
+
+### Features
+
+* apply cyber/tech theme UI based on brand logo ([ff5c203](https://github.com/Tsuchiya2/catchup-feed-front/commit/ff5c20343bd4a55aa3315dd2af6e7f7dfe93e394))
+
 ## [0.4.0](https://github.com/Tsuchiya2/catchup-feed-front/compare/v0.3.0...v0.4.0) (2025-12-07)
 
 
