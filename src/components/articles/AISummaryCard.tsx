@@ -15,6 +15,7 @@ interface AISummaryCardProps {
  * - Icon and title indicating AI-generated content
  * - Well-formatted summary text with proper line breaks
  * - Footer indicating content is AI-generated
+ * - Cyber/glow theme styling
  *
  * Used in article detail page to display AI summary
  *
@@ -27,15 +28,17 @@ export function AISummaryCard({ summary, className }: AISummaryCardProps) {
 
   return (
     <Card
-      className={cn('border-primary/20 bg-primary/5', className)}
+      className={cn('border-primary/30 bg-primary/5 shadow-glow-sm', className)}
       role="region"
       aria-label="AI Summary"
     >
       {/* Card Header with Icon */}
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-xl">
-          <Sparkles className="h-5 w-5 text-primary" aria-hidden="true" />
-          <span>AI Summary</span>
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-primary/40 bg-primary/20">
+            <Sparkles className="h-4 w-4 text-primary" aria-hidden="true" />
+          </div>
+          <span className="text-glow-sm text-primary">AI Summary</span>
         </CardTitle>
       </CardHeader>
 

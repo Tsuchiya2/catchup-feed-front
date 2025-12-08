@@ -3,6 +3,7 @@
  *
  * A reusable page header component with title, optional description, and optional action.
  * Used at the top of pages to provide consistent styling and layout.
+ * Features cyber/tech theme with glow effects.
  */
 import * as React from 'react';
 import { cn } from '@/lib/utils';
@@ -42,7 +43,7 @@ export function PageHeader({ title, description, action, className }: PageHeader
       )}
     >
       <div className="flex-1">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">{title}</h1>
+        <h1 className="text-glow-sm text-3xl font-bold tracking-tight text-foreground">{title}</h1>
         {description && <p className="mt-2 text-base text-muted-foreground">{description}</p>}
       </div>
       {action && <div className="flex-shrink-0">{action}</div>}

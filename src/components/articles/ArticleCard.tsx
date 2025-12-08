@@ -20,7 +20,7 @@ interface ArticleCardProps {
  * - Title (bold, larger font)
  * - Summary (2-line truncated, muted)
  * - Metadata: Source badge, Published date
- * - Hover effects for interactivity
+ * - Hover effects for interactivity (cyber/glow theme)
  *
  * Links to article detail page (/articles/[id])
  *
@@ -44,8 +44,8 @@ export const ArticleCard = React.memo(function ArticleCard({
     <Link
       href={`/articles/${article.id}`}
       className={cn(
-        'group block rounded-lg border bg-card p-6 shadow-sm transition-all',
-        'hover:border-primary hover:bg-accent hover:shadow-md',
+        'group block rounded-lg border bg-card p-6 shadow-sm transition-all duration-300',
+        'hover:border-primary/50 hover:shadow-glow-sm',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
         className
       )}

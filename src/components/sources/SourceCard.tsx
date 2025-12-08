@@ -6,6 +6,7 @@
  * - Feed URL (truncated with tooltip)
  * - Active/Inactive status badge (non-admin) or toggle (admin)
  * - Last crawled timestamp
+ * - Cyber/glow theme styling
  */
 import * as React from 'react';
 import { Rss } from 'lucide-react';
@@ -79,7 +80,7 @@ export const SourceCard = React.memo(function SourceCard({
       <CardContent className="flex flex-col gap-4 p-6">
         {/* Icon and Name */}
         <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/30 bg-primary/10 transition-all duration-300 group-hover:border-primary/50 group-hover:shadow-glow-sm">
             <Rss className="h-5 w-5 text-primary" aria-hidden="true" />
           </div>
           <div className="min-w-0 flex-1">

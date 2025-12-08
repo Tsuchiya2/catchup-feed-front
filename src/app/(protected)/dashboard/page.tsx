@@ -11,6 +11,7 @@ import { useDashboardStats } from '@/hooks/useDashboardStats';
  * Dashboard Page
  *
  * Protected page that displays user statistics and recent articles.
+ * Features cyber/tech theme matching the brand.
  * Requires authentication - unauthenticated users will be redirected by middleware.
  */
 export default function DashboardPage() {
@@ -20,7 +21,7 @@ export default function DashboardPage() {
     <div className="container py-8">
       {/* Page Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+        <h1 className="text-glow-sm text-3xl font-bold tracking-tight">Dashboard</h1>
         <p className="mt-2 text-muted-foreground">Your personalized news feed overview</p>
       </div>
 
