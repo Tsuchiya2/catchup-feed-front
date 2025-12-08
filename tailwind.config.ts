@@ -58,6 +58,8 @@ const config: Config = {
           blue: '#00d4ff',
           'blue-dark': '#0099cc',
           'blue-light': '#66e5ff',
+          glow: '#a0ffff',
+          'glow-base': '#00ffff',
         },
       },
       fontFamily: {
