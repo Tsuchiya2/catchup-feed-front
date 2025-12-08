@@ -11,10 +11,10 @@ describe('StatusBadge', () => {
 
     it('should use success variant when active', () => {
       const { container } = render(<StatusBadge active={true} />);
-      // The Badge component with success variant
-      const badge = container.firstChild;
-      // Check for success variant class (from badge component)
-      expect(badge?.className).toMatch(/success|bg-green|bg-emerald/i);
+      // The Badge component with success variant (cyber glow theme)
+      const badge = container.firstChild as HTMLElement | null;
+      // Check for success variant class - uses cyan/aqua colors
+      expect(badge?.className).toMatch(/text-\[#a0ffff\]|bg-\[#a0ffff\]/i);
     });
 
     it('should have correct aria-label for active state', () => {
@@ -31,9 +31,9 @@ describe('StatusBadge', () => {
 
     it('should use secondary variant when inactive', () => {
       const { container } = render(<StatusBadge active={false} />);
-      // The Badge component with secondary variant
-      const badge = container.firstChild;
-      expect(badge?.className).toMatch(/secondary/i);
+      // The Badge component with secondary variant (gray theme)
+      const badge = container.firstChild as HTMLElement | null;
+      expect(badge?.className).toMatch(/text-gray-400|bg-gray-600/i);
     });
 
     it('should have correct aria-label for inactive state', () => {

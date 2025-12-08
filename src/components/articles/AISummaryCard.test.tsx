@@ -87,7 +87,7 @@ describe('AISummaryCard', () => {
 
     it('should have primary accent colors', () => {
       const { container } = render(<AISummaryCard summary="Test" />);
-      expect(container.firstChild).toHaveClass('border-primary/20');
+      expect(container.firstChild).toHaveClass('border-primary/30');
       expect(container.firstChild).toHaveClass('bg-primary/5');
     });
 

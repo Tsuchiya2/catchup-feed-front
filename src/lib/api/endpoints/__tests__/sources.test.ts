@@ -26,17 +26,15 @@ describe('Sources API Endpoints', () => {
   describe('getSources', () => {
     it('should call GET /sources endpoint', async () => {
       // Arrange
-      const mockResponse: SourcesResponse = {
-        sources: [
-          {
-            id: 1,
-            name: 'Test Source',
-            feed_url: 'https://example.com/feed.xml',
-            active: true,
-            last_crawled_at: '2025-01-01T12:00:00Z',
-          },
-        ],
-      };
+      const mockResponse: SourcesResponse = [
+        {
+          id: 1,
+          name: 'Test Source',
+          feed_url: 'https://example.com/feed.xml',
+          active: true,
+          last_crawled_at: '2025-01-01T12:00:00Z',
+        },
+      ];
 
       vi.mocked(apiClient.get).mockResolvedValue(mockResponse);
 
@@ -51,9 +49,7 @@ describe('Sources API Endpoints', () => {
 
     it('should return empty sources array when no sources exist', async () => {
       // Arrange
-      const mockResponse: SourcesResponse = {
-        sources: [],
-      };
+      const mockResponse: SourcesResponse = [];
 
       vi.mocked(apiClient.get).mockResolvedValue(mockResponse);
 
@@ -61,7 +57,7 @@ describe('Sources API Endpoints', () => {
       const result = await getSources();
 
       // Assert
-      expect(result.sources).toEqual([]);
+      expect(result).toEqual([]);
     });
 
     it('should propagate API errors', async () => {

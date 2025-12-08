@@ -238,7 +238,7 @@ describe('SourcesPage', () => {
       });
 
       const toggles = screen.getAllByRole('switch');
-      await user.click(toggles[0]); // Toggle first source (active → inactive)
+      await user.click(toggles[0]!); // Toggle first source (active → inactive)
 
       // Assert
       await waitFor(() => {
@@ -250,8 +250,8 @@ describe('SourcesPage', () => {
     it('should update cache optimistically', async () => {
       // Arrange
       const user = userEvent.setup();
-      let resolveUpdate: (value: any) => void;
-      const updatePromise = new Promise((resolve) => {
+      let resolveUpdate: (value: Source) => void;
+      const updatePromise = new Promise<Source>((resolve) => {
         resolveUpdate = resolve;
       });
       vi.mocked(sourcesApi.updateSourceActive).mockReturnValue(updatePromise);
@@ -264,13 +264,13 @@ describe('SourcesPage', () => {
       });
 
       const toggles = screen.getAllByRole('switch');
-      expect(toggles[0]).toBeChecked();
+      expect(toggles[0]!).toBeChecked();
 
-      await user.click(toggles[0]);
+      await user.click(toggles[0]!);
 
       // Assert - Should update optimistically (before API resolves)
       await waitFor(() => {
-        expect(toggles[0]).not.toBeChecked();
+        expect(toggles[0]!).not.toBeChecked();
       });
 
       // Resolve the API call
@@ -302,7 +302,7 @@ describe('SourcesPage', () => {
       });
 
       const toggles = screen.getAllByRole('switch');
-      await user.click(toggles[0]);
+      await user.click(toggles[0]!);
 
       // Assert
       await waitFor(() => {
@@ -339,14 +339,14 @@ describe('SourcesPage', () => {
       const toggles = screen.getAllByRole('switch');
 
       // Toggle first source
-      await user.click(toggles[0]);
+      await user.click(toggles[0]!);
 
       await waitFor(() => {
         expect(sourcesApi.updateSourceActive).toHaveBeenCalledWith(1, false);
       });
 
       // Toggle second source
-      await user.click(toggles[1]);
+      await user.click(toggles[1]!);
 
       // Assert
       await waitFor(() => {
@@ -374,7 +374,7 @@ describe('SourcesPage', () => {
       });
 
       const toggles = screen.getAllByRole('switch');
-      await user.click(toggles[0]);
+      await user.click(toggles[0]!);
 
       // Assert
       await waitFor(() => {
@@ -398,13 +398,13 @@ describe('SourcesPage', () => {
       const toggles = screen.getAllByRole('switch');
 
       // Initial state: checked
-      expect(toggles[0]).toBeChecked();
+      expect(toggles[0]!).toBeChecked();
 
-      await user.click(toggles[0]);
+      await user.click(toggles[0]!);
 
       // Assert - Should revert to checked after error
       await waitFor(() => {
-        expect(toggles[0]).toBeChecked();
+        expect(toggles[0]!).toBeChecked();
       });
     });
 
@@ -420,7 +420,7 @@ describe('SourcesPage', () => {
         expect(screen.getAllByRole('switch')).toHaveLength(3);
       });
 
-      await user.click(screen.getAllByRole('switch')[0]);
+      await user.click(screen.getAllByRole('switch')[0]!);
 
       // Assert
       await waitFor(() => {
@@ -442,7 +442,7 @@ describe('SourcesPage', () => {
         expect(screen.getAllByRole('switch')).toHaveLength(3);
       });
 
-      await user.click(screen.getAllByRole('switch')[0]);
+      await user.click(screen.getAllByRole('switch')[0]!);
 
       // Assert
       await waitFor(() => {
@@ -586,7 +586,7 @@ describe('SourcesPage', () => {
     it('should handle singular vs plural for source count', () => {
       // Arrange
       vi.mocked(useSources.useSources).mockReturnValue({
-        sources: [mockSources[0]],
+        sources: [mockSources[0]!],
         isLoading: false,
         error: null,
         refetch: vi.fn(),
@@ -684,17 +684,17 @@ describe('SourcesPage', () => {
       const toggles = screen.getAllByRole('switch');
 
       // Initial state: active (checked)
-      expect(toggles[0]).toBeChecked();
+      expect(toggles[0]!).toBeChecked();
 
       // Toggle to inactive
-      await user.click(toggles[0]);
+      await user.click(toggles[0]!);
 
       await waitFor(() => {
         expect(sourcesApi.updateSourceActive).toHaveBeenCalledWith(1, false);
       });
 
       // Toggle back to active
-      await user.click(toggles[0]);
+      await user.click(toggles[0]!);
 
       // Assert
       await waitFor(() => {

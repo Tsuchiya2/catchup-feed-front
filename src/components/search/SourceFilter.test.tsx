@@ -147,7 +147,7 @@ describe('SourceFilter', () => {
       await user.selectOptions(screen.getByLabelText('Source'), '3');
 
       expect(onChange).toHaveBeenCalledWith(3);
-      expect(typeof onChange.mock.calls[0][0]).toBe('number');
+      expect(typeof onChange.mock.calls[0]![0]).toBe('number');
     });
   });
 

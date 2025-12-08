@@ -115,8 +115,8 @@ describe('ArticleCard', () => {
       const article = createMockArticle();
       render(<ArticleCard article={article} />);
       const link = screen.getByRole('link');
-      expect(link).toHaveClass('hover:border-primary');
-      expect(link).toHaveClass('hover:bg-accent');
+      expect(link).toHaveClass('hover:border-primary/50');
+      expect(link).toHaveClass('hover:shadow-glow-sm');
     });
 
     it('should have focus-visible styling', () => {

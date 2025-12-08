@@ -2,6 +2,7 @@
  * Article Utilities Tests
  */
 
+import { describe, it, expect } from 'vitest';
 import { normalizeSourceName, validateArticle } from './article';
 import type { Article } from '@/types/api';
 

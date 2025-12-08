@@ -458,12 +458,12 @@ describe('ActiveToggle', () => {
       expect(toggles).toHaveLength(2);
 
       // Click first toggle
-      await user.click(toggles[0]);
+      await user.click(toggles[0]!);
       expect(mockOnToggle1).toHaveBeenCalledWith(1, false);
       expect(mockOnToggle2).not.toHaveBeenCalled();
 
       // Click second toggle
-      await user.click(toggles[1]);
+      await user.click(toggles[1]!);
       expect(mockOnToggle2).toHaveBeenCalledWith(2, true);
     });
 
@@ -492,16 +492,16 @@ describe('ActiveToggle', () => {
       const toggles = screen.getAllByRole('switch');
 
       // First toggle fails
-      await user.click(toggles[0]);
+      await user.click(toggles[0]!);
 
       await waitFor(() => {
         const alerts = screen.getAllByRole('alert');
         expect(alerts).toHaveLength(1);
-        expect(alerts[0]).toHaveAttribute('id', 'error-1');
+        expect(alerts[0]!).toHaveAttribute('id', 'error-1');
       });
 
       // Second toggle succeeds (no error)
-      await user.click(toggles[1]);
+      await user.click(toggles[1]!);
 
       await waitFor(() => {
         const alerts = screen.getAllByRole('alert');
