@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.6.1](https://github.com/Tsuchiya2/catchup-feed-front/compare/v0.6.0...v0.6.1) (2025-12-11)
+
+
+### Bug Fixes
+
+* remove extra blank line in terms page to fix prettier error ([dec3686](https://github.com/Tsuchiya2/catchup-feed-front/commit/dec3686fa5b4e0225f3599598644958bb0ccff9d))
+* remove obsolete tailwind.config.ts mount from compose.yml ([6a33f55](https://github.com/Tsuchiya2/catchup-feed-front/commit/6a33f55e5d6dc4f2ae85ddbcd010f0cfe05af34e))
+* remove obsolete tailwind.config.ts mount from compose.yml ([77c486a](https://github.com/Tsuchiya2/catchup-feed-front/commit/77c486ae568e93c8b5dc254312bfb9e4757c3a16))
+
 ## [0.6.0](https://github.com/Tsuchiya2/catchup-feed-front/compare/v0.5.0...v0.6.0) (2025-12-08)
 
 
