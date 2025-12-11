@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.6.0](https://github.com/Tsuchiya2/catchup-feed-front/compare/v0.5.0...v0.6.0) (2025-12-08)
+
+
+### Features
+
+* add GitHub Actions CI and fix various issues ([80db2f0](https://github.com/Tsuchiya2/catchup-feed-front/commit/80db2f0ffb7efbdb5a231633696ab3902960c808))
+* add GitHub Actions CI and fix various issues ([25404e0](https://github.com/Tsuchiya2/catchup-feed-front/commit/25404e04959974568db491aadf5249ca6cbe7683))
+
 ## [0.5.0](https://github.com/Tsuchiya2/catchup-feed-front/compare/v0.4.0...v0.5.0) (2025-12-08)
 
 
