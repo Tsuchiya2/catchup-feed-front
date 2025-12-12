@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.8.0](https://github.com/Tsuchiya2/catchup-feed-front/compare/v0.7.0...v0.8.0) (2025-12-12)
+
+
+### Features
+
+* remove Today quick filter button from DateRangePicker ([530410a](https://github.com/Tsuchiya2/catchup-feed-front/commit/530410a91d7f70754f261aa87ea99e5b6d6d8863))
+* remove Today quick filter button from DateRangePicker ([b46e755](https://github.com/Tsuchiya2/catchup-feed-front/commit/b46e75572a4effa21872aa2d699e871e26563003))
+
 ## [0.7.0](https://github.com/Tsuchiya2/catchup-feed-front/compare/v0.6.1...v0.7.0) (2025-12-12)
 
 
