@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0](https://github.com/Tsuchiya2/catchup-feed-front/compare/v0.6.1...v0.7.0) (2025-12-12)
+
+
+### Features
+
+* add mock API endpoint for article search ([71b55cf](https://github.com/Tsuchiya2/catchup-feed-front/commit/71b55cffcc08e1213e7ac2d80d63e841bc4ba098))
+
 ## [0.6.1](https://github.com/Tsuchiya2/catchup-feed-front/compare/v0.6.0...v0.6.1) (2025-12-11)
 
 
