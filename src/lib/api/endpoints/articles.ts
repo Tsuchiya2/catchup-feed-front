@@ -235,26 +235,33 @@ export async function searchArticles(
   params?: ArticleSearchParams
 ): Promise<PaginatedArticlesResponse> {
   const queryString = buildSearchQueryString(params);
-  const endpoint = `/articles/search${queryString}`;
+
+  // Use internal Next.js API route for search (with mock data)
+  const internalEndpoint = `/api/articles/search${queryString}`;
 
   // Performance measurement start
   const perfMarkStart = `api-search-articles-${Date.now()}`;
   performance.mark(perfMarkStart);
 
   try {
-    const response = await apiClient.get<PaginatedArticlesResponse>(endpoint);
+    // Fetch from internal API route instead of external backend
+    const fetchResponse = await fetch(internalEndpoint);
+    if (!fetchResponse.ok) {
+      throw new Error(`Search request failed with status ${fetchResponse.status}`);
+    }
+    const response = (await fetchResponse.json()) as PaginatedArticlesResponse;
 
     // Validate response structure
-    if (!validatePaginatedResponse<Article>(response, endpoint)) {
-      console.error(`[API] Response validation failed for ${endpoint}`, {
+    if (!validatePaginatedResponse<Article>(response, internalEndpoint)) {
+      console.error(`[API] Response validation failed for ${internalEndpoint}`, {
         timestamp: new Date().toISOString(),
         params,
       });
-      throw new Error(`Invalid paginated response from ${endpoint}`);
+      throw new Error(`Invalid paginated response from ${internalEndpoint}`);
     }
 
     // Log API response for debugging
-    ArticleMigrationLogger.debugApiResponse(endpoint, response.data.length);
+    ArticleMigrationLogger.debugApiResponse(internalEndpoint, response.data.length);
 
     // Validate and normalize each article
     const validatedArticles: Article[] = [];
@@ -296,7 +303,7 @@ export async function searchArticles(
       console.log(
         `[Performance] searchArticles completed in ${perfMeasure.duration.toFixed(2)}ms`,
         {
-          endpoint,
+          endpoint: internalEndpoint,
           itemCount: validatedArticles.length,
           pagination: response.pagination,
         }
@@ -316,7 +323,7 @@ export async function searchArticles(
     // Enhanced error logging
     console.error(`[API] Error in searchArticles`, {
       timestamp: new Date().toISOString(),
-      endpoint,
+      endpoint: internalEndpoint,
       params,
       error: error instanceof Error ? error.message : 'Unknown error',
       stack: error instanceof Error ? error.stack : undefined,
