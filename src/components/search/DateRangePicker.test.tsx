@@ -33,10 +33,10 @@ describe('DateRangePicker', () => {
     it('should render quick range buttons', () => {
       render(<DateRangePicker fromDate={null} toDate={null} onChange={vi.fn()} />);
 
-      expect(screen.getByRole('button', { name: 'Today' })).toBeInTheDocument();
       expect(screen.getByRole('button', { name: 'Last 7 Days' })).toBeInTheDocument();
       expect(screen.getByRole('button', { name: 'Last 30 Days' })).toBeInTheDocument();
       expect(screen.getByRole('button', { name: 'This Year' })).toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: 'Today' })).not.toBeInTheDocument();
     });
 
     it('should show Clear button when dates are set', () => {
@@ -102,15 +102,6 @@ describe('DateRangePicker', () => {
   });
 
   describe('Quick Range Buttons', () => {
-    it('should set Today range', () => {
-      const onChange = vi.fn();
-      render(<DateRangePicker fromDate={null} toDate={null} onChange={onChange} />);
-
-      fireEvent.click(screen.getByRole('button', { name: 'Today' }));
-
-      expect(onChange).toHaveBeenCalledWith('2025-01-15', '2025-01-15');
-    });
-
     it('should set Last 7 Days range', () => {
       const onChange = vi.fn();
       render(<DateRangePicker fromDate={null} toDate={null} onChange={onChange} />);
@@ -203,7 +194,7 @@ describe('DateRangePicker', () => {
       expect(screen.getByRole('alert')).toBeInTheDocument();
 
       // Then use quick range to clear error
-      fireEvent.click(screen.getByRole('button', { name: 'Today' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Last 7 Days' }));
       expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     });
   });
@@ -226,7 +217,6 @@ describe('DateRangePicker', () => {
         />
       );
 
-      expect(screen.getByRole('button', { name: 'Today' })).toBeDisabled();
       expect(screen.getByRole('button', { name: 'Last 7 Days' })).toBeDisabled();
       expect(screen.getByRole('button', { name: 'Last 30 Days' })).toBeDisabled();
       expect(screen.getByRole('button', { name: 'This Year' })).toBeDisabled();

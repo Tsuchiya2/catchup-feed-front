@@ -29,7 +29,7 @@ export interface DateRangePickerProps {
 /**
  * Quick range preset type
  */
-type QuickRange = 'today' | 'week' | 'month' | 'year';
+type QuickRange = 'week' | 'month' | 'year';
 
 /**
  * Calculate quick range dates
@@ -44,9 +44,6 @@ function getQuickRangeDates(range: QuickRange): { from: string; to: string } {
   let from: string;
 
   switch (range) {
-    case 'today':
-      from = to;
-      break;
     case 'week': {
       const weekAgo = new Date(today);
       weekAgo.setDate(today.getDate() - 7);
@@ -184,15 +181,6 @@ export function DateRangePicker({
       )}
 
       <div className="flex flex-wrap gap-2">
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={() => handleQuickRange('today')}
-          disabled={disabled}
-        >
-          Today
-        </Button>
         <Button
           type="button"
           variant="outline"
