@@ -3,13 +3,15 @@
 import * as React from 'react';
 import { Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Rss, Search } from 'lucide-react';
+import { Plus, Rss, Search } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { PageHeader } from '@/components/common/PageHeader';
 import { SourceCard } from '@/components/sources/SourceCard';
 import { ErrorMessage } from '@/components/common/ErrorMessage';
 import { EmptyState } from '@/components/common/EmptyState';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
+import { AddSourceDialog } from '@/components/sources/AddSourceDialog';
 import { useSources } from '@/hooks/useSources';
 import { useSourceSearch } from '@/hooks/useSourceSearch';
 import { getUserRole } from '@/lib/auth/role';
@@ -34,6 +36,9 @@ function SourcesPageContent() {
 
   // User role state
   const [userRole, setUserRole] = React.useState<UserRole>(null);
+
+  // Add Source Dialog state
+  const [isAddDialogOpen, setIsAddDialogOpen] = React.useState(false);
 
   // Get search parameters from URL
   const keyword = searchParams.get('keyword') || '';
@@ -131,8 +136,18 @@ function SourcesPageContent() {
 
   return (
     <div className="container py-8">
-      {/* Page Header */}
-      <PageHeader title="Sources" description="RSS/Atom feeds being tracked" />
+      {/* Page Header with Add Button */}
+      <div className="mb-6 flex items-start justify-between gap-4">
+        <PageHeader title="Sources" description="RSS/Atom feeds being tracked" />
+
+        {/* Admin-only Add Source button */}
+        {userRole === 'admin' && (
+          <Button onClick={() => setIsAddDialogOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            Add Source
+          </Button>
+        )}
+      </div>
 
       {/* Search and Filter Panel */}
       <SourceSearch
@@ -202,6 +217,13 @@ function SourcesPageContent() {
           </div>
         </>
       )}
+
+      {/* Add Source Dialog */}
+      <AddSourceDialog
+        isOpen={isAddDialogOpen}
+        onClose={() => setIsAddDialogOpen(false)}
+        onSuccess={() => setIsAddDialogOpen(false)}
+      />
     </div>
   );
 }
