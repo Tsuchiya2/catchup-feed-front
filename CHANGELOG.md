@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.9.0](https://github.com/Tsuchiya2/catchup-feed-front/compare/v0.8.0...v0.9.0) (2025-12-14)
+
+
+### Features
+
+* add source creation dialog for admin users ([e39c22b](https://github.com/Tsuchiya2/catchup-feed-front/commit/e39c22b85581f49d2c5e118106d7d9de509d2ef2))
+* add source creation dialog for admin users ([9fe1737](https://github.com/Tsuchiya2/catchup-feed-front/commit/9fe173759ec9c414b13df88ec2521715dfee6afb))
+
+
+### Bug Fixes
+
+* improve Add Source form and fix API client tests ([78ff8f2](https://github.com/Tsuchiya2/catchup-feed-front/commit/78ff8f20a58edc861796f2715acf510702a58927))
+
 ## [0.8.0](https://github.com/Tsuchiya2/catchup-feed-front/compare/v0.7.0...v0.8.0) (2025-12-12)
 
 
