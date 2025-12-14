@@ -35,6 +35,9 @@ describe('FormField', () => {
 
     expect(screen.getByText('*')).toBeInTheDocument();
     expect(screen.getByText('*')).toHaveAttribute('aria-hidden', 'true');
+    // Check screen reader accessible text
+    expect(screen.getByText('(required)')).toBeInTheDocument();
+    expect(screen.getByText('(required)')).toHaveClass('sr-only');
   });
 
   it('does not show required indicator when required is false', () => {
@@ -45,6 +48,7 @@ describe('FormField', () => {
     );
 
     expect(screen.queryByText('*')).not.toBeInTheDocument();
+    expect(screen.queryByText('(required)')).not.toBeInTheDocument();
   });
 
   it('displays error message when error is provided', () => {

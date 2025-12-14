@@ -4,13 +4,6 @@ import * as React from 'react';
 import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { ErrorAlert } from '@/components/common/ErrorAlert';
 import { FormField } from '@/components/common/FormField';
 import { validators } from '@/utils/validation';
@@ -36,7 +29,6 @@ interface AddSourceFormProps {
 const defaultFormData: SourceFormData = {
   name: '',
   feedURL: '',
-  sourceType: 'RSS',
 };
 
 /**
@@ -161,23 +153,6 @@ export function AddSourceForm({ onSubmit, isLoading, error, onCancel }: AddSourc
           disabled={isLoading}
           maxLength={2048}
         />
-      </FormField>
-
-      {/* Source Type Field (UI only) */}
-      <FormField label="Source Type" htmlFor="source-sourceType">
-        <Select
-          value={formData.sourceType}
-          onValueChange={(value) => handleChange('sourceType', value)}
-          disabled={isLoading}
-        >
-          <SelectTrigger id="source-sourceType">
-            <SelectValue placeholder="Select type" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="RSS">RSS</SelectItem>
-            <SelectItem value="Atom">Atom</SelectItem>
-          </SelectContent>
-        </Select>
       </FormField>
 
       {/* Action Buttons */}

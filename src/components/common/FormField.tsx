@@ -62,9 +62,12 @@ export function FormField({
       <Label htmlFor={htmlFor}>
         {label}
         {required && (
-          <span className="ml-1 text-destructive" aria-hidden="true">
-            *
-          </span>
+          <>
+            <span className="ml-1 text-destructive" aria-hidden="true">
+              *
+            </span>
+            <span className="sr-only">(required)</span>
+          </>
         )}
       </Label>
       {children}

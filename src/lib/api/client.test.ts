@@ -41,7 +41,8 @@ describe('ApiClient', () => {
       global.fetch = vi.fn().mockResolvedValue({
         ok: true,
         status: 200,
-        json: async () => mockResponse,
+        headers: new Headers({ 'content-length': '100' }),
+        text: async () => JSON.stringify(mockResponse),
       });
 
       // Act
@@ -68,7 +69,8 @@ describe('ApiClient', () => {
       global.fetch = vi.fn().mockResolvedValue({
         ok: true,
         status: 200,
-        json: async () => mockResponse,
+        headers: new Headers({ 'content-length': '100' }),
+        text: async () => JSON.stringify(mockResponse),
       });
 
       // Act
@@ -98,7 +100,8 @@ describe('ApiClient', () => {
       global.fetch = vi.fn().mockResolvedValue({
         ok: true,
         status: 200,
-        json: async () => mockResponse,
+        headers: new Headers({ 'content-length': '100' }),
+        text: async () => JSON.stringify(mockResponse),
       });
 
       // Act
@@ -121,7 +124,8 @@ describe('ApiClient', () => {
       global.fetch = vi.fn().mockResolvedValue({
         ok: true,
         status: 200,
-        json: async () => ({}),
+        headers: new Headers({ 'content-length': '2' }),
+        text: async () => '{}',
       });
 
       // Act
@@ -255,7 +259,8 @@ describe('ApiClient', () => {
       global.fetch = vi.fn().mockResolvedValue({
         ok: true,
         status: 200,
-        json: async () => ({}),
+        headers: new Headers({ 'content-length': '2' }),
+        text: async () => '{}',
       });
 
       // Act
@@ -279,7 +284,8 @@ describe('ApiClient', () => {
       global.fetch = vi.fn().mockResolvedValue({
         ok: true,
         status: 200,
-        json: async () => ({}),
+        headers: new Headers({ 'content-length': '2' }),
+        text: async () => '{}',
       });
 
       // Act
@@ -299,7 +305,8 @@ describe('ApiClient', () => {
       global.fetch = vi.fn().mockResolvedValue({
         ok: true,
         status: 200,
-        json: async () => ({ success: true }),
+        headers: new Headers({ 'content-length': '100' }),
+        text: async () => JSON.stringify({ success: true }),
       });
     });
 

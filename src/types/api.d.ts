@@ -199,8 +199,6 @@ export interface SourceFormData {
   name: string;
   /** RSS/Atom feed URL */
   feedURL: string;
-  /** Source type (UI only, not sent to backend) */
-  sourceType: 'RSS' | 'Atom';
 }
 
 /**

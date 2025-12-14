@@ -24,7 +24,6 @@ describe('AddSourceForm', () => {
 
       expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/feed url/i)).toBeInTheDocument();
-      expect(screen.getByText(/source type/i)).toBeInTheDocument();
     });
 
     it('renders submit and cancel buttons', () => {
@@ -68,21 +67,6 @@ describe('AddSourceForm', () => {
       await user.type(urlInput, 'https://example.com/feed.xml');
 
       expect(urlInput).toHaveValue('https://example.com/feed.xml');
-    });
-
-    // Note: Radix UI Select does not work correctly in jsdom environment
-    // This test is skipped due to hasPointerCapture not being supported
-    it.skip('allows selecting source type', async () => {
-      const user = userEvent.setup();
-      render(<AddSourceForm {...defaultProps} />);
-
-      const trigger = screen.getByRole('combobox');
-      await user.click(trigger);
-
-      const atomOption = screen.getByRole('option', { name: 'Atom' });
-      await user.click(atomOption);
-
-      expect(trigger).toHaveTextContent('Atom');
     });
   });
 
@@ -213,7 +197,6 @@ describe('AddSourceForm', () => {
 
       expect(screen.getByLabelText(/name/i)).toBeDisabled();
       expect(screen.getByLabelText(/feed url/i)).toBeDisabled();
-      expect(screen.getByRole('combobox')).toBeDisabled();
     });
 
     it('disables buttons when loading', () => {
