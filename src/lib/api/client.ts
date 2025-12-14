@@ -118,9 +118,23 @@ class ApiClient {
         return undefined as T;
       }
 
+      // Handle empty response body (e.g., 201 Created with no body)
+      const contentLength = response.headers.get('content-length');
+      if (contentLength === '0') {
+        return undefined as T;
+      }
+
       // Parse successful response
-      const data = await response.json();
-      return data as T;
+      const text = await response.text();
+      if (!text) {
+        return undefined as T;
+      }
+
+      try {
+        return JSON.parse(text) as T;
+      } catch {
+        return undefined as T;
+      }
     } catch (error) {
       // Clear timeout
       clearTimeout(timeoutId);

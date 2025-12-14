@@ -174,3 +174,41 @@ export interface ApiResponse<T> {
   data: T;
   error?: ApiErrorResponse;
 }
+
+// ============================================================================
+// Source Creation Types
+// ============================================================================
+
+/**
+ * Input data for creating a new source
+ * Matches backend API contract for POST /sources
+ */
+export interface CreateSourceInput {
+  /** Source name (max 255 characters) */
+  name: string;
+  /** RSS/Atom feed URL (max 2048 characters) */
+  feedURL: string;
+}
+
+/**
+ * Form field state for source creation form
+ * Used internally by AddSourceForm component
+ */
+export interface SourceFormData {
+  /** Source name */
+  name: string;
+  /** RSS/Atom feed URL */
+  feedURL: string;
+  /** Source type (UI only, not sent to backend) */
+  sourceType: 'RSS' | 'Atom';
+}
+
+/**
+ * Form validation errors for source creation
+ */
+export interface SourceFormErrors {
+  /** Error message for name field */
+  name?: string;
+  /** Error message for feedURL field */
+  feedURL?: string;
+}
