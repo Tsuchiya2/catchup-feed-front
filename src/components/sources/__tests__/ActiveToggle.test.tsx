@@ -208,7 +208,11 @@ describe('ActiveToggle', () => {
       // Should only call once (disabled during loading)
       expect(mockOnToggle).toHaveBeenCalledTimes(1);
 
+      // Resolve the promise and wait for state update to complete
       resolveToggle!();
+      await waitFor(() => {
+        expect(toggle).not.toBeDisabled();
+      });
     });
   });
 

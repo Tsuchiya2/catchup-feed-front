@@ -9,6 +9,20 @@ import { getAuthToken, clearAuthToken } from '@/lib/auth/token';
 import { ApiError, NetworkError, TimeoutError } from '@/lib/api/errors';
 
 /**
+ * Retry configuration for API requests
+ */
+interface RetryConfig {
+  /** Maximum number of retry attempts (default: 3) */
+  maxRetries?: number;
+  /** Initial delay in milliseconds before first retry (default: 1000) */
+  initialDelay?: number;
+  /** Maximum delay in milliseconds between retries (default: 10000) */
+  maxDelay?: number;
+  /** Multiplier for exponential backoff (default: 2) */
+  backoffMultiplier?: number;
+}
+
+/**
  * API request options
  */
 interface RequestOptions {
@@ -17,7 +31,19 @@ interface RequestOptions {
   headers?: Record<string, string>;
   requiresAuth?: boolean;
   timeout?: number;
+  /** Retry configuration (set to false to disable retries) */
+  retry?: RetryConfig | false;
 }
+
+/**
+ * Default retry configuration
+ */
+const DEFAULT_RETRY_CONFIG: Required<RetryConfig> = {
+  maxRetries: 3,
+  initialDelay: 1000,
+  maxDelay: 10000,
+  backoffMultiplier: 2,
+};
 
 /**
  * API Client class for making type-safe HTTP requests
@@ -31,6 +57,37 @@ class ApiClient {
   }
 
   /**
+   * Check if an error is retryable
+   * Retries on network errors, timeouts, and 5xx server errors
+   */
+  private isRetryableError(error: unknown): boolean {
+    if (error instanceof NetworkError || error instanceof TimeoutError) {
+      return true;
+    }
+    if (error instanceof ApiError && error.status >= 500) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Calculate delay for retry with exponential backoff
+   */
+  private calculateRetryDelay(attempt: number, config: Required<RetryConfig>): number {
+    const delay = config.initialDelay * Math.pow(config.backoffMultiplier, attempt);
+    // Add jitter (±10%) to prevent thundering herd
+    const jitter = delay * 0.1 * (Math.random() * 2 - 1);
+    return Math.min(delay + jitter, config.maxDelay);
+  }
+
+  /**
+   * Sleep for a specified duration
+   */
+  private sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  /**
    * Make an HTTP request to the API
    *
    * @param endpoint - API endpoint path (e.g., '/auth/token')
@@ -41,6 +98,61 @@ class ApiClient {
    * @throws {TimeoutError} When the request times out
    */
   public async request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
+    const {
+      method = 'GET',
+      body,
+      headers = {},
+      requiresAuth = true,
+      timeout = this.defaultTimeout,
+      retry = {},
+    } = options;
+
+    // Determine retry configuration
+    const retryConfig: Required<RetryConfig> | null =
+      retry === false ? null : { ...DEFAULT_RETRY_CONFIG, ...retry };
+    const maxAttempts = retryConfig ? retryConfig.maxRetries + 1 : 1;
+
+    let lastError: unknown;
+
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      try {
+        return await this.executeRequest<T>(endpoint, {
+          method,
+          body,
+          headers,
+          requiresAuth,
+          timeout,
+        });
+      } catch (error) {
+        lastError = error;
+
+        // Don't retry if retries are disabled or this is the last attempt
+        if (!retryConfig || attempt >= retryConfig.maxRetries) {
+          throw error;
+        }
+
+        // Don't retry non-retryable errors
+        if (!this.isRetryableError(error)) {
+          throw error;
+        }
+
+        // Wait before retrying with exponential backoff
+        const delay = this.calculateRetryDelay(attempt, retryConfig);
+        await this.sleep(delay);
+      }
+    }
+
+    // This should never be reached, but TypeScript needs it
+    throw lastError;
+  }
+
+  /**
+   * Execute a single HTTP request (without retry logic)
+   */
+  private async executeRequest<T>(
+    endpoint: string,
+    options: Omit<RequestOptions, 'retry'>
+  ): Promise<T> {
     const {
       method = 'GET',
       body,

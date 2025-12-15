@@ -5,7 +5,22 @@ import { QueryProvider } from '@/providers/QueryProvider';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
+/**
+ * Get the base URL for metadata
+ * Priority: NEXT_PUBLIC_APP_URL > VERCEL_URL > localhost
+ */
+function getMetadataBase(): URL {
+  if (process.env.NEXT_PUBLIC_APP_URL) {
+    return new URL(process.env.NEXT_PUBLIC_APP_URL);
+  }
+  if (process.env.VERCEL_URL) {
+    return new URL(`https://${process.env.VERCEL_URL}`);
+  }
+  return new URL('http://localhost:3000');
+}
+
 export const metadata: Metadata = {
+  metadataBase: getMetadataBase(),
   title: 'Catchup Feed - Stay Updated',
   description: 'Your personalized news aggregator with AI-powered insights',
   openGraph: {

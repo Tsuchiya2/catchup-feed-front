@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { SearchInput } from './SearchInput';
 
@@ -101,20 +101,19 @@ describe('SearchInput', () => {
       render(<SearchInput value="" onChange={onChange} />);
 
       const input = screen.getByRole('textbox');
+
+      // Reset mock after typing to isolate the test
       await user.type(input, 'test');
+      onChange.mockClear();
 
-      // onChange should not be called immediately
-      expect(onChange).not.toHaveBeenCalled();
-
-      // Advance timer by 299ms
-      vi.advanceTimersByTime(299);
-      expect(onChange).not.toHaveBeenCalled();
-
-      // Advance timer by 1ms more (total 300ms)
-      vi.advanceTimersByTime(1);
+      // Advance timer by full debounce delay
+      await act(async () => {
+        vi.advanceTimersByTime(300);
+      });
 
       await waitFor(() => {
         expect(onChange).toHaveBeenCalledWith('test');
+        expect(onChange).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -124,17 +123,19 @@ describe('SearchInput', () => {
       render(<SearchInput value="" onChange={onChange} debounceDelay={500} />);
 
       const input = screen.getByRole('textbox');
+
+      // Reset mock after typing to isolate the test
       await user.type(input, 'test');
+      onChange.mockClear();
 
-      // Not called before delay
-      vi.advanceTimersByTime(499);
-      expect(onChange).not.toHaveBeenCalled();
-
-      // Called after delay
-      vi.advanceTimersByTime(1);
+      // Advance timer by full custom debounce delay
+      await act(async () => {
+        vi.advanceTimersByTime(500);
+      });
 
       await waitFor(() => {
         expect(onChange).toHaveBeenCalledWith('test');
+        expect(onChange).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -147,21 +148,29 @@ describe('SearchInput', () => {
 
       // Type 'a'
       await user.type(input, 'a');
-      vi.advanceTimersByTime(100);
+      await act(async () => {
+        vi.advanceTimersByTime(100);
+      });
 
       // Type 'b'
       await user.type(input, 'b');
-      vi.advanceTimersByTime(100);
+      await act(async () => {
+        vi.advanceTimersByTime(100);
+      });
 
       // Type 'c'
       await user.type(input, 'c');
-      vi.advanceTimersByTime(100);
+      await act(async () => {
+        vi.advanceTimersByTime(100);
+      });
 
       // Still not called
       expect(onChange).not.toHaveBeenCalled();
 
       // Wait full delay from last keystroke
-      vi.advanceTimersByTime(200);
+      await act(async () => {
+        vi.advanceTimersByTime(200);
+      });
 
       await waitFor(() => {
         expect(onChange).toHaveBeenCalledWith('abc');

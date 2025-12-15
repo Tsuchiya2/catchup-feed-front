@@ -2,7 +2,7 @@
  * AddSourceForm Component Tests
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { AddSourceForm } from './AddSourceForm';
 
@@ -185,7 +185,10 @@ describe('AddSourceForm', () => {
       const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
       vi.spyOn(submitEvent, 'preventDefault');
 
-      form?.dispatchEvent(submitEvent);
+      // Wrap dispatchEvent in act() as it causes React state updates
+      await act(async () => {
+        form?.dispatchEvent(submitEvent);
+      });
 
       expect(submitEvent.preventDefault).toHaveBeenCalled();
     });

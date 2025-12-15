@@ -177,8 +177,10 @@ describe('ApiClient', () => {
         json: async () => ({ message: 'Internal server error' }),
       });
 
-      // Act & Assert
-      const error = (await apiClient.request('/error').catch((e) => e)) as ApiError;
+      // Act & Assert - disable retries to prevent timeout
+      const error = (await apiClient
+        .request('/error', { retry: false })
+        .catch((e) => e)) as ApiError;
 
       expect(error).toBeInstanceOf(ApiError);
       expect(error.status).toBe(500);
@@ -213,8 +215,10 @@ describe('ApiClient', () => {
         },
       });
 
-      // Act & Assert
-      const error = (await apiClient.request('/unavailable').catch((e) => e)) as ApiError;
+      // Act & Assert - disable retries to prevent timeout
+      const error = (await apiClient
+        .request('/unavailable', { retry: false })
+        .catch((e) => e)) as ApiError;
 
       expect(error).toBeInstanceOf(ApiError);
       expect(error.message).toBe('Request failed with status 503');
@@ -232,10 +236,12 @@ describe('ApiClient', () => {
         });
       });
 
-      // Act & Assert
-      await expect(apiClient.request('/slow', { timeout: 50 })).rejects.toThrow(TimeoutError);
+      // Act & Assert - disable retries to prevent timeout
+      await expect(apiClient.request('/slow', { timeout: 50, retry: false })).rejects.toThrow(
+        TimeoutError
+      );
       const error = (await apiClient
-        .request('/slow', { timeout: 50 })
+        .request('/slow', { timeout: 50, retry: false })
         .catch((e) => e)) as TimeoutError;
 
       expect(error).toBeInstanceOf(TimeoutError);
@@ -246,9 +252,13 @@ describe('ApiClient', () => {
       // Arrange
       global.fetch = vi.fn().mockRejectedValue(new TypeError('Failed to fetch'));
 
-      // Act & Assert
-      await expect(apiClient.request('/network-fail')).rejects.toThrow(NetworkError);
-      const error = (await apiClient.request('/network-fail').catch((e) => e)) as NetworkError;
+      // Act & Assert - disable retries to prevent timeout
+      await expect(apiClient.request('/network-fail', { retry: false })).rejects.toThrow(
+        NetworkError
+      );
+      const error = (await apiClient
+        .request('/network-fail', { retry: false })
+        .catch((e) => e)) as NetworkError;
 
       expect(error).toBeInstanceOf(NetworkError);
       expect(error.message).toContain('Failed to connect');
@@ -388,7 +398,77 @@ describe('ApiClient', () => {
       global.fetch = vi.fn().mockRejectedValue(customError);
 
       // Act & Assert
-      await expect(apiClient.request('/unknown')).rejects.toThrow('Unknown error');
+      await expect(apiClient.request('/unknown', { retry: false })).rejects.toThrow(
+        'Unknown error'
+      );
+    });
+  });
+
+  describe('retry logic', () => {
+    it('should retry on network error up to maxRetries', async () => {
+      // Arrange
+      global.fetch = vi.fn().mockRejectedValue(new TypeError('Failed to fetch'));
+
+      // Act & Assert - use very short delays for testing
+      const error = (await apiClient
+        .request('/retry-test', {
+          retry: { maxRetries: 2, initialDelay: 10, maxDelay: 50, backoffMultiplier: 1.5 },
+        })
+        .catch((e) => e)) as NetworkError;
+
+      // Assert - should have been called 3 times (1 initial + 2 retries)
+      expect(error).toBeInstanceOf(NetworkError);
+      expect(global.fetch).toHaveBeenCalledTimes(3);
+    });
+
+    it('should not retry on 4xx client errors', async () => {
+      // Arrange
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: false,
+        status: 400,
+        json: async () => ({ message: 'Bad request' }),
+      });
+
+      // Act & Assert
+      const error = (await apiClient
+        .request('/client-error', { retry: { maxRetries: 3 } })
+        .catch((e) => e)) as ApiError;
+
+      expect(error).toBeInstanceOf(ApiError);
+      expect(error.status).toBe(400);
+      // Should only be called once (no retries for 4xx)
+      expect(global.fetch).toHaveBeenCalledTimes(1);
+    });
+
+    it('should succeed on retry after initial failure', async () => {
+      // Arrange - fail first, succeed second
+      global.fetch = vi
+        .fn()
+        .mockRejectedValueOnce(new TypeError('Failed to fetch'))
+        .mockResolvedValueOnce({
+          ok: true,
+          status: 200,
+          headers: new Headers({ 'content-length': '20' }),
+          text: async () => JSON.stringify({ success: true }),
+        });
+
+      // Act - use very short delays for testing
+      const result = await apiClient.request<{ success: boolean }>('/retry-success', {
+        retry: { maxRetries: 3, initialDelay: 10, maxDelay: 50 },
+      });
+
+      // Assert
+      expect(result).toEqual({ success: true });
+      expect(global.fetch).toHaveBeenCalledTimes(2);
+    });
+
+    it('should disable retries when retry is false', async () => {
+      // Arrange
+      global.fetch = vi.fn().mockRejectedValue(new TypeError('Failed to fetch'));
+
+      // Act & Assert
+      await expect(apiClient.request('/no-retry', { retry: false })).rejects.toThrow(NetworkError);
+      expect(global.fetch).toHaveBeenCalledTimes(1);
     });
   });
 });

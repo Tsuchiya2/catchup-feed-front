@@ -3,14 +3,15 @@
  *
  * This middleware protects routes that require authentication.
  * It checks for a valid JWT token and redirects unauthenticated users to the login page.
+ * The token is validated by checking its expiration claim using the jose library.
  *
  * NOTE: Next.js middleware runs on the Edge runtime, which doesn't have access to localStorage.
- * Token validation is performed client-side using the isAuthenticated helper.
- * This middleware primarily handles redirects based on route patterns.
+ * This middleware validates token expiration and handles route protection.
  */
 
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { decodeJwt } from 'jose';
 
 /**
  * Protected route patterns
@@ -39,6 +40,42 @@ function isPublicRoute(pathname: string): boolean {
 }
 
 /**
+ * Validate JWT token by checking its expiration
+ * Returns true if token is valid (not expired), false otherwise
+ *
+ * NOTE: This only checks expiration, not signature verification.
+ * Full signature verification requires the secret key, which is on the backend.
+ * The backend will perform full validation when the token is used for API calls.
+ *
+ * @param token - JWT token string
+ * @returns true if token is valid and not expired
+ */
+function isTokenValid(token: string): boolean {
+  try {
+    const payload = decodeJwt(token);
+
+    // Check if token has an expiration claim
+    if (!payload.exp) {
+      // No expiration claim - consider valid (backend will verify)
+      return true;
+    }
+
+    // Check if token has expired
+    // exp is in seconds, Date.now() is in milliseconds
+    const expirationTime = payload.exp * 1000;
+    const currentTime = Date.now();
+
+    // Add a 30-second buffer to account for clock skew
+    const bufferMs = 30 * 1000;
+
+    return currentTime < expirationTime + bufferMs;
+  } catch {
+    // Invalid token format
+    return false;
+  }
+}
+
+/**
  * Middleware function
  *
  * @param request - Next.js request object
@@ -49,18 +86,24 @@ export function middleware(request: NextRequest) {
 
   // Check for auth token in cookies (set by client-side after login)
   const token = request.cookies.get('catchup_feed_auth_token')?.value;
-  const hasToken = Boolean(token);
+  const hasValidToken = token ? isTokenValid(token) : false;
 
-  // Protected routes: redirect to /login if no token
-  if (isProtectedRoute(pathname) && !hasToken) {
+  // Protected routes: redirect to /login if no valid token
+  if (isProtectedRoute(pathname) && !hasValidToken) {
     const loginUrl = new URL('/login', request.url);
     // Add redirect parameter to return to original destination after login
     loginUrl.searchParams.set('redirect', pathname);
-    return NextResponse.redirect(loginUrl);
+
+    // Clear expired token from cookies
+    const response = NextResponse.redirect(loginUrl);
+    if (token && !hasValidToken) {
+      response.cookies.delete('catchup_feed_auth_token');
+    }
+    return response;
   }
 
-  // Login page: redirect to /dashboard if already authenticated
-  if (pathname === '/login' && hasToken) {
+  // Login page: redirect to /dashboard if already authenticated with valid token
+  if (pathname === '/login' && hasValidToken) {
     // Check if there's a redirect parameter
     const redirectParam = request.nextUrl.searchParams.get('redirect');
     const dashboardUrl = new URL(redirectParam || '/dashboard', request.url);
