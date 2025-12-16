@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.3](https://github.com/Tsuchiya2/catchup-feed-front/compare/v1.0.2...v1.0.3) (2025-12-16)
+
+
+### Bug Fixes
+
+* **api:** use /articles/search endpoint for date filtering ([2a14307](https://github.com/Tsuchiya2/catchup-feed-front/commit/2a1430755fdc9b5b3e15e7a0fa4d9ea5b19f75c7))
+* **api:** use /articles/search endpoint for date filtering ([6ef307f](https://github.com/Tsuchiya2/catchup-feed-front/commit/6ef307f8dc8eb385484f42d24d11fb8075a759ed))
+* remove out-of-scope settings changes ([00766e3](https://github.com/Tsuchiya2/catchup-feed-front/commit/00766e3d51d8f48f06a1309fd3173cd6e22f0655))
+
 ## [1.0.2](https://github.com/Tsuchiya2/catchup-feed-front/compare/v1.0.1...v1.0.2) (2025-12-16)
 
 
