@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.2](https://github.com/Tsuchiya2/catchup-feed-front/compare/v1.0.1...v1.0.2) (2025-12-16)
+
+
+### Bug Fixes
+
+* **api:** use real backend API for article search instead of mock ([84f77e8](https://github.com/Tsuchiya2/catchup-feed-front/commit/84f77e8e94a28554773da0458b51b11e244ba35e))
+* **api:** use real backend API for article search instead of mock ([fc9eacd](https://github.com/Tsuchiya2/catchup-feed-front/commit/fc9eacd8ff8a49c5cd2c9a246cf4065f3e25377a))
+* **test:** add explicit toBeDefined() checks per CodeRabbit review ([c110a99](https://github.com/Tsuchiya2/catchup-feed-front/commit/c110a99dd3189208b35ef85a04f09645b56ba062))
+* **test:** add non-null assertions for array access in article tests ([2441580](https://github.com/Tsuchiya2/catchup-feed-front/commit/2441580f8656fc68deac90d4ca962f05539244b8))
+
 ## [1.0.1](https://github.com/Tsuchiya2/catchup-feed-front/compare/v1.0.0...v1.0.1) (2025-12-16)
 
 
