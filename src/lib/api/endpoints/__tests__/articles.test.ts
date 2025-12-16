@@ -345,9 +345,7 @@ describe('Articles API Endpoints', () => {
       vi.mocked(apiClient.get).mockRejectedValue(networkError);
 
       // Act & Assert
-      await expect(searchArticles({ keyword: 'test' })).rejects.toThrow(
-        'Network request failed'
-      );
+      await expect(searchArticles({ keyword: 'test' })).rejects.toThrow('Network request failed');
     });
 
     it('should preserve article structure in response', async () => {
@@ -368,7 +366,7 @@ describe('Articles API Endpoints', () => {
       const result = await searchArticles({ keyword: 'test' });
 
       // Assert
-      const article = result.data[0];
+      const article = result.data[0]!;
       expect(article.id).toBeDefined();
       expect(article.source_id).toBeDefined();
       expect(article.source_name).toBeDefined();
@@ -413,8 +411,8 @@ describe('Articles API Endpoints', () => {
       expect(apiClient.get).toHaveBeenCalledTimes(2);
       expect(apiClient.get).toHaveBeenNthCalledWith(1, '/articles?keyword=typescript');
       expect(apiClient.get).toHaveBeenNthCalledWith(2, '/articles?keyword=react');
-      expect(result1.data[0].id).toBe(1);
-      expect(result2.data[0].id).toBe(2);
+      expect(result1.data[0]!.id).toBe(1);
+      expect(result2.data[0]!.id).toBe(2);
     });
 
     it('should handle multiple sources correctly', async () => {
@@ -451,8 +449,8 @@ describe('Articles API Endpoints', () => {
       expect(apiClient.get).toHaveBeenCalledTimes(2);
       expect(apiClient.get).toHaveBeenNthCalledWith(1, '/articles?source_id=1');
       expect(apiClient.get).toHaveBeenNthCalledWith(2, '/articles?source_id=2');
-      expect(result1.data[0].id).toBe(1);
-      expect(result2.data[0].id).toBe(2);
+      expect(result1.data[0]!.id).toBe(1);
+      expect(result2.data[0]!.id).toBe(2);
     });
 
     it('should handle special characters in keyword parameter', async () => {
