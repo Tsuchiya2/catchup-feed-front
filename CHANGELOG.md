@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.1](https://github.com/Tsuchiya2/catchup-feed-front/compare/v1.0.0...v1.0.1) (2025-12-16)
+
+
+### Bug Fixes
+
+* update og:url to pulse.catchup-feed.com ([b0319d0](https://github.com/Tsuchiya2/catchup-feed-front/commit/b0319d0464135af6af6499ae5d5a3fed01cb2b4c))
+* update og:url to pulse.catchup-feed.com ([ecfe31c](https://github.com/Tsuchiya2/catchup-feed-front/commit/ecfe31c3b95b3f054c1adbf951cc60d7d4d3dcf1))
+
 ## [0.9.0](https://github.com/Tsuchiya2/catchup-feed-front/compare/v0.8.0...v0.9.0) (2025-12-14)
 
 
