@@ -29,6 +29,24 @@ const STORAGE_KEY = 'pwa-install-prompt-dismissed';
 const DISMISS_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
 
 /**
+ * Helper to safely access localStorage
+ */
+function safeLocalStorage() {
+  try {
+    return {
+      getItem: (key: string) => localStorage.getItem(key),
+      setItem: (key: string, value: string) => localStorage.setItem(key, value),
+    };
+  } catch {
+    // localStorage unavailable (private browsing, etc.)
+    return {
+      getItem: () => null,
+      setItem: () => {},
+    };
+  }
+}
+
+/**
  * PWA Install Prompt Component
  *
  * Shows a prompt to install the app when the browser supports PWA installation
@@ -39,8 +57,10 @@ export function PWAInstallPrompt() {
   const [showPrompt, setShowPrompt] = useState(false);
 
   useEffect(() => {
+    const storage = safeLocalStorage();
+
     // Check if the prompt was dismissed recently
-    const dismissedAt = localStorage.getItem(STORAGE_KEY);
+    const dismissedAt = storage.getItem(STORAGE_KEY);
     if (dismissedAt) {
       const dismissedTime = parseInt(dismissedAt, 10);
       const now = Date.now();
@@ -90,7 +110,8 @@ export function PWAInstallPrompt() {
 
     if (choiceResult.outcome === 'accepted') {
       console.log('User accepted the install prompt');
-      metrics.pwa.install();
+      // Note: metrics.pwa.install() is called by appinstalled event handler
+      // to avoid duplicate metrics
     } else {
       console.log('User dismissed the install prompt');
     }
@@ -102,15 +123,9 @@ export function PWAInstallPrompt() {
 
   const handleDismiss = () => {
     // Save dismissal time to localStorage
-    localStorage.setItem(STORAGE_KEY, Date.now().toString());
+    const storage = safeLocalStorage();
+    storage.setItem(STORAGE_KEY, Date.now().toString());
     setShowPrompt(false);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent, action: () => void) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      action();
-    }
   };
 
   if (!showPrompt || !deferredPrompt) {
@@ -128,7 +143,6 @@ export function PWAInstallPrompt() {
         {/* Close button */}
         <button
           onClick={handleDismiss}
-          onKeyDown={(e) => handleKeyDown(e, handleDismiss)}
           className="absolute right-2 top-2 rounded-md p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-sky-500 dark:hover:bg-gray-700 dark:hover:text-gray-300"
           aria-label="Dismiss install prompt"
           type="button"
@@ -156,7 +170,6 @@ export function PWAInstallPrompt() {
           {/* Install button */}
           <button
             onClick={handleInstallClick}
-            onKeyDown={(e) => handleKeyDown(e, handleInstallClick)}
             className="w-full rounded-md bg-sky-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-sky-600 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
             type="button"
           >

@@ -11,6 +11,15 @@ import * as Sentry from '@sentry/nextjs';
 import { appConfig } from '@/config';
 
 /**
+ * Accumulated metrics storage
+ * Used to maintain metric history in Sentry context
+ */
+const accumulatedMetrics: Record<
+  string,
+  { value: number; timestamp: number; [key: string]: unknown }
+> = {};
+
+/**
  * Track a custom metric
  *
  * Sends a metric to Sentry if metrics collection is enabled.
@@ -53,14 +62,13 @@ export function trackMetric(name: string, value: number, tags?: Record<string, s
       },
     });
 
-    // Also set as context for better filtering in Sentry
-    Sentry.setContext('metrics', {
-      [name]: {
-        value,
-        timestamp: Date.now(),
-        ...tags,
-      },
-    });
+    // Accumulate metrics and set as context for better filtering in Sentry
+    accumulatedMetrics[name] = {
+      value,
+      timestamp: Date.now(),
+      ...tags,
+    };
+    Sentry.setContext('metrics', accumulatedMetrics);
   } catch (error) {
     // Silently fail if Sentry is not initialized or there's an error
     // We don't want metrics tracking to break the application

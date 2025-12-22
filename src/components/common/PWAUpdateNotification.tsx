@@ -16,7 +16,7 @@
  * @module components/common/PWAUpdateNotification
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { RefreshCw, X } from 'lucide-react';
 import { metrics } from '@/lib/observability/metrics';
 
@@ -29,12 +29,23 @@ import { metrics } from '@/lib/observability/metrics';
 export function PWAUpdateNotification() {
   const [showNotification, setShowNotification] = useState(false);
   const [waitingWorker, setWaitingWorker] = useState<ServiceWorker | null>(null);
+  const hasRecordedUpdate = useRef(false);
+
+  // Helper to record update metric only once
+  const recordUpdateMetric = () => {
+    if (!hasRecordedUpdate.current) {
+      hasRecordedUpdate.current = true;
+      metrics.pwa.update();
+    }
+  };
 
   useEffect(() => {
     // Only run in browser and when service workers are supported
     if (typeof window === 'undefined' || !('serviceWorker' in navigator)) {
       return;
     }
+
+    let wb: InstanceType<typeof import('workbox-window').Workbox> | null = null;
 
     // Import Workbox Window dynamically
     import('workbox-window')
@@ -44,14 +55,14 @@ export function PWAUpdateNotification() {
           return;
         }
 
-        const wb = new Workbox('/sw.js');
+        wb = new Workbox('/sw.js');
 
         // Listen for waiting event
         wb.addEventListener('waiting', (event) => {
           console.log('New service worker is waiting');
           setWaitingWorker(event.sw ?? null);
           setShowNotification(true);
-          metrics.pwa.update();
+          recordUpdateMetric();
         });
 
         // Listen for controlling event (new SW has taken control)
@@ -77,7 +88,7 @@ export function PWAUpdateNotification() {
           if (registration?.waiting) {
             setWaitingWorker(registration.waiting);
             setShowNotification(true);
-            metrics.pwa.update();
+            recordUpdateMetric();
           }
         })
         .catch((error) => {
@@ -93,6 +104,8 @@ export function PWAUpdateNotification() {
 
     return () => {
       clearInterval(interval);
+      // Note: Workbox event listeners are automatically cleaned up when the
+      // service worker is unregistered or replaced
     };
   }, []);
 
@@ -112,13 +125,6 @@ export function PWAUpdateNotification() {
     setShowNotification(false);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent, action: () => void) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      action();
-    }
-  };
-
   if (!showNotification) {
     return null;
   }
@@ -134,7 +140,6 @@ export function PWAUpdateNotification() {
         {/* Close button */}
         <button
           onClick={handleDismiss}
-          onKeyDown={(e) => handleKeyDown(e, handleDismiss)}
           className="absolute right-2 top-2 rounded-md p-1 text-blue-400 transition-colors hover:bg-blue-100 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:hover:bg-blue-800 dark:hover:text-blue-300"
           aria-label="Dismiss update notification"
           type="button"
@@ -162,7 +167,6 @@ export function PWAUpdateNotification() {
           {/* Update button */}
           <button
             onClick={handleUpdate}
-            onKeyDown={(e) => handleKeyDown(e, handleUpdate)}
             className="w-full rounded-md bg-blue-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
             type="button"
           >

@@ -93,7 +93,7 @@ export function isTokenExpired(token?: string): boolean {
   // If token is provided, decode and check expiry
   if (token) {
     try {
-      if (!token || token.trim() === '') {
+      if (token.trim() === '') {
         return true;
       }
 
