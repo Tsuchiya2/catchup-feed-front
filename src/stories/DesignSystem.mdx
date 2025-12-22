@@ -1,0 +1,259 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Design System/Overview" />
+
+# Design System
+
+This document outlines the design principles, patterns, and guidelines for the Catchup Feed component library.
+
+## Design Principles
+
+### 1. Cyber/Tech Aesthetic
+The application embraces a modern cyber/tech theme with:
+- Dark mode as the default experience
+- Cyan accent colors for emphasis
+- Subtle glow effects on interactive elements
+- Clean, minimalist layouts
+
+### 2. Consistency
+- Uniform spacing and sizing across components
+- Consistent color usage and theming
+- Standardized interaction patterns
+- Predictable component behavior
+
+### 3. Accessibility
+- WCAG 2.1 AA compliance
+- Keyboard navigation support
+- Screen reader friendly
+- High contrast ratios
+
+### 4. Performance
+- Optimized bundle sizes
+- Lazy loading where appropriate
+- Minimal re-renders
+- Efficient data fetching
+
+## Color Palette
+
+### Primary Colors
+
+```css
+--primary: hsl(190 100% 50%)           /* Cyan - Primary actions */
+--primary-foreground: hsl(220 30% 5%)  /* Text on primary */
+```
+
+### Background Colors
+
+```css
+--background: hsl(220 50% 4%)          /* Dark mode background */
+--foreground: hsl(200 20% 95%)         /* Main text color */
+--card: hsl(220 45% 7%)                /* Card backgrounds */
+--popover: hsl(220 45% 7%)             /* Popover backgrounds */
+```
+
+### Semantic Colors
+
+```css
+--destructive: hsl(0 70% 45%)          /* Error/danger actions */
+--muted: hsl(220 40% 10%)              /* Muted backgrounds */
+--accent: hsl(190 90% 12%)             /* Subtle accents */
+--secondary: hsl(220 40% 12%)          /* Secondary actions */
+```
+
+### Glow Effects
+
+```css
+--glow-primary: hsl(190 100% 50%)      /* Primary glow color */
+--glow-secondary: hsl(200 100% 60%)    /* Secondary glow */
+```
+
+## Typography
+
+### Font Family
+- **Primary**: Inter (system fallback: system-ui, sans-serif)
+- **Monospace**: For code snippets (not currently used in UI)
+
+### Font Sizes
+- `text-xs`: 0.75rem (12px)
+- `text-sm`: 0.875rem (14px)
+- `text-base`: 1rem (16px)
+- `text-lg`: 1.125rem (18px)
+- `text-xl`: 1.25rem (20px)
+- `text-2xl`: 1.5rem (24px)
+- `text-3xl`: 1.875rem (30px)
+- `text-4xl`: 2.25rem (36px)
+- `text-5xl`: 3rem (48px)
+
+### Font Weights
+- `font-normal`: 400
+- `font-medium`: 500
+- `font-semibold`: 600
+- `font-bold`: 700
+
+## Spacing System
+
+Our spacing follows a consistent scale based on 0.25rem (4px) increments:
+
+- `0`: 0
+- `1`: 0.25rem (4px)
+- `2`: 0.5rem (8px)
+- `3`: 0.75rem (12px)
+- `4`: 1rem (16px)
+- `6`: 1.5rem (24px)
+- `8`: 2rem (32px)
+- `12`: 3rem (48px)
+- `16`: 4rem (64px)
+
+## Border Radius
+
+- `rounded-sm`: calc(var(--radius) - 4px)
+- `rounded-md`: calc(var(--radius) - 2px)
+- `rounded-lg`: var(--radius) = 0.5rem (8px)
+- `rounded-full`: 9999px (fully rounded)
+
+## Component Patterns
+
+### Button Variants
+
+1. **Default**: Primary actions (cyan background)
+2. **Destructive**: Dangerous actions (red)
+3. **Outline**: Secondary actions (transparent with border)
+4. **Secondary**: Tertiary actions (muted background)
+5. **Ghost**: Minimal style (transparent)
+6. **Link**: Text-only button
+7. **Glow**: Special emphasis with glow effect
+
+### Card Patterns
+
+Cards use consistent padding and spacing:
+- Header: `p-6` with `border-b`
+- Content: `p-6`
+- Footer: `p-6` with `border-t`
+
+### Form Patterns
+
+Forms follow a vertical layout with:
+- Label above input
+- Error messages below input
+- Consistent spacing between fields
+- Full-width inputs on mobile
+- Grouped related fields
+
+## Interactive States
+
+### Hover Effects
+- Subtle scale transformations
+- Color transitions
+- Glow effects on primary elements
+- Border color changes
+
+### Focus States
+- Visible focus rings (2px)
+- Cyan color (`--ring`)
+- 2px offset for visibility
+- Never remove focus indicators
+
+### Disabled States
+- 50% opacity
+- Pointer events disabled
+- Muted colors
+- Clear visual indication
+
+## Animation Guidelines
+
+### Transitions
+- **Duration**: 200-300ms for most interactions
+- **Easing**: ease-in-out for smooth motion
+- **Properties**: Limit to transform, opacity, and colors
+
+### Glow Animations
+```css
+/* Pulsing glow effect */
+animation: glow-pulse 2s ease-in-out infinite;
+```
+
+### Loading States
+- Spinning animations for loaders
+- Skeleton screens for content placeholders
+- Progressive disclosure
+
+## Accessibility Guidelines
+
+### Color Contrast
+- Minimum 4.5:1 for normal text
+- Minimum 3:1 for large text
+- Minimum 3:1 for UI components
+
+### Keyboard Navigation
+- Tab order follows visual flow
+- Focus indicators always visible
+- Escape key closes modals/dropdowns
+- Enter/Space activates buttons
+
+### Screen Readers
+- Semantic HTML elements
+- ARIA labels for icons
+- Live regions for dynamic content
+- Descriptive link text
+
+## Responsive Design
+
+### Breakpoints
+- `sm`: 640px
+- `md`: 768px
+- `lg`: 1024px
+- `xl`: 1280px
+- `2xl`: 1536px
+
+### Mobile-First Approach
+- Start with mobile layout
+- Progressive enhancement for larger screens
+- Touch-friendly targets (min 44x44px)
+- Simplified navigation on mobile
+
+## Icon Usage
+
+We use **Lucide React** icons throughout the application:
+
+- Consistent 16px or 20px sizes
+- Stroke width of 2
+- Semantic icon choices
+- Always include ARIA labels when icons have meaning
+
+## Best Practices
+
+### Do's
+✅ Use semantic HTML elements
+✅ Follow established patterns
+✅ Test with keyboard navigation
+✅ Include error states
+✅ Provide loading feedback
+✅ Use consistent spacing
+✅ Maintain color contrast
+
+### Don'ts
+❌ Mix design patterns inconsistently
+❌ Remove focus indicators
+❌ Use color as the only indicator
+❌ Create custom scrollbars
+❌ Override default form styles without reason
+❌ Use non-semantic div/span when semantic elements exist
+
+## Component Checklist
+
+When creating new components, ensure:
+
+- [ ] TypeScript types defined
+- [ ] Accessible markup used
+- [ ] Keyboard navigation works
+- [ ] Focus states visible
+- [ ] Error states handled
+- [ ] Loading states provided
+- [ ] Responsive design implemented
+- [ ] Dark mode support
+- [ ] Storybook stories created
+- [ ] Unit tests written
+
+---
+
+**Last Updated**: 2024-01-15

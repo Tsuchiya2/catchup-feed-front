@@ -3,10 +3,20 @@
  *
  * Type-safe HTTP client for the Catchup Feed backend API.
  * Automatically injects JWT tokens and handles authentication errors.
+ * Supports automatic token refresh before requests.
  */
 
-import { getAuthToken, clearAuthToken } from '@/lib/auth/token';
+import {
+  getAuthToken,
+  clearAllTokens,
+  isTokenExpiringSoon,
+  getRefreshToken,
+} from '@/lib/auth/TokenManager';
 import { ApiError, NetworkError, TimeoutError } from '@/lib/api/errors';
+import { addTracingHeaders, startSpan } from '@/lib/observability';
+import { metrics } from '@/lib/observability';
+import { appConfig } from '@/config/app.config';
+import { logger } from '@/lib/logger';
 
 /**
  * Retry configuration for API requests
@@ -51,9 +61,84 @@ const DEFAULT_RETRY_CONFIG: Required<RetryConfig> = {
 class ApiClient {
   private readonly baseUrl: string;
   private readonly defaultTimeout: number = 30000; // 30 seconds
+  private refreshPromise: Promise<void> | null = null;
 
   constructor() {
     this.baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+  }
+
+  /**
+   * Ensure token is valid before making a request
+   * Automatically refreshes token if expiring soon
+   *
+   * @param requiresAuth - Whether the request requires authentication
+   */
+  private async ensureValidToken(requiresAuth: boolean): Promise<void> {
+    // Skip if authentication is not required
+    if (!requiresAuth) {
+      return;
+    }
+
+    // Skip if token refresh feature is disabled
+    if (!appConfig.features.tokenRefresh) {
+      return;
+    }
+
+    // Check if token exists and is expiring soon
+    const token = getAuthToken();
+    if (!token) {
+      // No token, cannot refresh
+      return;
+    }
+
+    if (!isTokenExpiringSoon()) {
+      // Token is still valid
+      return;
+    }
+
+    // Check if refresh token exists
+    const refreshToken = getRefreshToken();
+    if (!refreshToken) {
+      logger.warn('Token is expiring but no refresh token available');
+      return;
+    }
+
+    // Prevent concurrent refresh requests
+    if (this.refreshPromise) {
+      logger.debug('Token refresh already in progress, waiting...');
+      await this.refreshPromise;
+      return;
+    }
+
+    // Start token refresh
+    logger.info('Token is expiring soon, refreshing...');
+
+    this.refreshPromise = this.performTokenRefresh();
+
+    try {
+      await this.refreshPromise;
+    } finally {
+      this.refreshPromise = null;
+    }
+  }
+
+  /**
+   * Perform token refresh
+   * This is separated to avoid circular dependency with auth endpoints
+   */
+  private async performTokenRefresh(): Promise<void> {
+    try {
+      // Dynamic import to avoid circular dependency
+      const { refreshToken } = await import('@/lib/api/endpoints/auth');
+      await refreshToken();
+      logger.info('Token refreshed successfully');
+    } catch (error) {
+      logger.error('Token refresh failed', error as Error);
+      // Clear tokens on refresh failure
+      clearAllTokens();
+      // Don't throw error here, let the request proceed and fail with 401
+      // which will trigger the redirect to login
+    }
   }
 
   /**
@@ -161,14 +246,20 @@ class ApiClient {
       timeout = this.defaultTimeout,
     } = options;
 
+    // Ensure token is valid before making request
+    await this.ensureValidToken(requiresAuth);
+
     // Construct full URL
     const url = `${this.baseUrl}${endpoint}`;
 
     // Prepare headers
-    const requestHeaders: Record<string, string> = {
+    let requestHeaders: Record<string, string> = {
       'Content-Type': 'application/json',
       ...headers,
     };
+
+    // Add tracing headers for distributed tracing
+    requestHeaders = addTracingHeaders(requestHeaders);
 
     // Add Authorization header if authentication is required
     if (requiresAuth) {
@@ -193,19 +284,34 @@ class ApiClient {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
+    // Track request start time for latency metrics
+    const startTime = Date.now();
+
     try {
-      // Make the request
-      const response = await fetch(url, {
-        ...init,
-        signal: controller.signal,
-      });
+      // Wrap fetch in a span for distributed tracing
+      const response = await startSpan(
+        `API Request: ${method} ${endpoint}`,
+        'http.client',
+        async () => {
+          return await fetch(url, {
+            ...init,
+            signal: controller.signal,
+          });
+        }
+      );
+
+      // Calculate request latency
+      const latency = Date.now() - startTime;
+
+      // Track API latency metric
+      metrics.performance.apiLatency(endpoint, latency, response.status);
 
       // Clear timeout
       clearTimeout(timeoutId);
 
       // Handle authentication errors
       if (response.status === 401) {
-        clearAuthToken();
+        clearAllTokens();
 
         // Redirect to login page on client-side
         if (typeof window !== 'undefined') {
@@ -250,6 +356,13 @@ class ApiClient {
     } catch (error) {
       // Clear timeout
       clearTimeout(timeoutId);
+
+      // Track error metrics
+      if (error instanceof ApiError) {
+        metrics.error.api(endpoint, error.status);
+      } else if (error instanceof NetworkError || error instanceof TypeError) {
+        metrics.error.network();
+      }
 
       // Handle abort (timeout)
       if (error instanceof Error && error.name === 'AbortError') {
