@@ -1,0 +1,140 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Introduction" />
+
+# Catchup Feed - Component Library
+
+Welcome to the Catchup Feed component library documentation. This Storybook showcases all the UI components used in the Catchup Feed application.
+
+## Overview
+
+Catchup Feed is a modern RSS feed aggregator built with Next.js, React, and TypeScript. This component library provides a comprehensive collection of reusable UI components that follow our design system.
+
+## Design System
+
+Our design system is based on:
+
+- **Framework**: Next.js 15 with React 19
+- **Styling**: Tailwind CSS 4.0 with custom cyber/glow theme
+- **Component Base**: Radix UI primitives
+- **Type Safety**: TypeScript with strict mode
+- **Theme**: Dark mode by default with light mode support
+
+## Theme Colors
+
+The application uses a cyber/tech theme with:
+
+- **Primary Color**: Cyan (`hsl(190 100% 50%)`)
+- **Background**: Dark slate (`hsl(220 50% 4%)`)
+- **Accent**: Cyan glow effects
+- **Typography**: Clean, modern sans-serif
+
+## Component Categories
+
+### UI Components
+Basic building blocks for the interface:
+- **Button**: Primary interactive element with multiple variants
+- **Card**: Container component for content
+- **Input**: Form input fields
+- **Badge**: Label and status indicators
+- **Alert**: Notification and message display
+
+### Common Components
+Reusable components used throughout the app:
+- **ThemeToggle**: Light/dark mode switcher
+- **LoadingSpinner**: Loading state indicators
+- **ErrorMessage**: Error display with retry functionality
+- **EmptyState**: Empty state placeholders
+- **PWA Components**: Install prompt and update notifications
+
+### Article Components
+Components specific to article display:
+- **ArticleCard**: List view article cards
+- **ArticleHeader**: Article detail page header
+- **AISummaryCard**: AI-generated summary display
+
+### Form Components
+Form-related components:
+- **LoginForm**: Authentication form with validation
+
+## Usage
+
+Each component story includes:
+
+1. **Default Example**: Basic usage
+2. **Variants**: Different visual styles
+3. **States**: Loading, error, empty states
+4. **Interactive Examples**: Real-world usage scenarios
+5. **Documentation**: Props, behavior, and accessibility notes
+
+## Getting Started
+
+### Running Storybook
+
+```bash
+npm run storybook
+```
+
+This will start Storybook on [http://localhost:6006](http://localhost:6006)
+
+### Building Storybook
+
+```bash
+npm run build-storybook
+```
+
+This generates a static build in the `storybook-static` directory.
+
+## Development Guidelines
+
+### Component Creation
+1. Create component in appropriate directory (`src/components/`)
+2. Write comprehensive tests
+3. Create Storybook stories
+4. Document props and usage
+
+### Styling
+- Use Tailwind CSS utility classes
+- Follow the established design system
+- Use CSS variables for theme colors
+- Apply cyber/glow effects sparingly for emphasis
+
+### Accessibility
+- Use semantic HTML
+- Include ARIA labels and roles
+- Support keyboard navigation
+- Test with screen readers
+
+## Technology Stack
+
+- **React 19**: Latest React features
+- **Next.js 15**: Server-side rendering and routing
+- **TypeScript**: Type safety
+- **Tailwind CSS 4**: Utility-first styling
+- **Radix UI**: Accessible component primitives
+- **React Hook Form**: Form management
+- **Zod**: Schema validation
+- **Storybook 8.5**: Component documentation
+
+## Resources
+
+- [Next.js Documentation](https://nextjs.org/docs)
+- [React Documentation](https://react.dev)
+- [Tailwind CSS](https://tailwindcss.com)
+- [Radix UI](https://www.radix-ui.com)
+- [Storybook](https://storybook.js.org)
+
+## Contributing
+
+When adding new components:
+
+1. Follow the existing component patterns
+2. Ensure TypeScript types are properly defined
+3. Write comprehensive stories with multiple examples
+4. Include accessibility considerations
+5. Document all props and use cases
+
+---
+
+**Version**: 1.0.0
+**Last Updated**: 2025-12-22

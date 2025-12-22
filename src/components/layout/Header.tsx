@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/common/ThemeToggle';
 import { cn } from '@/lib/utils';
 
 interface HeaderProps {
@@ -116,9 +117,10 @@ export function Header({ onLogout, showAuthLinks = true }: HeaderProps) {
           })}
         </div>
 
-        {/* Desktop Logout Button */}
-        {showAuthLinks && onLogout && (
-          <div className="hidden md:block">
+        {/* Desktop Actions (Theme Toggle + Logout) */}
+        <div className="hidden items-center gap-2 md:flex">
+          <ThemeToggle />
+          {showAuthLinks && onLogout && (
             <Button
               variant="outline"
               size="sm"
@@ -127,8 +129,8 @@ export function Header({ onLogout, showAuthLinks = true }: HeaderProps) {
             >
               Logout
             </Button>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Mobile Menu Button */}
         <div className="md:hidden">
@@ -194,14 +196,18 @@ export function Header({ onLogout, showAuthLinks = true }: HeaderProps) {
               );
             })}
 
-            {/* Logout button */}
-            {showAuthLinks && onLogout && (
-              <div className="pt-4">
+            {/* Theme toggle and Logout button */}
+            <div className="space-y-2 pt-4">
+              <div className="flex items-center justify-between rounded-md border border-border px-3 py-2">
+                <span className="text-sm font-medium text-muted-foreground">Theme</span>
+                <ThemeToggle />
+              </div>
+              {showAuthLinks && onLogout && (
                 <Button variant="outline" className="w-full" onClick={handleLogout}>
                   Logout
                 </Button>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       )}

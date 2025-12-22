@@ -11,7 +11,14 @@ import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { login as loginApi } from '@/lib/api/endpoints/auth';
-import { getAuthToken, setAuthToken, clearAuthToken, isTokenExpired } from '@/lib/auth/token';
+import {
+  getAuthToken,
+  setAuthToken,
+  setRefreshToken,
+  clearAllTokens,
+  isTokenExpired,
+} from '@/lib/auth/TokenManager';
+import { metrics, setUserContext, clearUserContext } from '@/lib/observability';
 
 /**
  * Authentication hook return type
@@ -69,7 +76,7 @@ export function useAuth(): UseAuthReturn {
   // Initialize auth state on mount
   useEffect(() => {
     const currentToken = getAuthToken();
-    if (currentToken && !isTokenExpired(currentToken)) {
+    if (currentToken && !isTokenExpired()) {
       setToken(currentToken);
       setIsAuthenticated(true);
       // Set cookie for middleware
@@ -93,22 +100,51 @@ export function useAuth(): UseAuthReturn {
       return response;
     },
     onSuccess: (response) => {
-      // Store token in localStorage
+      // Store access token in TokenManager
       setAuthToken(response.token);
       setToken(response.token);
       setIsAuthenticated(true);
+
+      // Store refresh token if provided
+      if (response.refresh_token) {
+        setRefreshToken(response.refresh_token);
+      }
 
       // Set cookie for middleware (expires in 24 hours)
       if (typeof document !== 'undefined') {
         document.cookie = `catchup_feed_auth_token=${response.token}; path=/; max-age=86400; SameSite=Strict`;
       }
 
+      // Set user context for error tracking
+      // Note: We could decode the JWT token to get user info,
+      // but for now we'll set a basic context with the token presence
+      // User details can be enriched later when fetching user profile
+      try {
+        // Decode JWT token to extract user info (basic implementation)
+        const tokenParts = response.token.split('.');
+        if (tokenParts.length === 3 && tokenParts[1]) {
+          const payload = JSON.parse(atob(tokenParts[1]));
+          if (payload.sub || payload.user_id || payload.id) {
+            setUserContext({
+              id: String(payload.sub || payload.user_id || payload.id),
+              email: payload.email || undefined,
+            });
+          }
+        }
+      } catch (error) {
+        // If token decoding fails, skip setting user context
+        // This is not critical, so we don't throw an error
+      }
+
+      // Track successful login metric
+      metrics.login.success();
+
       // Redirect to dashboard
       router.push('/dashboard');
     },
     onError: (error) => {
-      // Clear any existing token on login failure
-      clearAuthToken();
+      // Clear all tokens on login failure
+      clearAllTokens();
       setToken(null);
       setIsAuthenticated(false);
 
@@ -116,6 +152,10 @@ export function useAuth(): UseAuthReturn {
       if (typeof document !== 'undefined') {
         document.cookie = 'catchup_feed_auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
       }
+
+      // Track failed login metric
+      const reason = error instanceof Error ? error.message : 'unknown';
+      metrics.login.failure(reason);
     },
   });
 
@@ -131,11 +171,11 @@ export function useAuth(): UseAuthReturn {
   };
 
   /**
-   * Logout (clear token and redirect to login page)
+   * Logout (clear all tokens and redirect to login page)
    */
   const logout = (): void => {
-    // Clear token from localStorage
-    clearAuthToken();
+    // Clear all tokens from TokenManager
+    clearAllTokens();
     setToken(null);
     setIsAuthenticated(false);
 
@@ -143,6 +183,12 @@ export function useAuth(): UseAuthReturn {
     if (typeof document !== 'undefined') {
       document.cookie = 'catchup_feed_auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
     }
+
+    // Clear user context from error tracking
+    clearUserContext();
+
+    // Track logout metric
+    metrics.login.logout();
 
     // Redirect to login page
     router.push('/login');

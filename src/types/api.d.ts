@@ -27,6 +27,22 @@ export interface LoginRequest {
  */
 export interface LoginResponse {
   token: string;
+  refresh_token?: string;
+}
+
+/**
+ * Token refresh request payload
+ */
+export interface RefreshTokenRequest {
+  refresh_token: string;
+}
+
+/**
+ * Token refresh response
+ */
+export interface RefreshTokenResponse {
+  token: string;
+  refresh_token: string;
 }
 
 /**

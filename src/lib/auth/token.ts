@@ -1,69 +1,48 @@
 /**
  * Token Storage Utilities
  *
- * Provides secure JWT token storage and retrieval using localStorage.
+ * DEPRECATED: This module is deprecated in favor of TokenManager.
+ * These functions are now wrappers around TokenManager for backward compatibility.
+ * New code should import from '@/lib/auth/TokenManager' instead.
+ *
+ * Provides secure JWT token storage and retrieval using TokenManager.
  * Includes token expiration checking and error handling.
  */
 
-/**
- * localStorage key for storing the auth token
- */
-const AUTH_TOKEN_KEY = 'catchup_feed_auth_token';
+import {
+  getAuthToken as getAuthTokenFromManager,
+  setAuthToken as setAuthTokenToManager,
+  clearAuthToken as clearAuthTokenFromManager,
+  isTokenExpired as isTokenExpiredFromManager,
+} from '@/lib/auth/TokenManager';
 
 /**
- * Retrieve the authentication token from localStorage
+ * Retrieve the authentication token from TokenManager
  *
+ * @deprecated Use getAuthToken from '@/lib/auth/TokenManager' instead
  * @returns The JWT token string, or null if not found or error occurred
  */
 export function getAuthToken(): string | null {
-  try {
-    if (typeof window === 'undefined') {
-      // Server-side rendering - no localStorage available
-      return null;
-    }
-
-    const token = localStorage.getItem(AUTH_TOKEN_KEY);
-    return token;
-  } catch (error) {
-    console.error('Failed to retrieve auth token from localStorage:', error);
-    return null;
-  }
+  return getAuthTokenFromManager();
 }
 
 /**
- * Store the authentication token in localStorage
+ * Store the authentication token in TokenManager
  *
+ * @deprecated Use setAuthToken from '@/lib/auth/TokenManager' instead
  * @param token - The JWT token string to store
  */
 export function setAuthToken(token: string): void {
-  try {
-    if (typeof window === 'undefined') {
-      // Server-side rendering - no localStorage available
-      console.warn('Cannot set auth token on server-side');
-      return;
-    }
-
-    localStorage.setItem(AUTH_TOKEN_KEY, token);
-  } catch (error) {
-    console.error('Failed to store auth token in localStorage:', error);
-    throw new Error('Failed to store authentication token');
-  }
+  setAuthTokenToManager(token);
 }
 
 /**
- * Remove the authentication token from localStorage
+ * Remove the authentication token from TokenManager
+ *
+ * @deprecated Use clearAuthToken from '@/lib/auth/TokenManager' instead
  */
 export function clearAuthToken(): void {
-  try {
-    if (typeof window === 'undefined') {
-      // Server-side rendering - no localStorage available
-      return;
-    }
-
-    localStorage.removeItem(AUTH_TOKEN_KEY);
-  } catch (error) {
-    console.error('Failed to clear auth token from localStorage:', error);
-  }
+  clearAuthTokenFromManager();
 }
 
 /**
@@ -102,6 +81,7 @@ export function decodeJWTPayload(token: string): Record<string, unknown> | null 
 /**
  * Check if a JWT token is expired
  *
+ * @deprecated Use isTokenExpired from '@/lib/auth/TokenManager' instead
  * @param token - The JWT token string to check
  * @returns True if the token is expired, false otherwise
  *
@@ -109,28 +89,34 @@ export function decodeJWTPayload(token: string): Record<string, unknown> | null 
  * This function decodes the JWT payload and checks the 'exp' claim.
  * Returns true (expired) if the token is invalid or cannot be decoded.
  */
-export function isTokenExpired(token: string): boolean {
-  try {
-    if (!token || token.trim() === '') {
+export function isTokenExpired(token?: string): boolean {
+  // If token is provided, decode and check expiry
+  if (token) {
+    try {
+      if (token.trim() === '') {
+        return true;
+      }
+
+      const payload = decodeJWTPayload(token);
+      if (!payload || !payload.exp) {
+        // Invalid token or no expiration claim
+        return true;
+      }
+
+      const exp = payload.exp as number;
+      const now = Math.floor(Date.now() / 1000);
+
+      // Token is expired if current time >= expiration time
+      return now >= exp;
+    } catch (error) {
+      console.error('Failed to check token expiration:', error);
+      // Consider invalid tokens as expired
       return true;
     }
-
-    const payload = decodeJWTPayload(token);
-    if (!payload || !payload.exp) {
-      // Invalid token or no expiration claim
-      return true;
-    }
-
-    const exp = payload.exp as number;
-    const now = Math.floor(Date.now() / 1000);
-
-    // Token is expired if current time >= expiration time
-    return now >= exp;
-  } catch (error) {
-    console.error('Failed to check token expiration:', error);
-    // Consider invalid tokens as expired
-    return true;
   }
+
+  // If no token provided, use TokenManager
+  return isTokenExpiredFromManager();
 }
 
 /**
@@ -144,5 +130,5 @@ export function isAuthenticated(): boolean {
     return false;
   }
 
-  return !isTokenExpired(token);
+  return !isTokenExpiredFromManager();
 }
