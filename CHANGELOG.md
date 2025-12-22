@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.1.0](https://github.com/Tsuchiya2/catchup-feed-front/compare/v1.0.3...v1.1.0) (2025-12-22)
+
+
+### Features
+
+* add PWA support, token refresh, and observability infrastructure ([6323098](https://github.com/Tsuchiya2/catchup-feed-front/commit/6323098695213af54295400f88966728143c889c))
+
+
+### Bug Fixes
+
+* address CodeRabbit review feedback ([5f981b5](https://github.com/Tsuchiya2/catchup-feed-front/commit/5f981b560c31d89cfad1c48c5ff3f094b2779db4))
+* **lint:** add storybook-static to eslintignore ([91da754](https://github.com/Tsuchiya2/catchup-feed-front/commit/91da754cad0e49c78c827b8372237f40833204bc))
+* **lint:** resolve Prettier and ESLint formatting issues ([43aa94b](https://github.com/Tsuchiya2/catchup-feed-front/commit/43aa94bf173bc91fde50d8d626b26f84dd5c4c13))
+* **test:** resolve CI test and type check failures ([11a0d5e](https://github.com/Tsuchiya2/catchup-feed-front/commit/11a0d5eae1cb0c8ed23144160df30497a853cb2e))
+
 ## [1.0.3](https://github.com/Tsuchiya2/catchup-feed-front/compare/v1.0.2...v1.0.3) (2025-12-16)
 
 
