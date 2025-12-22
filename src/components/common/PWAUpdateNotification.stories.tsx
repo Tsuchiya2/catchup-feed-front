@@ -57,7 +57,12 @@ export const Default: Story = {
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
           <div className="pr-6">
@@ -76,12 +81,19 @@ export const Default: Story = {
                   d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                 />
               </svg>
-              <h3 id="pwa-update-title" className="text-sm font-semibold text-blue-900 dark:text-blue-100">
+              <h3
+                id="pwa-update-title"
+                className="text-sm font-semibold text-blue-900 dark:text-blue-100"
+              >
                 Update Available
               </h3>
             </div>
-            <p id="pwa-update-description" className="mb-4 text-sm text-blue-700 dark:text-blue-300">
-              A new version of Catchup Feed is available. Reload to get the latest features and improvements.
+            <p
+              id="pwa-update-description"
+              className="mb-4 text-sm text-blue-700 dark:text-blue-300"
+            >
+              A new version of Catchup Feed is available. Reload to get the latest features and
+              improvements.
             </p>
             <button
               className="w-full rounded-md bg-blue-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-600"
@@ -132,7 +144,12 @@ export const MobileView: Story = {
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
           <div className="pr-6">
@@ -151,12 +168,19 @@ export const MobileView: Story = {
                   d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                 />
               </svg>
-              <h3 id="pwa-update-title" className="text-sm font-semibold text-blue-900 dark:text-blue-100">
+              <h3
+                id="pwa-update-title"
+                className="text-sm font-semibold text-blue-900 dark:text-blue-100"
+              >
                 Update Available
               </h3>
             </div>
-            <p id="pwa-update-description" className="mb-4 text-sm text-blue-700 dark:text-blue-300">
-              A new version of Catchup Feed is available. Reload to get the latest features and improvements.
+            <p
+              id="pwa-update-description"
+              className="mb-4 text-sm text-blue-700 dark:text-blue-300"
+            >
+              A new version of Catchup Feed is available. Reload to get the latest features and
+              improvements.
             </p>
             <button
               className="w-full rounded-md bg-blue-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-600"
@@ -207,7 +231,12 @@ export const DesktopView: Story = {
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
           <div className="pr-6">
@@ -226,12 +255,19 @@ export const DesktopView: Story = {
                   d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                 />
               </svg>
-              <h3 id="pwa-update-title" className="text-sm font-semibold text-blue-900 dark:text-blue-100">
+              <h3
+                id="pwa-update-title"
+                className="text-sm font-semibold text-blue-900 dark:text-blue-100"
+              >
                 Update Available
               </h3>
             </div>
-            <p id="pwa-update-description" className="mb-4 text-sm text-blue-700 dark:text-blue-300">
-              A new version of Catchup Feed is available. Reload to get the latest features and improvements.
+            <p
+              id="pwa-update-description"
+              className="mb-4 text-sm text-blue-700 dark:text-blue-300"
+            >
+              A new version of Catchup Feed is available. Reload to get the latest features and
+              improvements.
             </p>
             <button
               className="w-full rounded-md bg-blue-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-600"
@@ -262,8 +298,18 @@ export const ComparisonWithInstallPrompt: Story = {
             <h3 className="font-semibold mb-2">Install Prompt (Sky Blue)</h3>
             <div className="rounded-lg border border-gray-200 bg-white p-3 shadow dark:border-gray-700 dark:bg-gray-800">
               <div className="flex items-center gap-2 mb-2">
-                <svg className="h-5 w-5 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                <svg
+                  className="h-5 w-5 text-sky-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                  />
                 </svg>
                 <span className="text-sm font-semibold">Install Catchup Feed</span>
               </div>
@@ -276,10 +322,22 @@ export const ComparisonWithInstallPrompt: Story = {
             <h3 className="font-semibold mb-2">Update Notification (Blue)</h3>
             <div className="rounded-lg border border-blue-200 bg-blue-50 p-3 shadow dark:border-blue-800 dark:bg-blue-900/20">
               <div className="flex items-center gap-2 mb-2">
-                <svg className="h-5 w-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                <svg
+                  className="h-5 w-5 text-blue-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                  />
                 </svg>
-                <span className="text-sm font-semibold text-blue-900 dark:text-blue-100">Update Available</span>
+                <span className="text-sm font-semibold text-blue-900 dark:text-blue-100">
+                  Update Available
+                </span>
               </div>
               <button className="w-full rounded-md bg-blue-500 px-3 py-1.5 text-xs font-medium text-white">
                 Reload Now

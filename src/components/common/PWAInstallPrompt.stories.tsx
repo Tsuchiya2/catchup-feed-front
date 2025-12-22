@@ -57,7 +57,12 @@ export const Default: Story = {
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
           <div className="pr-6">
@@ -76,13 +81,19 @@ export const Default: Story = {
                   d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
                 />
               </svg>
-              <h3 id="pwa-install-title" className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+              <h3
+                id="pwa-install-title"
+                className="text-sm font-semibold text-gray-900 dark:text-gray-100"
+              >
                 Install Catchup Feed
               </h3>
             </div>
-            <p id="pwa-install-description" className="mb-4 text-sm text-gray-600 dark:text-gray-400">
-              Install our app for a better experience. Access your feed offline and get quick access from
-              your home screen.
+            <p
+              id="pwa-install-description"
+              className="mb-4 text-sm text-gray-600 dark:text-gray-400"
+            >
+              Install our app for a better experience. Access your feed offline and get quick access
+              from your home screen.
             </p>
             <button
               className="w-full rounded-md bg-sky-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-sky-600"
@@ -133,7 +144,12 @@ export const MobileView: Story = {
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
           <div className="pr-6">
@@ -152,13 +168,19 @@ export const MobileView: Story = {
                   d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
                 />
               </svg>
-              <h3 id="pwa-install-title" className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+              <h3
+                id="pwa-install-title"
+                className="text-sm font-semibold text-gray-900 dark:text-gray-100"
+              >
                 Install Catchup Feed
               </h3>
             </div>
-            <p id="pwa-install-description" className="mb-4 text-sm text-gray-600 dark:text-gray-400">
-              Install our app for a better experience. Access your feed offline and get quick access from
-              your home screen.
+            <p
+              id="pwa-install-description"
+              className="mb-4 text-sm text-gray-600 dark:text-gray-400"
+            >
+              Install our app for a better experience. Access your feed offline and get quick access
+              from your home screen.
             </p>
             <button
               className="w-full rounded-md bg-sky-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-sky-600"
@@ -209,7 +231,12 @@ export const DesktopView: Story = {
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
           <div className="pr-6">
@@ -228,13 +255,19 @@ export const DesktopView: Story = {
                   d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
                 />
               </svg>
-              <h3 id="pwa-install-title" className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+              <h3
+                id="pwa-install-title"
+                className="text-sm font-semibold text-gray-900 dark:text-gray-100"
+              >
                 Install Catchup Feed
               </h3>
             </div>
-            <p id="pwa-install-description" className="mb-4 text-sm text-gray-600 dark:text-gray-400">
-              Install our app for a better experience. Access your feed offline and get quick access from
-              your home screen.
+            <p
+              id="pwa-install-description"
+              className="mb-4 text-sm text-gray-600 dark:text-gray-400"
+            >
+              Install our app for a better experience. Access your feed offline and get quick access
+              from your home screen.
             </p>
             <button
               className="w-full rounded-md bg-sky-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-sky-600"

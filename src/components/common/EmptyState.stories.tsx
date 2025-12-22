@@ -179,22 +179,26 @@ export const MultipleStates: Story = {
           title="No search results"
           description="Try different keywords"
           icon={<Search />}
-          action={<Button variant="outline" size="sm">Clear Search</Button>}
+          action={
+            <Button variant="outline" size="sm">
+              Clear Search
+            </Button>
+          }
         />
       </div>
       <div className="border rounded-lg bg-card p-4">
-        <EmptyState
-          title="Inbox empty"
-          description="All caught up!"
-          icon={<Inbox />}
-        />
+        <EmptyState title="Inbox empty" description="All caught up!" icon={<Inbox />} />
       </div>
       <div className="border rounded-lg bg-card p-4">
         <EmptyState
           title="Error loading data"
           description="Please try again"
           icon={<AlertCircle />}
-          action={<Button variant="destructive" size="sm">Retry</Button>}
+          action={
+            <Button variant="destructive" size="sm">
+              Retry
+            </Button>
+          }
         />
       </div>
     </div>

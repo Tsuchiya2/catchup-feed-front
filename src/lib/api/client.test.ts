@@ -621,7 +621,9 @@ describe('ApiClient', () => {
       vi.spyOn(TokenManager, 'getRefreshToken').mockReturnValue('refresh-token');
       vi.spyOn(TokenManager, 'isTokenExpiringSoon').mockReturnValue(true);
 
-      const clearAllTokensSpy = vi.spyOn(TokenManager, 'clearAllTokens').mockImplementation(() => {});
+      const clearAllTokensSpy = vi
+        .spyOn(TokenManager, 'clearAllTokens')
+        .mockImplementation(() => {});
 
       // Mock refresh token failure
       const mockRefreshToken = vi.fn().mockRejectedValue(new Error('Refresh failed'));

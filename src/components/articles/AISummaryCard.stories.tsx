@@ -92,7 +92,7 @@ export const EmptySummary: Story = {
 export const SpecialCharacters: Story = {
   args: {
     summary:
-      'This article discusses how to handle special characters in web applications: <, >, &, ", and \'. The author provides examples using React\'s JSX syntax and explains the importance of proper escaping to prevent XSS vulnerabilities.',
+      "This article discusses how to handle special characters in web applications: <, >, &, \", and '. The author provides examples using React's JSX syntax and explains the importance of proper escaping to prevent XSS vulnerabilities.",
   },
 };
 

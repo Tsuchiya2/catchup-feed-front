@@ -34,7 +34,7 @@ export const Default: Story = {
     onLogin: fn(async (email: string, password: string) => {
       console.log('Login:', email, password);
       // Simulate successful login
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     }),
   },
 };
@@ -46,7 +46,7 @@ export const SuccessfulLogin: Story = {
   args: {
     onLogin: fn(async (email: string, password: string) => {
       console.log('Login successful:', email);
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     }),
   },
   play: async ({ canvasElement }) => {
@@ -61,7 +61,7 @@ export const SuccessfulLogin: Story = {
 export const WithError: Story = {
   args: {
     onLogin: fn(async () => {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       throw new Error('Invalid email or password');
     }),
   },
@@ -73,7 +73,7 @@ export const WithError: Story = {
 export const NetworkError: Story = {
   args: {
     onLogin: fn(async () => {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       throw new Error('Network error. Please check your connection.');
     }),
   },
@@ -85,7 +85,7 @@ export const NetworkError: Story = {
 export const ServerError: Story = {
   args: {
     onLogin: fn(async () => {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       throw new Error('Server error. Please try again later.');
     }),
   },
@@ -120,7 +120,7 @@ export const PrefilledForm: Story = {
   args: {
     onLogin: fn(async (email: string, password: string) => {
       console.log('Login:', email, password);
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     }),
   },
 };
@@ -140,7 +140,7 @@ export const FullPageLayout: Story = {
   args: {
     onLogin: fn(async (email: string, password: string) => {
       console.log('Login:', email, password);
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     }),
   },
 };
@@ -154,7 +154,7 @@ export const InCustomContainer: Story = {
       <h1 className="text-3xl font-bold mb-6 text-center">Welcome Back</h1>
       <LoginForm {...args} />
       <p className="mt-6 text-sm text-muted-foreground text-center">
-        Don't have an account?{' '}
+        {"Don't have an account?"}{' '}
         <a href="#" className="text-primary hover:underline">
           Sign up
         </a>
@@ -164,7 +164,7 @@ export const InCustomContainer: Story = {
   args: {
     onLogin: fn(async (email: string, password: string) => {
       console.log('Login:', email, password);
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     }),
   },
 };
@@ -179,7 +179,7 @@ export const AllStates: Story = {
         <h3 className="text-lg font-semibold mb-4">Default State</h3>
         <LoginForm
           onLogin={fn(async () => {
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await new Promise((resolve) => setTimeout(resolve, 1000));
           })}
         />
       </div>
@@ -187,7 +187,7 @@ export const AllStates: Story = {
         <h3 className="text-lg font-semibold mb-4">With Error</h3>
         <LoginForm
           onLogin={fn(async () => {
-            await new Promise(resolve => setTimeout(resolve, 500));
+            await new Promise((resolve) => setTimeout(resolve, 500));
             throw new Error('Invalid credentials');
           })}
         />
@@ -214,7 +214,7 @@ export const MobileView: Story = {
   args: {
     onLogin: fn(async (email: string, password: string) => {
       console.log('Login:', email, password);
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     }),
   },
 };

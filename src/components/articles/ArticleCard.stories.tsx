@@ -174,7 +174,7 @@ export const ArticleList: Story = {
         article={{
           ...mockArticle,
           id: 3,
-          title: 'TypeScript 5.0: What\'s New',
+          title: "TypeScript 5.0: What's New",
           source_name: 'TypeScript Blog',
           summary:
             'Explore the new features and improvements in TypeScript 5.0, including decorators and performance enhancements.',
