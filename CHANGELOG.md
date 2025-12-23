@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.2.0](https://github.com/Tsuchiya2/catchup-feed-front/compare/v1.1.0...v1.2.0) (2025-12-23)
+
+
+### Features
+
+* **security:** implement CSRF protection with Double Submit Cookie p… ([cc15fba](https://github.com/Tsuchiya2/catchup-feed-front/commit/cc15fba1f870b4c513660e87c20c91de339791fe))
+* **security:** implement CSRF protection with Double Submit Cookie pattern ([ef062ea](https://github.com/Tsuchiya2/catchup-feed-front/commit/ef062ea3f664793c14e8909fa317a1657d1399ff))
+
+
+### Bug Fixes
+
+* address CodeRabbit review feedback ([4ab7f58](https://github.com/Tsuchiya2/catchup-feed-front/commit/4ab7f5896e98c84ed8accf77fb2ced621bf8cd5a))
+* **tests:** resolve lint and TypeScript errors in CSRF test files ([f5c3d0a](https://github.com/Tsuchiya2/catchup-feed-front/commit/f5c3d0ada46344e0129413a85c77e320c9c5585c))
+
 ## [1.1.0](https://github.com/Tsuchiya2/catchup-feed-front/compare/v1.0.3...v1.1.0) (2025-12-22)
 
 
