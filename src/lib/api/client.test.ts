@@ -3,6 +3,7 @@ import { ApiClient } from './client';
 import { ApiError, NetworkError, TimeoutError } from './errors';
 import * as TokenManager from '@/lib/auth/TokenManager';
 import { appConfig } from '@/config/app.config';
+import * as CsrfTokenManager from '@/lib/security/CsrfTokenManager';
 
 describe('ApiClient', () => {
   let apiClient: ApiClient;
@@ -469,6 +470,279 @@ describe('ApiClient', () => {
     });
   });
 
+  describe('CSRF token handling', () => {
+    let mockSessionStorage: Record<string, string>;
+    let mockGetCsrfToken: ReturnType<typeof vi.fn>;
+    let mockAddCsrfTokenToHeaders: ReturnType<typeof vi.fn>;
+    let mockSetCsrfTokenFromResponse: ReturnType<typeof vi.fn>;
+
+    beforeEach(() => {
+      // Mock sessionStorage
+      mockSessionStorage = {};
+      Object.defineProperty(window, 'sessionStorage', {
+        value: {
+          getItem: (key: string) => mockSessionStorage[key] || null,
+          setItem: (key: string, value: string) => {
+            mockSessionStorage[key] = value;
+          },
+          removeItem: (key: string) => {
+            delete mockSessionStorage[key];
+          },
+          clear: () => {
+            mockSessionStorage = {};
+          },
+        },
+        writable: true,
+        configurable: true,
+      });
+
+      // Mock CSRF token manager functions
+      mockGetCsrfToken = vi.fn(() => mockSessionStorage['catchup_feed_csrf_token'] || null);
+      mockAddCsrfTokenToHeaders = vi.fn((headers: Record<string, string>) => {
+        const token = mockSessionStorage['catchup_feed_csrf_token'];
+        if (token) {
+          return { ...headers, 'X-CSRF-Token': token };
+        }
+        return headers;
+      });
+      mockSetCsrfTokenFromResponse = vi.fn((response: Response) => {
+        const token = response.headers.get('X-CSRF-Token');
+        if (token) {
+          mockSessionStorage['catchup_feed_csrf_token'] = token;
+        }
+      });
+
+      vi.spyOn(CsrfTokenManager, 'getCsrfToken').mockImplementation(mockGetCsrfToken);
+      vi.spyOn(CsrfTokenManager, 'addCsrfTokenToHeaders').mockImplementation(
+        mockAddCsrfTokenToHeaders
+      );
+      vi.spyOn(CsrfTokenManager, 'setCsrfTokenFromResponse').mockImplementation(
+        mockSetCsrfTokenFromResponse
+      );
+
+      // Mock successful fetch response with CSRF token
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        headers: new Headers({
+          'content-length': '20',
+          'X-CSRF-Token': 'test-csrf-token-123',
+        }),
+        text: async () => JSON.stringify({ success: true }),
+      });
+    });
+
+    afterEach(() => {
+      // Clear sessionStorage
+      mockSessionStorage = {};
+    });
+
+    it('should include CSRF token in POST requests', async () => {
+      // Arrange - Set token in sessionStorage
+      mockSessionStorage['catchup_feed_csrf_token'] = 'existing-csrf-token';
+
+      // Act
+      await apiClient.post('/test-endpoint', { data: 'test' });
+
+      // Assert
+      expect(global.fetch).toHaveBeenCalledWith(
+        'http://localhost:8080/test-endpoint',
+        expect.objectContaining({
+          method: 'POST',
+          headers: expect.objectContaining({
+            'X-CSRF-Token': 'existing-csrf-token',
+          }),
+        })
+      );
+    });
+
+    it('should include CSRF token in PUT requests', async () => {
+      // Arrange - Set token in sessionStorage
+      mockSessionStorage['catchup_feed_csrf_token'] = 'existing-csrf-token';
+
+      // Act
+      await apiClient.put('/test-endpoint', { data: 'test' });
+
+      // Assert
+      expect(global.fetch).toHaveBeenCalledWith(
+        'http://localhost:8080/test-endpoint',
+        expect.objectContaining({
+          method: 'PUT',
+          headers: expect.objectContaining({
+            'X-CSRF-Token': 'existing-csrf-token',
+          }),
+        })
+      );
+    });
+
+    it('should include CSRF token in PATCH requests', async () => {
+      // Arrange - Set token in sessionStorage
+      mockSessionStorage['catchup_feed_csrf_token'] = 'existing-csrf-token';
+
+      // Act
+      await apiClient.request('/test-endpoint', {
+        method: 'PATCH',
+        body: { data: 'test' },
+      });
+
+      // Assert
+      expect(global.fetch).toHaveBeenCalledWith(
+        'http://localhost:8080/test-endpoint',
+        expect.objectContaining({
+          method: 'PATCH',
+          headers: expect.objectContaining({
+            'X-CSRF-Token': 'existing-csrf-token',
+          }),
+        })
+      );
+    });
+
+    it('should include CSRF token in DELETE requests', async () => {
+      // Arrange - Set token in sessionStorage
+      mockSessionStorage['catchup_feed_csrf_token'] = 'existing-csrf-token';
+
+      // Act
+      await apiClient.delete('/test-endpoint');
+
+      // Assert
+      expect(global.fetch).toHaveBeenCalledWith(
+        'http://localhost:8080/test-endpoint',
+        expect.objectContaining({
+          method: 'DELETE',
+          headers: expect.objectContaining({
+            'X-CSRF-Token': 'existing-csrf-token',
+          }),
+        })
+      );
+    });
+
+    it('should NOT include CSRF token in GET requests', async () => {
+      // Arrange - Set token in sessionStorage
+      mockSessionStorage['catchup_feed_csrf_token'] = 'existing-csrf-token';
+
+      // Act
+      await apiClient.get('/test-endpoint');
+
+      // Assert
+      expect(global.fetch).toHaveBeenCalledWith(
+        'http://localhost:8080/test-endpoint',
+        expect.objectContaining({
+          method: 'GET',
+          headers: expect.not.objectContaining({
+            'X-CSRF-Token': expect.anything(),
+          }),
+        })
+      );
+    });
+
+    it('should extract CSRF token from response headers', async () => {
+      // Arrange - Response with CSRF token header
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        headers: new Headers({
+          'content-length': '20',
+          'X-CSRF-Token': 'new-csrf-token-456',
+        }),
+        text: async () => JSON.stringify({ success: true }),
+      });
+
+      // Act
+      await apiClient.get('/test-endpoint');
+
+      // Assert - Token should be stored in sessionStorage
+      expect(mockSessionStorage['catchup_feed_csrf_token']).toBe('new-csrf-token-456');
+    });
+
+    it('should persist CSRF token across multiple requests', async () => {
+      // Arrange - First request with CSRF token in response
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        headers: new Headers({
+          'content-length': '20',
+          'X-CSRF-Token': 'persistent-token',
+        }),
+        text: async () => JSON.stringify({ success: true }),
+      });
+
+      // Act - First request (GET)
+      await apiClient.get('/first-endpoint');
+
+      // Assert - Token stored after first request
+      expect(mockSessionStorage['catchup_feed_csrf_token']).toBe('persistent-token');
+
+      // Act - Second request (POST) should include the stored token
+      await apiClient.post('/second-endpoint', { data: 'test' });
+
+      // Assert - Second request includes the token
+      const secondCallHeaders = (global.fetch as any).mock.calls[1][1].headers;
+      expect(secondCallHeaders['X-CSRF-Token']).toBe('persistent-token');
+    });
+
+    it('should handle missing CSRF token gracefully in POST requests', async () => {
+      // Arrange - No token in sessionStorage
+      mockSessionStorage = {};
+
+      // Act
+      await apiClient.post('/test-endpoint', { data: 'test' });
+
+      // Assert - Request should still be made without CSRF token
+      expect(global.fetch).toHaveBeenCalledWith(
+        'http://localhost:8080/test-endpoint',
+        expect.objectContaining({
+          method: 'POST',
+          headers: expect.not.objectContaining({
+            'X-CSRF-Token': expect.anything(),
+          }),
+        })
+      );
+    });
+
+    it('should handle response without CSRF token header', async () => {
+      // Arrange - Response without CSRF token header
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        headers: new Headers({
+          'content-length': '20',
+        }),
+        text: async () => JSON.stringify({ success: true }),
+      });
+
+      // Set initial token
+      mockSessionStorage['catchup_feed_csrf_token'] = 'existing-token';
+
+      // Act
+      await apiClient.get('/test-endpoint');
+
+      // Assert - Existing token should remain unchanged
+      expect(mockSessionStorage['catchup_feed_csrf_token']).toBe('existing-token');
+    });
+
+    it('should update CSRF token when new token is received', async () => {
+      // Arrange - Set initial token
+      mockSessionStorage['catchup_feed_csrf_token'] = 'old-token';
+
+      // Response with new CSRF token
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        headers: new Headers({
+          'content-length': '20',
+          'X-CSRF-Token': 'new-token',
+        }),
+        text: async () => JSON.stringify({ success: true }),
+      });
+
+      // Act
+      await apiClient.get('/test-endpoint');
+
+      // Assert - Token should be updated
+      expect(mockSessionStorage['catchup_feed_csrf_token']).toBe('new-token');
+    });
+  });
+
   describe('token refresh', () => {
     beforeEach(() => {
       // Mock successful fetch response
@@ -691,6 +965,218 @@ describe('ApiClient', () => {
 
       // Cleanup
       appConfig.features = originalFeatures;
+    });
+  });
+
+  describe('CSRF Error Recovery', () => {
+    beforeEach(() => {
+      // Mock sessionStorage
+      const sessionStorageMock = (() => {
+        let store: Record<string, string> = {};
+        return {
+          getItem: (key: string) => store[key] || null,
+          setItem: (key: string, value: string) => {
+            store[key] = value;
+          },
+          removeItem: (key: string) => {
+            delete store[key];
+          },
+          clear: () => {
+            store = {};
+          },
+        };
+      })();
+
+      Object.defineProperty(window, 'sessionStorage', {
+        value: sessionStorageMock,
+        writable: true,
+      });
+
+      // Mock window.location.reload
+      Object.defineProperty(window, 'location', {
+        value: {
+          href: '',
+          reload: vi.fn(),
+        },
+        writable: true,
+      });
+    });
+
+    it('should detect CSRF validation failure from 403 error', async () => {
+      // Arrange
+      const clearCsrfTokenSpy = vi.spyOn(CsrfTokenManager, 'clearCsrfToken');
+
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: false,
+        status: 403,
+        json: async () => ({ message: 'CSRF token validation failed' }),
+        headers: new Headers(),
+      });
+
+      // Act & Assert
+      const error = (await apiClient
+        .request('/test-endpoint', { method: 'POST' })
+        .catch((e) => e)) as ApiError;
+
+      expect(error).toBeInstanceOf(ApiError);
+      expect(error.status).toBe(403);
+      expect(clearCsrfTokenSpy).toHaveBeenCalled();
+    });
+
+    it('should clear CSRF token on CSRF error', async () => {
+      // Arrange
+      const clearCsrfTokenSpy = vi.spyOn(CsrfTokenManager, 'clearCsrfToken');
+
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: false,
+        status: 403,
+        json: async () => ({ message: 'CSRF token validation failed' }),
+        headers: new Headers(),
+      });
+
+      // Act
+      await apiClient.request('/test-endpoint', { method: 'POST' }).catch(() => {});
+
+      // Assert
+      expect(clearCsrfTokenSpy).toHaveBeenCalled();
+    });
+
+    it('should reload page on CSRF error', async () => {
+      // Arrange
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: false,
+        status: 403,
+        json: async () => ({ message: 'CSRF token validation failed' }),
+        headers: new Headers(),
+      });
+
+      vi.useFakeTimers();
+
+      // Act
+      await apiClient.request('/test-endpoint', { method: 'POST' }).catch(() => {});
+
+      // Fast-forward timer
+      vi.advanceTimersByTime(100);
+
+      // Assert
+      expect(window.location.reload).toHaveBeenCalled();
+      expect(sessionStorage.getItem('csrf_reload_attempted')).toBeTruthy();
+
+      vi.useRealTimers();
+    });
+
+    it('should prevent infinite reload loops on CSRF error', async () => {
+      // Arrange
+      // Simulate recent reload attempt
+      const recentTimestamp = Date.now() - 1000; // 1 second ago
+      sessionStorage.setItem('csrf_reload_attempted', recentTimestamp.toString());
+
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: false,
+        status: 403,
+        json: async () => ({ message: 'CSRF token validation failed' }),
+        headers: new Headers(),
+      });
+
+      vi.useFakeTimers({ now: Date.now() });
+
+      // Act
+      await apiClient.request('/test-endpoint', { method: 'POST' }).catch(() => {});
+
+      // Fast-forward timer
+      vi.advanceTimersByTime(100);
+
+      // Assert - Should NOT reload again (within 5 seconds)
+      expect(window.location.reload).not.toHaveBeenCalled();
+
+      vi.useRealTimers();
+    });
+
+    it('should allow reload after grace period', async () => {
+      // Arrange
+      // Simulate old reload attempt (6 seconds ago)
+      const oldTimestamp = Date.now() - 6000;
+      sessionStorage.setItem('csrf_reload_attempted', oldTimestamp.toString());
+
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: false,
+        status: 403,
+        json: async () => ({ message: 'CSRF token validation failed' }),
+        headers: new Headers(),
+      });
+
+      vi.useFakeTimers({ now: Date.now() });
+
+      // Act
+      await apiClient.request('/test-endpoint', { method: 'POST' }).catch(() => {});
+
+      // Fast-forward timer
+      vi.advanceTimersByTime(100);
+
+      // Assert - Should reload again (past grace period)
+      expect(window.location.reload).toHaveBeenCalled();
+
+      vi.useRealTimers();
+    });
+
+    it('should not reload on non-CSRF 403 errors', async () => {
+      // Arrange
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: false,
+        status: 403,
+        json: async () => ({ message: 'Forbidden - insufficient permissions' }),
+        headers: new Headers(),
+      });
+
+      vi.useFakeTimers();
+
+      // Act
+      await apiClient.request('/test-endpoint', { method: 'POST' }).catch(() => {});
+
+      // Fast-forward timer
+      vi.advanceTimersByTime(100);
+
+      // Assert - Should NOT reload (not a CSRF error)
+      expect(window.location.reload).not.toHaveBeenCalled();
+
+      vi.useRealTimers();
+    });
+
+    it('should not retry CSRF errors', async () => {
+      // Arrange
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: false,
+        status: 403,
+        json: async () => ({ message: 'CSRF token validation failed' }),
+        headers: new Headers(),
+      });
+
+      // Act
+      await apiClient
+        .request('/test-endpoint', {
+          method: 'POST',
+          retry: { maxRetries: 3 },
+        })
+        .catch(() => {});
+
+      // Assert - Should only call fetch once (no retries for CSRF errors)
+      expect(global.fetch).toHaveBeenCalledTimes(1);
+    });
+
+    it('should set CSRF error flag in sessionStorage', async () => {
+      // Arrange
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: false,
+        status: 403,
+        json: async () => ({ message: 'CSRF token validation failed' }),
+        headers: new Headers(),
+      });
+
+      // Act
+      await apiClient.request('/test-endpoint', { method: 'POST' }).catch(() => {});
+
+      // Assert
+      expect(sessionStorage.getItem('csrf_error_occurred')).toBe('true');
     });
   });
 });

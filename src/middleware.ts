@@ -1,9 +1,9 @@
 /**
  * Next.js Middleware for Protected Routes
  *
- * This middleware protects routes that require authentication.
+ * This middleware protects routes that require authentication and CSRF attacks.
  * It checks for a valid JWT token and redirects unauthenticated users to the login page.
- * The token is validated by checking its expiration claim using the jose library.
+ * It also validates CSRF tokens for state-changing requests (POST, PUT, PATCH, DELETE).
  *
  * NOTE: Next.js middleware runs on the Edge runtime, which doesn't have access to localStorage.
  * This middleware validates token expiration and handles route protection.
@@ -12,6 +12,17 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { decodeJwt } from 'jose';
+import { validateCsrfToken, setCsrfToken } from '@/lib/security/csrf';
+
+/**
+ * HTTP methods that change state and require CSRF protection
+ */
+const STATE_CHANGING_METHODS = ['POST', 'PUT', 'PATCH', 'DELETE'];
+
+/**
+ * Routes exempt from CSRF validation (webhooks, health checks, etc.)
+ */
+const CSRF_EXEMPT_ROUTES = ['/api/health', '/api/webhooks'];
 
 /**
  * Protected route patterns
@@ -37,6 +48,13 @@ function isProtectedRoute(pathname: string): boolean {
  */
 function isPublicRoute(pathname: string): boolean {
   return PUBLIC_ROUTES.some((route) => pathname === route);
+}
+
+/**
+ * Check if a route is exempt from CSRF validation
+ */
+function isCsrfExempt(pathname: string): boolean {
+  return CSRF_EXEMPT_ROUTES.some((route) => pathname.startsWith(route));
 }
 
 /**
@@ -83,7 +101,25 @@ function isTokenValid(token: string): boolean {
  */
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const method = request.method;
 
+  // Phase 1: CSRF Validation for state-changing requests
+  // This runs BEFORE authentication checks
+  if (STATE_CHANGING_METHODS.includes(method) && !isCsrfExempt(pathname)) {
+    const isValidCsrf = validateCsrfToken(request);
+    if (!isValidCsrf) {
+      return NextResponse.json(
+        {
+          error: 'CSRF token validation failed',
+          message:
+            'Your request could not be verified. Please refresh the page and try again.',
+        },
+        { status: 403 }
+      );
+    }
+  }
+
+  // Phase 2: Authentication check
   // Check for auth token in cookies (set by client-side after login)
   const token = request.cookies.get('catchup_feed_auth_token')?.value;
   const hasValidToken = token ? isTokenValid(token) : false;
@@ -110,8 +146,15 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(dashboardUrl);
   }
 
-  // Allow request to continue
-  return NextResponse.next();
+  // Phase 3: Set CSRF token for authenticated users and login page
+  const response = NextResponse.next();
+
+  // Set CSRF token for authenticated users or login page visitors
+  if (hasValidToken || pathname === '/login') {
+    setCsrfToken(response);
+  }
+
+  return response;
 }
 
 /**

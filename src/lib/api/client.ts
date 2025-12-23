@@ -17,6 +17,11 @@ import { addTracingHeaders, startSpan } from '@/lib/observability';
 import { metrics } from '@/lib/observability';
 import { appConfig } from '@/config/app.config';
 import { logger } from '@/lib/logger';
+import {
+  addCsrfTokenToHeaders,
+  setCsrfTokenFromResponse,
+  clearCsrfToken,
+} from '@/lib/security/CsrfTokenManager';
 
 /**
  * Retry configuration for API requests
@@ -144,8 +149,14 @@ class ApiClient {
   /**
    * Check if an error is retryable
    * Retries on network errors, timeouts, and 5xx server errors
+   * CSRF errors are NOT retryable (requires page reload)
    */
   private isRetryableError(error: unknown): boolean {
+    // CSRF errors should not be retried
+    if (this.isCsrfError(error)) {
+      return false;
+    }
+
     if (error instanceof NetworkError || error instanceof TimeoutError) {
       return true;
     }
@@ -170,6 +181,95 @@ class ApiClient {
    */
   private sleep(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  /**
+   * Check if an error is a CSRF validation failure
+   * CSRF errors are 403 responses with a specific error message
+   */
+  private isCsrfError(error: unknown): boolean {
+    if (!(error instanceof ApiError)) {
+      return false;
+    }
+
+    // Check for 403 status
+    if (error.status !== 403) {
+      return false;
+    }
+
+    // Check error message for CSRF-specific keywords
+    const message = error.message.toLowerCase();
+    return (
+      message.includes('csrf') ||
+      message.includes('token validation failed') ||
+      message.includes('invalid csrf token')
+    );
+  }
+
+  /**
+   * Handle CSRF validation failure
+   * Clears invalid token and optionally reloads the page
+   */
+  private handleCsrfError(endpoint: string): void {
+    logger.warn('CSRF validation failed', {
+      endpoint,
+      action: 'clearing_token',
+    });
+
+    // Clear the invalid CSRF token
+    clearCsrfToken();
+
+    // Check if we're in a browser environment
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    // Show user-friendly notification (if toast is available)
+    // Note: This is optional and depends on having a notification system
+    try {
+      // Dynamic import to avoid hard dependency on notification system
+      if (typeof window !== 'undefined' && 'sessionStorage' in window) {
+        // Store error flag for UI to display after reload
+        sessionStorage.setItem('csrf_error_occurred', 'true');
+      }
+    } catch (error) {
+      logger.debug('Could not set CSRF error flag', { error });
+    }
+
+    // Reload page to get fresh CSRF token
+    // Only reload once to prevent infinite loops
+    const reloadKey = 'csrf_reload_attempted';
+    const reloadAttempted = sessionStorage.getItem(reloadKey);
+
+    if (!reloadAttempted) {
+      sessionStorage.setItem(reloadKey, Date.now().toString());
+      logger.info('Reloading page to obtain fresh CSRF token');
+
+      // Use a slight delay to ensure logging completes
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
+    } else {
+      // Check if reload was attempted recently (within last 5 seconds)
+      const reloadTime = parseInt(reloadAttempted, 10);
+      const timeSinceReload = Date.now() - reloadTime;
+
+      if (timeSinceReload < 5000) {
+        // Reload was recent, don't reload again (prevent infinite loop)
+        logger.error('CSRF error persists after reload', undefined, {
+          timeSinceReload,
+          endpoint,
+        });
+        sessionStorage.removeItem(reloadKey);
+      } else {
+        // Reload attempt was old, safe to try again
+        sessionStorage.setItem(reloadKey, Date.now().toString());
+        logger.info('Retrying page reload for fresh CSRF token');
+        setTimeout(() => {
+          window.location.reload();
+        }, 100);
+      }
+    }
   }
 
   /**
@@ -269,6 +369,11 @@ class ApiClient {
       }
     }
 
+    // Add CSRF token to headers for state-changing requests
+    if (method === 'POST' || method === 'PUT' || method === 'PATCH' || method === 'DELETE') {
+      requestHeaders = addCsrfTokenToHeaders(requestHeaders);
+    }
+
     // Prepare request init
     const init: RequestInit = {
       method,
@@ -309,6 +414,9 @@ class ApiClient {
       // Clear timeout
       clearTimeout(timeoutId);
 
+      // Extract and store CSRF token from response (if present)
+      setCsrfTokenFromResponse(response);
+
       // Handle authentication errors
       if (response.status === 401) {
         clearAllTokens();
@@ -324,11 +432,18 @@ class ApiClient {
       // Handle error responses
       if (!response.ok) {
         const errorData = await this.parseErrorResponse(response);
-        throw new ApiError(
+        const apiError = new ApiError(
           errorData.message || `Request failed with status ${response.status}`,
           response.status,
           errorData.details
         );
+
+        // Handle CSRF validation failures
+        if (this.isCsrfError(apiError)) {
+          this.handleCsrfError(endpoint);
+        }
+
+        throw apiError;
       }
 
       // Handle 204 No Content responses
