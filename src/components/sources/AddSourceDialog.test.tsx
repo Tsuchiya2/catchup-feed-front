@@ -60,7 +60,7 @@ describe('AddSourceDialog', () => {
       expect(screen.getByText('Add a new RSS or Atom feed source to track.')).toBeInTheDocument();
     });
 
-    it('renders the AddSourceForm', () => {
+    it('renders the SourceForm', () => {
       render(<AddSourceDialog {...defaultProps} />);
 
       expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
@@ -214,7 +214,10 @@ describe('AddSourceDialog', () => {
 
       render(<AddSourceDialog {...defaultProps} />);
 
-      expect(screen.getByRole('button', { name: /adding/i })).toBeDisabled();
+      // Check that submit button is disabled and shows loading state
+      const submitButton = screen.getByRole('button', { name: /add source/i });
+      expect(submitButton).toBeDisabled();
+      expect(submitButton).toHaveTextContent('Adding...');
     });
   });
 

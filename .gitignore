@@ -51,6 +51,7 @@ docs/reports/
 docs/plans/
 docs/evaluations/
 docs/designs/
+.steering
 
 # Storybook build artifacts
 storybook-static/

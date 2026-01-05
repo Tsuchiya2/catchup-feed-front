@@ -3,20 +3,23 @@
  *
  * Displays a source (RSS feed) in a card format with:
  * - Source name and RSS icon
+ * - Edit button (admin only, when onEdit provided)
  * - Feed URL (truncated with tooltip)
  * - Active/Inactive status badge (non-admin) or toggle (admin)
  * - Last crawled timestamp
  * - Cyber/glow theme styling
  */
 import * as React from 'react';
-import { Rss } from 'lucide-react';
+import { Rss, Pencil } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { formatRelativeTime } from '@/lib/utils/formatDate';
 import type { Source } from '@/types/api';
 import type { UserRole } from '@/lib/auth/role';
 import { StatusBadge } from './StatusBadge';
 import { ActiveToggle } from './ActiveToggle';
+import { SOURCE_TEST_IDS, SOURCE_ARIA_LABELS } from '@/constants/source';
 
 /**
  * Props for the SourceCard component
@@ -30,6 +33,8 @@ interface SourceCardProps {
   userRole: UserRole;
   /** Callback when active status is updated (admin only) */
   onUpdateActive?: (sourceId: number, active: boolean) => Promise<void>;
+  /** Callback when edit button is clicked (admin only) */
+  onEdit?: (source: Source) => void;
 }
 
 /**
@@ -43,6 +48,7 @@ interface SourceCardProps {
  *   source={source}
  *   userRole={userRole}
  *   onUpdateActive={handleUpdateActive}
+ *   onEdit={handleEdit}
  * />
  * ```
  */
@@ -51,6 +57,7 @@ export const SourceCard = React.memo(function SourceCard({
   className,
   userRole,
   onUpdateActive,
+  onEdit,
 }: SourceCardProps) {
   const lastCrawled = source.last_crawled_at
     ? formatRelativeTime(source.last_crawled_at)
@@ -84,7 +91,21 @@ export const SourceCard = React.memo(function SourceCard({
             <Rss className="h-5 w-5 text-primary" aria-hidden="true" />
           </div>
           <div className="min-w-0 flex-1">
-            <h3 className="truncate text-lg font-semibold text-foreground">{source.name}</h3>
+            <div className="flex items-center gap-2">
+              <h3 className="truncate text-lg font-semibold text-foreground">{source.name}</h3>
+              {isAdmin && onEdit && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 shrink-0"
+                  onClick={() => onEdit(source)}
+                  data-testid={SOURCE_TEST_IDS.EDIT_BUTTON}
+                  aria-label={SOURCE_ARIA_LABELS.EDIT_BUTTON(source.name)}
+                >
+                  <Pencil className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
           </div>
         </div>
 

@@ -207,8 +207,21 @@ export interface CreateSourceInput {
 }
 
 /**
- * Form field state for source creation form
- * Used internally by AddSourceForm component
+ * Input data for updating an existing source
+ * Matches backend API contract for PUT /sources/:id
+ */
+export interface UpdateSourceInput {
+  /** Source name (Required, 1-255 characters) */
+  name: string;
+  /** RSS/Atom feed URL (Required, valid URL, 1-2048 characters) */
+  feedURL: string;
+  /** Active status (Required, current active status) */
+  active: boolean;
+}
+
+/**
+ * Form field state for source creation and editing
+ * Used internally by SourceForm component
  */
 export interface SourceFormData {
   /** Source name */

@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { AddSourceForm } from './AddSourceForm';
+import { SourceForm } from './SourceForm';
 import { useCreateSource } from '@/hooks/useCreateSource';
 import type { CreateSourceInput } from '@/types/api';
 
@@ -28,7 +28,7 @@ interface AddSourceDialogProps {
  * AddSourceDialog Component
  *
  * A dialog for adding new RSS/Atom feed sources.
- * Wraps AddSourceForm with Dialog UI and handles the create mutation.
+ * Wraps SourceForm with Dialog UI and handles the create mutation.
  *
  * @example
  * ```tsx
@@ -62,7 +62,7 @@ export function AddSourceDialog({ isOpen, onClose, onSuccess }: AddSourceDialogP
       onClose();
     } catch {
       // Error is handled by the mutation's error state
-      // and displayed via the error prop in AddSourceForm
+      // and displayed via the error prop in SourceForm
     }
   };
 
@@ -91,7 +91,8 @@ export function AddSourceDialog({ isOpen, onClose, onSuccess }: AddSourceDialogP
           <DialogDescription>Add a new RSS or Atom feed source to track.</DialogDescription>
         </DialogHeader>
 
-        <AddSourceForm
+        <SourceForm
+          mode="create"
           onSubmit={handleSubmit}
           isLoading={isPending}
           error={error}

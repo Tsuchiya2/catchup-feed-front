@@ -39,3 +39,6 @@ export {
   type SecurityHeader,
   type CSPDirectives,
 } from './security.config';
+
+// Source Configuration
+export { SOURCE_CONFIG, type SourceConfig } from './sourceConfig';
