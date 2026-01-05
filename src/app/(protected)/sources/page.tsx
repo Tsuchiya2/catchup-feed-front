@@ -12,6 +12,7 @@ import { EmptyState } from '@/components/common/EmptyState';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { AddSourceDialog } from '@/components/sources/AddSourceDialog';
+import { EditSourceDialog } from '@/components/sources/EditSourceDialog';
 import { useSources } from '@/hooks/useSources';
 import { useSourceSearch } from '@/hooks/useSourceSearch';
 import { getUserRole } from '@/lib/auth/role';
@@ -39,6 +40,10 @@ function SourcesPageContent() {
 
   // Add Source Dialog state
   const [isAddDialogOpen, setIsAddDialogOpen] = React.useState(false);
+
+  // Edit Source Dialog state
+  const [editDialogOpen, setEditDialogOpen] = React.useState(false);
+  const [selectedSource, setSelectedSource] = React.useState<Source | null>(null);
 
   // Get search parameters from URL
   const keyword = searchParams.get('keyword') || '';
@@ -134,6 +139,24 @@ function SourcesPageContent() {
     [mutation]
   );
 
+  /**
+   * Handle source edit
+   * Opens the EditSourceDialog with the selected source
+   */
+  const handleEditSource = React.useCallback((source: Source) => {
+    setSelectedSource(source);
+    setEditDialogOpen(true);
+  }, []);
+
+  /**
+   * Handle edit dialog close
+   * Resets the selected source and closes the dialog
+   */
+  const handleEditDialogClose = React.useCallback(() => {
+    setSelectedSource(null);
+    setEditDialogOpen(false);
+  }, []);
+
   return (
     <div className="container py-8">
       {/* Page Header with Add Button */}
@@ -207,6 +230,7 @@ function SourcesPageContent() {
                 source={source}
                 userRole={userRole}
                 onUpdateActive={handleUpdateActive}
+                onEdit={handleEditSource}
               />
             ))}
           </div>
@@ -224,6 +248,15 @@ function SourcesPageContent() {
         onClose={() => setIsAddDialogOpen(false)}
         onSuccess={() => setIsAddDialogOpen(false)}
       />
+
+      {/* Edit Source Dialog */}
+      {selectedSource && (
+        <EditSourceDialog
+          isOpen={editDialogOpen}
+          onClose={handleEditDialogClose}
+          source={selectedSource}
+        />
+      )}
     </div>
   );
 }

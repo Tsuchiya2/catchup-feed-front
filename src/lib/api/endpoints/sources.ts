@@ -5,7 +5,13 @@
  */
 
 import { apiClient } from '@/lib/api/client';
-import type { Source, SourcesResponse, SourceResponse, CreateSourceInput } from '@/types/api';
+import type {
+  Source,
+  SourcesResponse,
+  SourceResponse,
+  CreateSourceInput,
+  UpdateSourceInput,
+} from '@/types/api';
 
 /**
  * Search parameters for source search
@@ -176,6 +182,38 @@ export async function createSource(data: CreateSourceInput): Promise<void> {
 }
 
 /**
+ * Update an existing source
+ *
+ * @param id - Source ID
+ * @param data - Source update input (name, feedURL, and active status)
+ * @returns Promise resolving to updated source
+ * @throws {ApiError} When the request fails (400, 401, 403, 404, 500)
+ *
+ * @example
+ * ```typescript
+ * try {
+ *   const updatedSource = await updateSource(1, {
+ *     name: 'Updated Tech Blog',
+ *     feedURL: 'https://techblog.com/new-feed.xml',
+ *     active: true
+ *   });
+ *   console.log('Source updated:', updatedSource);
+ * } catch (error) {
+ *   if (error instanceof ApiError && error.status === 403) {
+ *     console.error('Permission denied - admin access required');
+ *   } else if (error instanceof ApiError && error.status === 404) {
+ *     console.error('Source not found');
+ *   }
+ * }
+ * ```
+ */
+export async function updateSource(id: number, data: UpdateSourceInput): Promise<SourceResponse> {
+  const endpoint = `/sources/${id}`;
+  const response = await apiClient.put<SourceResponse>(endpoint, data);
+  return response;
+}
+
+/**
  * Export types for convenience
  */
-export type { Source, SourcesResponse, SourceResponse, CreateSourceInput };
+export type { Source, SourcesResponse, SourceResponse, CreateSourceInput, UpdateSourceInput };
