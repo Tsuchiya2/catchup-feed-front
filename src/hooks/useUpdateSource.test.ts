@@ -39,10 +39,7 @@ const mockSource: Source = {
   id: 1,
   name: 'Original Tech Blog',
   feed_url: 'https://original.com/feed.xml',
-  source_type: 'RSS',
   active: true,
-  created_at: '2025-01-01T00:00:00Z',
-  updated_at: '2025-01-01T00:00:00Z',
 };
 
 const mockSourcesResponse: SourcesResponse = [mockSource];
@@ -178,9 +175,12 @@ describe('useUpdateSource', () => {
       await waitFor(() => {
         const cachedData = queryClient.getQueryData<SourcesResponse>(['sources']);
         expect(cachedData).toBeDefined();
-        expect(cachedData?.[0].name).toBe('Optimistically Updated');
-        expect(cachedData?.[0].feed_url).toBe('https://optimistic.com/feed.xml');
-        expect(cachedData?.[0].active).toBe(false);
+        expect(cachedData).not.toBeNull();
+        expect(cachedData!.length).toBeGreaterThan(0);
+        const firstSource = cachedData![0]!;
+        expect(firstSource.name).toBe('Optimistically Updated');
+        expect(firstSource.feed_url).toBe('https://optimistic.com/feed.xml');
+        expect(firstSource.active).toBe(false);
       });
 
       // Resolve the API call
@@ -253,10 +253,7 @@ describe('useUpdateSource', () => {
           id: 2,
           name: 'Other Blog',
           feed_url: 'https://other.com/feed.xml',
-          source_type: 'RSS',
           active: true,
-          created_at: '2025-01-02T00:00:00Z',
-          updated_at: '2025-01-02T00:00:00Z',
         },
       ];
       queryClient.setQueryData<SourcesResponse>(['sources'], multipleSourcesData);
@@ -278,9 +275,11 @@ describe('useUpdateSource', () => {
 
       // Verify other source was preserved
       const cachedData = queryClient.getQueryData<SourcesResponse>(['sources']);
-      expect(cachedData?.length).toBe(2);
-      expect(cachedData?.[1].name).toBe('Other Blog');
-      expect(cachedData?.[1].feed_url).toBe('https://other.com/feed.xml');
+      expect(cachedData).toBeDefined();
+      expect(cachedData!.length).toBe(2);
+      const secondSource = cachedData![1]!;
+      expect(secondSource.name).toBe('Other Blog');
+      expect(secondSource.feed_url).toBe('https://other.com/feed.xml');
     });
   });
 
@@ -332,8 +331,10 @@ describe('useUpdateSource', () => {
       // Verify cache was rolled back to original state
       await waitFor(() => {
         const cachedData = queryClient.getQueryData<SourcesResponse>(['sources']);
-        expect(cachedData?.[0].name).toBe('Original Name');
-        expect(cachedData?.[0].feed_url).toBe('https://original.com/feed.xml');
+        expect(cachedData).toBeDefined();
+        const firstSource = cachedData![0]!;
+        expect(firstSource.name).toBe('Original Name');
+        expect(firstSource.feed_url).toBe('https://original.com/feed.xml');
       });
     });
 
@@ -833,7 +834,7 @@ describe('useUpdateSource', () => {
         wrapper: createWrapper(),
       });
 
-      let caughtError: Error | null = null;
+      let caughtError: Error | undefined;
 
       await act(async () => {
         try {
@@ -850,8 +851,8 @@ describe('useUpdateSource', () => {
         }
       });
 
-      expect(caughtError).toBeTruthy();
-      expect(caughtError?.message).toBe('Mutation failed');
+      expect(caughtError).toBeDefined();
+      expect(caughtError!.message).toBe('Mutation failed');
     });
   });
 });
