@@ -19,3 +19,13 @@ project:
   test_framework: Vitest
   linter: ESLint
   package_manager: npm
+
+linters:
+  enabled: true
+  tools:
+    - name: eslint
+      command: npx eslint --max-warnings 0 .
+    - name: prettier
+      command: npx prettier --check .
+    - name: tsc
+      command: npx tsc --noEmit

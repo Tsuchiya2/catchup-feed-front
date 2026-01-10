@@ -56,6 +56,7 @@ Catchup Feed Web is a modern RSS/Atom feed reader frontend built with Next.js 15
 | Source Search | ✅ Implemented | Search and filter sources | `/sources?keyword=...` |
 | Source Creation | ✅ Implemented | Add new RSS/Atom feeds (Admin only) | `/sources` (form) |
 | Source Edit | ✅ Implemented | Edit source name and feed URL (Admin only) | `/sources` (dialog) |
+| Source Delete | ✅ Implemented | Delete source with confirmation (Admin only) | `/sources` (dialog) |
 | Source Toggle | ✅ Implemented | Enable/disable feed sources | `/sources` |
 | Route Protection | ✅ Implemented | Middleware-level authentication | All protected routes |
 | Error Boundaries | ✅ Implemented | React error boundaries with retry | All pages |
@@ -751,6 +752,31 @@ interface UseUpdateSourceReturn {
 
 **On Success**: Invalidates `['sources']` cache to refresh list
 
+**Mutation Hook**: `useDeleteSource()`
+
+**Location**: `/src/hooks/useDeleteSource.ts`
+
+**Signature**:
+```typescript
+function useDeleteSource(): UseDeleteSourceReturn
+
+interface UseDeleteSourceReturn {
+  deleteSource: (params: { id: number }) => void;
+  mutateAsync: (params: { id: number }) => Promise<void>;
+  isPending: boolean;
+  error: Error | null;
+  reset: () => void;
+  isSuccess: boolean;
+}
+```
+
+**Features**:
+- Optimistic updates: Removes source from UI immediately
+- Automatic rollback on error: Reverts to previous state if deletion fails
+- Cache invalidation: Refreshes `['sources']` cache on success
+
+**On Success**: Invalidates `['sources']` cache to refresh list
+
 #### Components
 
 ##### StatusBadge
@@ -841,6 +867,30 @@ interface EditSourceDialogProps {
 - Automatic cache invalidation on success
 - Focus management (dialog open/close)
 - Accessible dialog with ARIA labels
+
+##### DeleteSourceDialog
+
+**Location**: `/src/components/sources/DeleteSourceDialog.tsx`
+
+**Props**:
+```typescript
+interface DeleteSourceDialogProps {
+  isOpen: boolean;
+  onClose: () => void;
+  source: Source;
+  onSuccess?: () => void;
+}
+```
+
+**Features**:
+- Displays source name in confirmation message
+- Uses useDeleteSource hook for mutation
+- Optimistic updates with rollback on error
+- Automatic cache invalidation on success
+- Error message display for failed deletions
+- Focus management (dialog open/close)
+- Accessible dialog with ARIA labels
+- Destructive button styling (red) to indicate danger
 
 ---
 
@@ -1313,6 +1363,9 @@ updateSourceActive(id: number, active: boolean): Promise<SourceResponse>
 
 // Create new source
 createSource(data: CreateSourceInput): Promise<void>
+
+// Delete source
+deleteSource(id: number): Promise<void>
 ```
 
 #### Authentication

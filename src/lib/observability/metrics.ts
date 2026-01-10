@@ -179,6 +179,67 @@ export const metrics = {
      * @param count - Number of sources loaded
      */
     listLoad: (count: number) => trackMetric('source.list.load', 1, { count: String(count) }),
+
+    /**
+     * Delete Operation Metrics
+     *
+     * Tracks source deletion operations for monitoring and SLO tracking.
+     */
+    delete: {
+      /**
+       * Track source deletion attempt
+       *
+       * @param sourceId - Source ID being deleted
+       */
+      attempt: (sourceId: number) =>
+        trackMetric('source.delete.attempt', 1, { source_id: String(sourceId) }),
+
+      /**
+       * Track successful source deletion
+       *
+       * @param sourceId - Source ID that was deleted
+       * @param durationMs - Duration of the operation in milliseconds
+       */
+      success: (sourceId: number, durationMs?: number) =>
+        trackMetric('source.delete.success', durationMs || 1, {
+          source_id: String(sourceId),
+          ...(durationMs ? { duration_ms: String(durationMs) } : {}),
+        }),
+
+      /**
+       * Track failed source deletion
+       *
+       * @param sourceId - Source ID that failed to delete
+       * @param errorType - Type of error (e.g., "network", "auth", "server", "not_found")
+       * @param status - HTTP status code (optional)
+       */
+      failure: (sourceId: number, errorType?: string, status?: number) =>
+        trackMetric('source.delete.failure', 1, {
+          source_id: String(sourceId),
+          ...(errorType ? { error_type: errorType } : {}),
+          ...(status ? { status: String(status) } : {}),
+        }),
+
+      /**
+       * Track cache rollback event
+       *
+       * @param sourceId - Source ID for which cache was rolled back
+       */
+      cacheRollback: (sourceId: number) =>
+        trackMetric('source.delete.cache_rollback', 1, { source_id: String(sourceId) }),
+
+      /**
+       * Track dialog interaction
+       *
+       * @param action - Dialog action ("open", "confirm", "cancel")
+       * @param sourceId - Source ID (optional)
+       */
+      dialog: (action: 'open' | 'confirm' | 'cancel', sourceId?: number) =>
+        trackMetric('source.delete.dialog', 1, {
+          action,
+          ...(sourceId ? { source_id: String(sourceId) } : {}),
+        }),
+    },
   },
 
   /**

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { getSources, getSource, updateSourceActive } from '../sources';
+import { getSources, getSource, updateSourceActive, deleteSource } from '../sources';
 import { apiClient } from '@/lib/api/client';
 import { ApiError } from '@/lib/api/errors';
 import type { SourcesResponse, SourceResponse } from '@/types/api';
@@ -450,6 +450,105 @@ describe('Sources API Endpoints', () => {
 
       const activeValue = true;
       await updateSourceActive(1, activeValue);
+    });
+  });
+
+  describe('deleteSource', () => {
+    it('should call DELETE /sources/:id with correct ID', async () => {
+      // Arrange
+      vi.mocked(apiClient.delete).mockResolvedValue(undefined);
+
+      // Act
+      await deleteSource(42);
+
+      // Assert
+      expect(apiClient.delete).toHaveBeenCalledTimes(1);
+      expect(apiClient.delete).toHaveBeenCalledWith('/sources/42');
+    });
+
+    it('should throw ApiError on 403 Forbidden (permission denied)', async () => {
+      // Arrange
+      const mockError = new ApiError('Forbidden', 403);
+      vi.mocked(apiClient.delete).mockRejectedValue(mockError);
+
+      // Act & Assert
+      await expect(deleteSource(1)).rejects.toThrow(ApiError);
+      await expect(deleteSource(1)).rejects.toThrow('Forbidden');
+
+      const error = await deleteSource(1).catch((e) => e);
+      expect(error.status).toBe(403);
+    });
+
+    it('should throw ApiError on 404 Not Found', async () => {
+      // Arrange
+      const mockError = new ApiError('Not Found', 404);
+      vi.mocked(apiClient.delete).mockRejectedValue(mockError);
+
+      // Act & Assert
+      await expect(deleteSource(999)).rejects.toThrow(ApiError);
+      await expect(deleteSource(999)).rejects.toThrow('Not Found');
+
+      const error = await deleteSource(999).catch((e) => e);
+      expect(error.status).toBe(404);
+    });
+
+    it('should throw ApiError on 500 Server Error', async () => {
+      // Arrange
+      const mockError = new ApiError('Internal Server Error', 500);
+      vi.mocked(apiClient.delete).mockRejectedValue(mockError);
+
+      // Act & Assert
+      await expect(deleteSource(1)).rejects.toThrow(ApiError);
+
+      const error = await deleteSource(1).catch((e) => e);
+      expect(error.status).toBe(500);
+    });
+
+    it('should handle multiple sequential deletes', async () => {
+      // Arrange
+      vi.mocked(apiClient.delete).mockResolvedValue(undefined);
+
+      // Act
+      await deleteSource(1);
+      await deleteSource(2);
+
+      // Assert
+      expect(apiClient.delete).toHaveBeenCalledTimes(2);
+      expect(apiClient.delete).toHaveBeenCalledWith('/sources/1');
+      expect(apiClient.delete).toHaveBeenCalledWith('/sources/2');
+    });
+
+    it('should include Authorization header via apiClient', async () => {
+      // Arrange
+      vi.mocked(apiClient.delete).mockResolvedValue(undefined);
+
+      // Act
+      await deleteSource(1);
+
+      // Assert
+      // The apiClient.delete method should be called (which includes auth header)
+      expect(apiClient.delete).toHaveBeenCalledTimes(1);
+      // Note: Authorization header is automatically added by apiClient
+    });
+
+    it('should propagate network errors', async () => {
+      // Arrange
+      const networkError = new Error('Network request failed');
+      vi.mocked(apiClient.delete).mockRejectedValue(networkError);
+
+      // Act & Assert
+      await expect(deleteSource(1)).rejects.toThrow('Network request failed');
+    });
+
+    it('should return void (no response body)', async () => {
+      // Arrange
+      vi.mocked(apiClient.delete).mockResolvedValue(undefined);
+
+      // Act
+      const result = await deleteSource(1);
+
+      // Assert
+      expect(result).toBeUndefined();
     });
   });
 });

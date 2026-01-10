@@ -63,6 +63,7 @@ interface Source {
 **Related Types:**
 - `CreateSourceInput`: Input for creating a new source (name, feedURL)
 - `UpdateSourceInput`: Input for updating an existing source (name, feedURL, active)
+- `DeleteSourceParams`: Parameters for deleting a source (id)
 - `SourceFormData`: Form state for source creation and editing UI
 - `SourceFormErrors`: Validation errors for source form
 - `SourceSearchParams`: Query parameters for source search (keyword, source_type, active)
@@ -890,6 +891,29 @@ onMutate: async ({ id, data }) => {
   // Optimistically update cache
   queryClient.setQueryData(['sources'], (old) =>
     old.map(s => s.id === id ? { ...s, ...data } : s)
+  );
+
+  return { previousSources }; // For rollback
+},
+onError: (_error, _variables, context) => {
+  // Roll back on error
+  queryClient.setQueryData(['sources'], context.previousSources);
+}
+```
+
+**Implementation in Source Delete:**
+```typescript
+// useDeleteSource hook performs optimistic updates
+onMutate: async ({ id }) => {
+  // Cancel outgoing queries
+  await queryClient.cancelQueries({ queryKey: ['sources'] });
+
+  // Snapshot current state
+  const previousSources = queryClient.getQueryData(['sources']);
+
+  // Optimistically remove from cache
+  queryClient.setQueryData(['sources'], (old) =>
+    old.filter(s => s.id !== id)
   );
 
   return { previousSources }; // For rollback

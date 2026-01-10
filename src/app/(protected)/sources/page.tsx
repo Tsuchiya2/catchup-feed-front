@@ -13,6 +13,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { AddSourceDialog } from '@/components/sources/AddSourceDialog';
 import { EditSourceDialog } from '@/components/sources/EditSourceDialog';
+import { DeleteSourceDialog } from '@/components/sources/DeleteSourceDialog';
 import { useSources } from '@/hooks/useSources';
 import { useSourceSearch } from '@/hooks/useSourceSearch';
 import { getUserRole } from '@/lib/auth/role';
@@ -44,6 +45,10 @@ function SourcesPageContent() {
   // Edit Source Dialog state
   const [editDialogOpen, setEditDialogOpen] = React.useState(false);
   const [selectedSource, setSelectedSource] = React.useState<Source | null>(null);
+
+  // Delete Source Dialog state
+  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+  const [sourceToDelete, setSourceToDelete] = React.useState<Source | null>(null);
 
   // Get search parameters from URL
   const keyword = searchParams.get('keyword') || '';
@@ -157,6 +162,33 @@ function SourcesPageContent() {
     setEditDialogOpen(false);
   }, []);
 
+  /**
+   * Handle source delete
+   * Opens the DeleteSourceDialog with the selected source
+   */
+  const handleDeleteSource = React.useCallback((source: Source) => {
+    setSourceToDelete(source);
+    setDeleteDialogOpen(true);
+  }, []);
+
+  /**
+   * Handle delete dialog close
+   * Resets the source to delete and closes the dialog
+   */
+  const handleDeleteDialogClose = React.useCallback(() => {
+    setSourceToDelete(null);
+    setDeleteDialogOpen(false);
+  }, []);
+
+  /**
+   * Handle delete dialog success
+   * Resets the source to delete and closes the dialog
+   */
+  const handleDeleteDialogSuccess = React.useCallback(() => {
+    setSourceToDelete(null);
+    setDeleteDialogOpen(false);
+  }, []);
+
   return (
     <div className="container py-8">
       {/* Page Header with Add Button */}
@@ -231,6 +263,7 @@ function SourcesPageContent() {
                 userRole={userRole}
                 onUpdateActive={handleUpdateActive}
                 onEdit={handleEditSource}
+                onDelete={handleDeleteSource}
               />
             ))}
           </div>
@@ -255,6 +288,16 @@ function SourcesPageContent() {
           isOpen={editDialogOpen}
           onClose={handleEditDialogClose}
           source={selectedSource}
+        />
+      )}
+
+      {/* Delete Source Dialog */}
+      {sourceToDelete && (
+        <DeleteSourceDialog
+          isOpen={deleteDialogOpen}
+          onClose={handleDeleteDialogClose}
+          source={sourceToDelete}
+          onSuccess={handleDeleteDialogSuccess}
         />
       )}
     </div>

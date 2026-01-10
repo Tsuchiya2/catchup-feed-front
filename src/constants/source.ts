@@ -31,6 +31,16 @@ export const SOURCE_TEST_IDS = {
   SAVE_BUTTON: 'source-save-button',
   /** Cancel button */
   CANCEL_BUTTON: 'source-cancel-button',
+  /** Delete button for source */
+  DELETE_BUTTON: 'source-delete-button',
+  /** Delete confirmation dialog */
+  DELETE_DIALOG: 'source-delete-dialog',
+  /** Confirm delete button */
+  DELETE_CONFIRM_BUTTON: 'source-delete-confirm-button',
+  /** Cancel delete button */
+  DELETE_CANCEL_BUTTON: 'source-delete-cancel-button',
+  /** Delete error message */
+  DELETE_ERROR: 'source-delete-error',
 } as const;
 
 /**
@@ -48,4 +58,10 @@ export const SOURCE_ARIA_LABELS = {
   SAVE_BUTTON: 'Save changes',
   /** ARIA label for cancel button */
   CANCEL_BUTTON: 'Cancel editing',
+  /** Generate ARIA label for delete button */
+  DELETE_BUTTON: (name: string) => `Delete source: ${name}`,
+  /** Generate ARIA label for delete confirm button */
+  DELETE_CONFIRM_BUTTON: (name: string) => `Confirm delete ${name}`,
+  /** ARIA label for delete cancel button */
+  DELETE_CANCEL_BUTTON: 'Cancel deletion',
 } as const;

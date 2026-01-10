@@ -214,6 +214,32 @@ export async function updateSource(id: number, data: UpdateSourceInput): Promise
 }
 
 /**
+ * Delete a source
+ *
+ * @param id - Source ID
+ * @returns Promise resolving when deletion is complete
+ * @throws {ApiError} When the request fails (401, 403, 404, 500)
+ *
+ * @example
+ * ```typescript
+ * try {
+ *   await deleteSource(1);
+ *   console.log('Source deleted successfully');
+ * } catch (error) {
+ *   if (error instanceof ApiError && error.status === 403) {
+ *     console.error('Permission denied - admin access required');
+ *   } else if (error instanceof ApiError && error.status === 404) {
+ *     console.error('Source not found');
+ *   }
+ * }
+ * ```
+ */
+export async function deleteSource(id: number): Promise<void> {
+  const endpoint = `/sources/${id}`;
+  await apiClient.delete(endpoint);
+}
+
+/**
  * Export types for convenience
  */
 export type { Source, SourcesResponse, SourceResponse, CreateSourceInput, UpdateSourceInput };

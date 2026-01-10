@@ -133,6 +133,7 @@ src/
 │   ├── sources/                # Source management components
 │   │   ├── __tests__/          # Source component tests
 │   │   ├── ActiveToggle.tsx    # Source active/inactive toggle
+│   │   ├── DeleteSourceDialog.tsx # Delete source confirmation dialog
 │   │   ├── EditSourceDialog.tsx # Edit source dialog
 │   │   ├── SourceForm.tsx      # Reusable form for create/edit
 │   │   ├── SourceSearch.tsx    # Source search component
@@ -163,6 +164,7 @@ src/
 │   ├── useCreateSource.ts      # Create source mutation
 │   ├── useDashboardStats.ts    # Dashboard statistics
 │   ├── useDebounce.ts          # Debounce utility hook
+│   ├── useDeleteSource.ts      # Delete source mutation
 │   ├── useSources.ts           # Fetch sources list
 │   ├── useSourceSearch.ts      # Source search with filters
 │   └── useUpdateSource.ts      # Update source mutation
@@ -423,6 +425,7 @@ All hooks use TanStack Query for data fetching with:
 **Mutation Hooks**:
 - `useCreateSource()`: Create new source with optimistic updates
 - `useUpdateSource()`: Update existing source with optimistic updates and rollback
+- `useDeleteSource()`: Delete source with optimistic updates and rollback
 
 **Utility Hooks**:
 - `useAuth()`: Authentication state and actions (login, logout)
@@ -481,6 +484,9 @@ Shadcn/ui base components with Tailwind CSS and Radix UI primitives:
 - `SourceSearch.tsx`: Source search form
 - `StatusBadge.tsx`: Source status badge (active/inactive)
 - `ActiveToggle.tsx`: Toggle source active/inactive
+- `EditSourceDialog.tsx`: Edit source dialog with form
+- `DeleteSourceDialog.tsx`: Delete confirmation dialog with error handling
+- `SourceForm.tsx`: Reusable form for create/edit operations
 
 ### Type Definitions (`src/types/`)
 

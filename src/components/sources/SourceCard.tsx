@@ -4,13 +4,14 @@
  * Displays a source (RSS feed) in a card format with:
  * - Source name and RSS icon
  * - Edit button (admin only, when onEdit provided)
+ * - Delete button (admin only, when onDelete provided)
  * - Feed URL (truncated with tooltip)
  * - Active/Inactive status badge (non-admin) or toggle (admin)
  * - Last crawled timestamp
  * - Cyber/glow theme styling
  */
 import * as React from 'react';
-import { Rss, Pencil } from 'lucide-react';
+import { Rss, Pencil, Trash2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -35,6 +36,8 @@ interface SourceCardProps {
   onUpdateActive?: (sourceId: number, active: boolean) => Promise<void>;
   /** Callback when edit button is clicked (admin only) */
   onEdit?: (source: Source) => void;
+  /** Callback when delete button is clicked (admin only) */
+  onDelete?: (source: Source) => void;
 }
 
 /**
@@ -49,6 +52,7 @@ interface SourceCardProps {
  *   userRole={userRole}
  *   onUpdateActive={handleUpdateActive}
  *   onEdit={handleEdit}
+ *   onDelete={handleDelete}
  * />
  * ```
  */
@@ -58,6 +62,7 @@ export const SourceCard = React.memo(function SourceCard({
   userRole,
   onUpdateActive,
   onEdit,
+  onDelete,
 }: SourceCardProps) {
   const lastCrawled = source.last_crawled_at
     ? formatRelativeTime(source.last_crawled_at)
@@ -103,6 +108,18 @@ export const SourceCard = React.memo(function SourceCard({
                   aria-label={SOURCE_ARIA_LABELS.EDIT_BUTTON(source.name)}
                 >
                   <Pencil className="h-4 w-4" />
+                </Button>
+              )}
+              {isAdmin && onDelete && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 shrink-0 text-destructive hover:text-destructive"
+                  onClick={() => onDelete(source)}
+                  data-testid={SOURCE_TEST_IDS.DELETE_BUTTON}
+                  aria-label={SOURCE_ARIA_LABELS.DELETE_BUTTON(source.name)}
+                >
+                  <Trash2 className="h-4 w-4" />
                 </Button>
               )}
             </div>

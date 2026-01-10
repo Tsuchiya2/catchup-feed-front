@@ -695,6 +695,7 @@ performance.measure('API: getArticles', start, end);
 **US-4.4**: As a user, I want to see when sources were last crawled so that I know content freshness.
 **US-4.5**: As a user, I want to search sources by name so that I can quickly find specific feeds.
 **US-4.6**: As an admin, I want to edit existing sources so that I can correct errors or update feed URLs.
+**US-4.7**: As an admin, I want to delete sources so that I can remove defunct or unwanted feed sources.
 
 ### Epic 5: Dashboard & Overview
 
@@ -839,6 +840,19 @@ performance.measure('API: getArticles', start, end);
 **AC-4.6.8**: Edit button has accessible ARIA label: "Edit source: {source_name}"
 **AC-4.6.9**: Editing preserves source active status
 **AC-4.6.10**: Cancel button closes dialog without saving changes
+
+### Source Deletion (US-4.7)
+
+**AC-4.7.1**: Delete button visible only to admin users on source cards
+**AC-4.7.2**: Delete button has accessible ARIA label: "Delete source: {source_name}"
+**AC-4.7.3**: Clicking delete button opens confirmation dialog
+**AC-4.7.4**: Confirmation dialog displays source name and warning message
+**AC-4.7.5**: Dialog provides "Cancel" and "Delete" buttons
+**AC-4.7.6**: Successful deletion shows optimistic update, then confirms from server
+**AC-4.7.7**: Failed deletion shows error message and rolls back optimistic update
+**AC-4.7.8**: API endpoint: DELETE /sources/{id}
+**AC-4.7.9**: Deletion is permanent and cannot be undone
+**AC-4.7.10**: Cancel button closes dialog without deleting source
 
 ### Dashboard (US-5.x)
 

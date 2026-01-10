@@ -577,6 +577,296 @@ describe('SourceCard', () => {
     });
   });
 
+  describe('Delete Button', () => {
+    const mockOnDelete = vi.fn();
+
+    beforeEach(() => {
+      vi.clearAllMocks();
+    });
+
+    describe('Visibility', () => {
+      it('shows delete button for admin users when onDelete prop provided', () => {
+        const source = createMockSource({ name: 'Tech Blog' });
+        render(<SourceCard source={source} userRole="admin" onDelete={mockOnDelete} />);
+
+        const deleteButton = screen.getByTestId('source-delete-button');
+        expect(deleteButton).toBeInTheDocument();
+      });
+
+      it('hides delete button for non-admin users', () => {
+        const source = createMockSource();
+        render(<SourceCard source={source} userRole="user" onDelete={mockOnDelete} />);
+
+        expect(screen.queryByTestId('source-delete-button')).not.toBeInTheDocument();
+      });
+
+      it('hides delete button when onDelete prop not provided', () => {
+        const source = createMockSource();
+        render(<SourceCard source={source} userRole="admin" />);
+
+        expect(screen.queryByTestId('source-delete-button')).not.toBeInTheDocument();
+      });
+
+      it('hides delete button when userRole is null', () => {
+        const source = createMockSource();
+        render(<SourceCard source={source} userRole={null} onDelete={mockOnDelete} />);
+
+        expect(screen.queryByTestId('source-delete-button')).not.toBeInTheDocument();
+      });
+
+      it('shows delete button only when both admin role AND onDelete callback are present', () => {
+        const source = createMockSource();
+
+        // Admin without onDelete - no button
+        const { rerender } = render(<SourceCard source={source} userRole="admin" />);
+        expect(screen.queryByTestId('source-delete-button')).not.toBeInTheDocument();
+
+        // Admin with onDelete - button appears
+        rerender(<SourceCard source={source} userRole="admin" onDelete={mockOnDelete} />);
+        expect(screen.getByTestId('source-delete-button')).toBeInTheDocument();
+
+        // User with onDelete - no button
+        rerender(<SourceCard source={source} userRole="user" onDelete={mockOnDelete} />);
+        expect(screen.queryByTestId('source-delete-button')).not.toBeInTheDocument();
+      });
+    });
+
+    describe('Click Behavior', () => {
+      it('calls onDelete with source when delete button clicked', () => {
+        const source = createMockSource({
+          id: 42,
+          name: 'Tech Blog',
+          feed_url: 'https://example.com/feed',
+          active: true,
+        });
+
+        render(<SourceCard source={source} userRole="admin" onDelete={mockOnDelete} />);
+
+        const deleteButton = screen.getByTestId('source-delete-button');
+        fireEvent.click(deleteButton);
+
+        expect(mockOnDelete).toHaveBeenCalledTimes(1);
+        expect(mockOnDelete).toHaveBeenCalledWith(source);
+      });
+
+      it('handles multiple clicks correctly', () => {
+        const source = createMockSource({ id: 1, name: 'Test Source' });
+
+        render(<SourceCard source={source} userRole="admin" onDelete={mockOnDelete} />);
+
+        const deleteButton = screen.getByTestId('source-delete-button');
+
+        // First click
+        fireEvent.click(deleteButton);
+        expect(mockOnDelete).toHaveBeenCalledTimes(1);
+        expect(mockOnDelete).toHaveBeenCalledWith(source);
+
+        // Second click
+        fireEvent.click(deleteButton);
+        expect(mockOnDelete).toHaveBeenCalledTimes(2);
+        expect(mockOnDelete).toHaveBeenCalledWith(source);
+      });
+
+      it('passes complete source object including all properties', () => {
+        const source = createMockSource({
+          id: 123,
+          name: 'Complete Source',
+          feed_url: 'https://complete.com/feed',
+          active: false,
+          last_crawled_at: '2025-01-10T10:00:00Z',
+        });
+
+        render(<SourceCard source={source} userRole="admin" onDelete={mockOnDelete} />);
+
+        const deleteButton = screen.getByTestId('source-delete-button');
+        fireEvent.click(deleteButton);
+
+        expect(mockOnDelete).toHaveBeenCalledWith({
+          id: 123,
+          name: 'Complete Source',
+          feed_url: 'https://complete.com/feed',
+          active: false,
+          last_crawled_at: '2025-01-10T10:00:00Z',
+        });
+      });
+    });
+
+    describe('Accessibility', () => {
+      it('delete button has correct ARIA label', () => {
+        const source = createMockSource({ name: 'Tech Blog' });
+        render(<SourceCard source={source} userRole="admin" onDelete={mockOnDelete} />);
+
+        const deleteButton = screen.getByTestId('source-delete-button');
+        expect(deleteButton).toHaveAttribute('aria-label', 'Delete source: Tech Blog');
+      });
+
+      it('delete button has correct aria-label for different source names', () => {
+        const source = createMockSource({ name: 'News Feed 123' });
+        render(<SourceCard source={source} userRole="admin" onDelete={mockOnDelete} />);
+
+        const deleteButton = screen.getByTestId('source-delete-button');
+        expect(deleteButton).toHaveAttribute('aria-label', 'Delete source: News Feed 123');
+      });
+
+      it('delete button has correct data-testid', () => {
+        const source = createMockSource();
+        render(<SourceCard source={source} userRole="admin" onDelete={mockOnDelete} />);
+
+        const deleteButton = screen.queryByTestId('source-delete-button');
+        expect(deleteButton).toBeInTheDocument();
+      });
+
+      it('delete button is keyboard accessible and focusable', () => {
+        const source = createMockSource({ name: 'Test Source' });
+        render(<SourceCard source={source} userRole="admin" onDelete={mockOnDelete} />);
+
+        const deleteButton = screen.getByTestId('source-delete-button');
+
+        // Button should be focusable
+        deleteButton.focus();
+        expect(deleteButton).toHaveFocus();
+
+        // Button should not have tabIndex -1 (should be in tab order)
+        expect(deleteButton).not.toHaveAttribute('tabIndex', '-1');
+      });
+
+      it('delete button has proper button role', () => {
+        const source = createMockSource();
+        render(<SourceCard source={source} userRole="admin" onDelete={mockOnDelete} />);
+
+        const deleteButton = screen.getByTestId('source-delete-button');
+        // Button element should have role="button" (implicit)
+        expect(deleteButton.tagName).toBe('BUTTON');
+      });
+
+      it('delete button renders Trash2 icon for visual indication', () => {
+        const source = createMockSource();
+        render(<SourceCard source={source} userRole="admin" onDelete={mockOnDelete} />);
+
+        const deleteButton = screen.getByTestId('source-delete-button');
+        const icon = deleteButton.querySelector('svg');
+        expect(icon).toBeInTheDocument();
+      });
+    });
+
+    describe('Styling', () => {
+      it('delete button has ghost variant and icon size', () => {
+        const source = createMockSource();
+        render(<SourceCard source={source} userRole="admin" onDelete={mockOnDelete} />);
+
+        const deleteButton = screen.getByTestId('source-delete-button');
+        expect(deleteButton).toHaveClass('h-8');
+        expect(deleteButton).toHaveClass('w-8');
+      });
+
+      it('delete button does not shrink in flex layout', () => {
+        const source = createMockSource();
+        render(<SourceCard source={source} userRole="admin" onDelete={mockOnDelete} />);
+
+        const deleteButton = screen.getByTestId('source-delete-button');
+        expect(deleteButton).toHaveClass('shrink-0');
+      });
+    });
+
+    describe('Integration with Other Features', () => {
+      it('coexists with edit button for admin', () => {
+        const mockOnEdit = vi.fn();
+        const source = createMockSource({ active: true });
+
+        render(
+          <SourceCard
+            source={source}
+            userRole="admin"
+            onEdit={mockOnEdit}
+            onDelete={mockOnDelete}
+          />
+        );
+
+        // Both edit and delete buttons should be present
+        expect(screen.getByTestId('source-edit-button')).toBeInTheDocument();
+        expect(screen.getByTestId('source-delete-button')).toBeInTheDocument();
+      });
+
+      it('coexists with ActiveToggle for admin', () => {
+        const mockOnUpdateActive = vi.fn();
+        const source = createMockSource({ active: true });
+
+        render(
+          <SourceCard
+            source={source}
+            userRole="admin"
+            onDelete={mockOnDelete}
+            onUpdateActive={mockOnUpdateActive}
+          />
+        );
+
+        // Both delete button and toggle should be present
+        expect(screen.getByTestId('source-delete-button')).toBeInTheDocument();
+        expect(screen.getByRole('switch')).toBeInTheDocument();
+      });
+
+      it('does not interfere with status badge for non-admin', () => {
+        const source = createMockSource({ active: true });
+
+        render(<SourceCard source={source} userRole="user" onDelete={mockOnDelete} />);
+
+        // Badge should be visible, delete button should not
+        expect(screen.getByText('Active')).toBeInTheDocument();
+        expect(screen.queryByTestId('source-delete-button')).not.toBeInTheDocument();
+      });
+
+      it('renders correctly alongside other card elements', () => {
+        const source = createMockSource({
+          name: 'Tech Blog',
+          feed_url: 'https://example.com/feed',
+          active: true,
+          last_crawled_at: new Date(NOW.getTime() - 1 * 60 * 60 * 1000).toISOString(),
+        });
+
+        render(<SourceCard source={source} userRole="admin" onDelete={mockOnDelete} />);
+
+        // All elements should be present
+        expect(screen.getByRole('heading', { name: 'Tech Blog' })).toBeInTheDocument();
+        expect(screen.getByTestId('source-delete-button')).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: /visit feed:/i })).toBeInTheDocument();
+        expect(screen.getByText('1 hour ago')).toBeInTheDocument();
+      });
+    });
+
+    describe('Edge Cases', () => {
+      it('handles source with special characters in name', () => {
+        const source = createMockSource({ name: '<script>XSS</script>' });
+        render(<SourceCard source={source} userRole="admin" onDelete={mockOnDelete} />);
+
+        const deleteButton = screen.getByTestId('source-delete-button');
+        expect(deleteButton).toHaveAttribute('aria-label', 'Delete source: <script>XSS</script>');
+
+        fireEvent.click(deleteButton);
+        expect(mockOnDelete).toHaveBeenCalledWith(source);
+      });
+
+      it('handles source with unicode characters in name', () => {
+        const source = createMockSource({ name: '日本語ソース 🎉' });
+        render(<SourceCard source={source} userRole="admin" onDelete={mockOnDelete} />);
+
+        const deleteButton = screen.getByTestId('source-delete-button');
+        expect(deleteButton).toHaveAttribute('aria-label', 'Delete source: 日本語ソース 🎉');
+
+        fireEvent.click(deleteButton);
+        expect(mockOnDelete).toHaveBeenCalledWith(source);
+      });
+
+      it('handles very long source names', () => {
+        const longName = 'A'.repeat(200);
+        const source = createMockSource({ name: longName });
+        render(<SourceCard source={source} userRole="admin" onDelete={mockOnDelete} />);
+
+        const deleteButton = screen.getByTestId('source-delete-button');
+        expect(deleteButton).toHaveAttribute('aria-label', `Delete source: ${longName}`);
+      });
+    });
+  });
+
   describe('Role-Based Rendering', () => {
     const mockOnUpdateActive = vi.fn();
 
