@@ -52,15 +52,15 @@ test.describe('Source Delete Performance @performance', () => {
     // Wait for sources to load
     await page.waitForSelector('[data-testid="source-card"]');
 
-    // Measure dialog open time
-    const startTime = await page.evaluate(() => performance.now());
-
     // Click delete button (assumes admin user)
     const deleteButton = page.locator('[data-testid="source-delete-button"]').first();
 
     // If delete button exists (admin user), click it
     if (await deleteButton.isVisible()) {
       await deleteButton.click();
+
+      // Measure dialog open time (start after click to isolate dialog render time)
+      const startTime = await page.evaluate(() => performance.now());
 
       // Wait for dialog to appear
       await page.waitForSelector('[data-testid="source-delete-dialog"]');
