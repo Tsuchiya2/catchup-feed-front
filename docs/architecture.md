@@ -2,7 +2,7 @@
 
 **Project**: catchup-feed-web
 **Version**: 1.1.0
-**Last Updated**: 2026-01-05
+**Last Updated**: 2026-01-10
 
 ## Table of Contents
 
@@ -26,12 +26,13 @@ Catchup Feed is a Next.js-based frontend application that provides a personalize
 
 ### Key Characteristics
 
-- **Framework**: Next.js 15 with App Router (React Server Components)
+- **Framework**: Next.js 16.1.1 with App Router (React Server Components) and Turbopack
 - **Language**: TypeScript (strict mode)
 - **Deployment Model**: Server-Side Rendering (SSR) + Static Site Generation (SSG)
 - **API Communication**: REST with Go backend
 - **Authentication**: JWT-based with refresh tokens
 - **Security**: CSRF protection, secure headers, content security policy
+- **PWA**: Progressive Web App with Serwist service worker
 
 ---
 
@@ -67,7 +68,8 @@ The application follows a **Layered Architecture** with clear separation of conc
 ┌─────────────────────────────────────────────────────────────┐
 │                  INFRASTRUCTURE LAYER                        │
 │  (Cross-cutting Concerns)                                   │
-│  - middleware.ts         : Next.js Edge middleware          │
+│  - proxy.ts              : Next.js 16 Edge proxy            │
+│  - sw.ts                 : Serwist service worker (PWA)     │
 │  - lib/auth/*            : Authentication utilities         │
 │  - lib/security/*        : CSRF protection                  │
 │  - lib/observability/*   : Logging, metrics, tracing        │
@@ -132,9 +134,9 @@ app/
     └── articles/search/ # Article search proxy
 ```
 
-### 2. Middleware Layer
+### 2. Proxy Layer (Next.js 16)
 
-**File**: `src/middleware.ts`
+**File**: `src/proxy.ts` (renamed from `middleware.ts`)
 **Runtime**: Next.js Edge Runtime
 **Responsibilities**:
 
@@ -143,9 +145,11 @@ app/
 3. **Route Protection**: Redirects unauthenticated users to login
 4. **Token Management**: Sets CSRF tokens in cookies and headers
 
+**Breaking Change in Next.js 16**: Function must be named `proxy` instead of `middleware`
+
 ```typescript
-// Middleware execution flow
-export function middleware(request: NextRequest) {
+// Proxy execution flow (Next.js 16)
+export function proxy(request: NextRequest) {
   // Phase 1: CSRF Validation (for POST/PUT/PATCH/DELETE)
   if (STATE_CHANGING_METHODS.includes(method)) {
     validateCsrfToken(request);
@@ -165,6 +169,26 @@ export function middleware(request: NextRequest) {
   return response;
 }
 ```
+
+### 2.1 Service Worker Layer (PWA)
+
+**File**: `src/sw.ts`
+**Library**: Serwist 9.x (replaces Workbox)
+**Purpose**: Progressive Web App functionality with offline support
+
+**Features**:
+- Precaching with automatic cache manifest injection
+- 5 runtime caching strategies for different resource types
+- Automatic cache cleanup for outdated entries
+- Navigation preload for faster page loads
+- Skip waiting and immediate client claiming for instant updates
+
+**Caching Strategies**:
+1. **Google Fonts Stylesheets** (CacheFirst, 1 year, max 10 entries)
+2. **Google Static Fonts** (CacheFirst, 1 year, max 10 entries)
+3. **Images** (CacheFirst, 30 days, max 100 entries)
+4. **Static Resources** (JS/CSS/fonts) (StaleWhileRevalidate, 1 day, max 50 entries)
+5. **API Requests** (NetworkFirst with 10s timeout, 1 hour cache, max 100 entries)
 
 ### 3. API Client Layer
 
@@ -292,8 +316,8 @@ export function useArticles(query?: ArticlesQuery): UseArticlesReturn {
 
 | Technology | Version | Purpose |
 |------------|---------|---------|
-| **Next.js** | 15.0.0 | React framework with SSR/SSG |
-| **React** | 19.0.0 | UI library |
+| **Next.js** | 16.1.1 | React framework with SSR/SSG and Turbopack |
+| **React** | 19.2.3 | UI library |
 | **TypeScript** | 5.x | Type-safe development |
 | **TanStack Query** | 5.90.11 | Server state management |
 | **TailwindCSS** | 4.0.0 | Utility-first CSS |
@@ -316,7 +340,8 @@ export function useArticles(query?: ArticlesQuery): UseArticlesReturn {
 | **Sentry** | Error tracking and performance monitoring |
 | **Jose** | JWT token handling |
 | **Zod** | Runtime type validation |
-| **next-pwa** | Progressive Web App features |
+| **@serwist/next** | Next.js PWA integration (replaces next-pwa) |
+| **serwist** | Service worker runtime library |
 
 ### Build Tools
 
@@ -696,34 +721,63 @@ queryClient.invalidateQueries({ queryKey: ['articles'] });
 - `/articles`
 - `/sources`
 
-### 3. Service Worker Cache (PWA)
+### 3. Service Worker Cache (PWA with Serwist)
 
 **Enabled in**: Production only
-**Configured in**: `next.config.ts`
+**Configured in**: `next.config.ts` and `src/sw.ts`
+**Library**: Serwist 9.x (modern Workbox alternative)
 
 **Caching Strategies**:
 
-| Resource Type | Strategy | Cache Duration |
-|---------------|----------|----------------|
-| **Google Fonts** | CacheFirst | 1 year |
-| **Static Images** | CacheFirst | 30 days |
-| **JS/CSS/Fonts** | StaleWhileRevalidate | 1 day |
-| **API Calls** | NetworkFirst (10s timeout) | 1 hour |
+| Resource Type | Strategy | Cache Name | Duration | Max Entries |
+|---------------|----------|------------|----------|-------------|
+| **Google Fonts Stylesheets** | CacheFirst | google-fonts-cache | 1 year | 10 |
+| **Google Static Fonts** | CacheFirst | gstatic-fonts-cache | 1 year | 10 |
+| **Images** | CacheFirst | image-cache | 30 days | 100 |
+| **JS/CSS/Fonts** | StaleWhileRevalidate | static-resources-cache | 1 day | 50 |
+| **API Calls** | NetworkFirst (10s timeout) | api-cache | 1 hour | 100 |
 
+**Serwist Configuration** (`src/sw.ts`):
 ```typescript
-// API caching example
-{
-  urlPattern: /^https?:\/\/.*\/api\/.*/i,
-  handler: 'NetworkFirst',
-  options: {
-    cacheName: 'api-cache',
-    networkTimeoutSeconds: 10,  // Fallback to cache after 10s
-    expiration: {
-      maxEntries: 100,
-      maxAgeSeconds: 60 * 60,   // 1 hour
+const serwist = new Serwist({
+  precacheEntries: self.__SW_MANIFEST,
+  skipWaiting: true,
+  clientsClaim: true,
+  navigationPreload: true,
+  runtimeCaching: [
+    {
+      matcher: ({ url }) => url.origin === 'https://fonts.googleapis.com',
+      handler: new CacheFirst({
+        cacheName: 'google-fonts-cache',
+        plugins: [
+          new ExpirationPlugin({
+            maxEntries: 10,
+            maxAgeSeconds: 365 * 24 * 60 * 60, // 1 year
+          }),
+          new CacheableResponsePlugin({
+            statuses: [0, 200],
+          }),
+        ],
+      }),
     },
-  },
-}
+    // ... 4 more strategies
+  ],
+});
+
+serwist.addEventListeners();
+```
+
+**Next.js Integration** (`next.config.ts`):
+```typescript
+import withSerwistInit from '@serwist/next';
+
+const withSerwist = withSerwistInit({
+  swSrc: 'src/sw.ts',
+  swDest: 'public/sw.js',
+  disable: process.env.NODE_ENV === 'development',
+});
+
+export default withSerwist(nextConfig);
 ```
 
 ### 4. HTTP Cache Headers
@@ -747,7 +801,7 @@ Cache-Control: no-cache, must-revalidate
 **Service**: Sentry
 **Configuration**: `src/lib/observability/`
 
-**Initialized in**: `instrumentation.ts` (Next.js 15 convention)
+**Initialized in**: `instrumentation.ts` (Next.js 16 convention)
 
 **Features**:
 - Automatic error capture (client + server)
@@ -1079,7 +1133,8 @@ catchup-feed-frontend/
 │   ├── providers/              # Context providers
 │   ├── types/                  # TypeScript types
 │   ├── utils/                  # Utility functions
-│   └── middleware.ts           # Next.js middleware
+│   ├── proxy.ts                # Next.js 16 proxy (renamed from middleware)
+│   └── sw.ts                   # Serwist service worker
 ├── public/                     # Static assets
 │   ├── manifest.json           # PWA manifest
 │   ├── sw.js                   # Service Worker (generated)
@@ -1095,11 +1150,13 @@ catchup-feed-frontend/
 
 ### B. Key Design Decisions
 
-1. **Why Next.js 15 App Router?**
+1. **Why Next.js 16 App Router?**
    - Modern React Server Components
+   - Turbopack for faster development builds (5-10x faster Fast Refresh)
    - Better performance (streaming, partial hydration)
    - Improved developer experience
-   - Built-in middleware for auth/CSRF
+   - Built-in proxy (renamed from middleware) for auth/CSRF
+   - Security patches for CVE-2025-55184 and CVE-2025-55183
 
 2. **Why TanStack Query instead of SWR?**
    - More powerful caching strategies
@@ -1119,11 +1176,19 @@ catchup-feed-frontend/
    - Protection against CSRF attacks
    - Simple to implement and validate
 
-5. **Why Edge Runtime for Middleware?**
+5. **Why Edge Runtime for Proxy?**
    - Low latency (runs closer to user)
    - Fast JWT validation
    - No cold starts
    - Cost-effective for auth checks
+
+6. **Why Serwist instead of next-pwa?**
+   - Active maintenance (next-pwa unmaintained for ~1 year)
+   - Better TypeScript support
+   - Modern Workbox-compatible API
+   - Smaller bundle size and better performance
+   - Community-driven development (50+ contributors)
+   - Turbopack compatibility roadmap (GitHub issue #54)
 
 ### C. Key Design Patterns
 

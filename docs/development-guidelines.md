@@ -3,8 +3,8 @@
 > Coding standards, conventions, and best practices for catchup-feed-web
 
 **Project**: catchup-feed-web
-**Stack**: Next.js 15 (App Router), React 19, TypeScript 5, Tailwind CSS 4
-**Last Updated**: 2026-01-05
+**Stack**: Next.js 16.1.1 (App Router), React 19.2.3, TypeScript 5, Tailwind CSS 4
+**Last Updated**: 2026-01-10
 
 ---
 
@@ -33,8 +33,8 @@
 
 | Technology | Version | Purpose |
 |------------|---------|---------|
-| **Next.js** | 15.0.0 | React framework with App Router |
-| **React** | 19.0.0 | UI library |
+| **Next.js** | 16.1.1 | React framework with App Router and Turbopack |
+| **React** | 19.2.3 | UI library |
 | **TypeScript** | 5.x | Type-safe JavaScript |
 | **Tailwind CSS** | 4.x | Utility-first CSS framework |
 | **TanStack Query** | 5.90.11 | Server state management |
@@ -55,6 +55,11 @@
 - **Radix UI** - Headless accessible components
 - **Lucide React** (0.555.0) - Icon library
 - **class-variance-authority** - Variant-based styling
+
+### PWA & Service Worker
+
+- **@serwist/next** (9.x) - Next.js PWA integration (replaces next-pwa)
+- **serwist** (9.x) - Modern service worker library with Workbox-compatible API
 
 ---
 
@@ -124,14 +129,15 @@ src/
 │   └── ThemeProvider.tsx       # Theme provider
 ├── types/                      # TypeScript type definitions
 │   ├── api.d.ts                # API types (auto-generated)
-│   └── next-pwa.d.ts           # PWA types
+│   └── serwist.d.ts            # Serwist PWA types
 ├── utils/                      # Utility functions
 │   ├── article.ts              # Article utilities
 │   ├── validation/             # Validation utilities
 │   │   └── sourceValidation.ts # Source form validation
 │   ├── sourceTransformers.ts   # Source data transformers
 │   └── errorMessages.ts        # Error message utilities
-└── middleware.ts               # Next.js middleware (auth, CSRF)
+├── proxy.ts                    # Next.js 16 proxy (renamed from middleware)
+└── sw.ts                       # Serwist service worker (PWA)
 ```
 
 ### Directory Organization Principles
@@ -1287,10 +1293,10 @@ npm run analyze:server
 ### CSRF Protection
 
 ```typescript
-// middleware.ts - Validates CSRF tokens for state-changing requests
+// proxy.ts - Validates CSRF tokens for state-changing requests (renamed from middleware.ts in Next.js 16)
 const STATE_CHANGING_METHODS = ['POST', 'PUT', 'PATCH', 'DELETE'];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   // Add CSRF token to response headers
   if (request.method === 'GET') {
     const response = NextResponse.next();
@@ -1517,7 +1523,7 @@ npm run storybook        # Start Storybook (http://localhost:6006)
 
 ### Documentation
 
-- [Next.js 15 Docs](https://nextjs.org/docs)
+- [Next.js 16 Docs](https://nextjs.org/docs)
 - [React 19 Docs](https://react.dev/)
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/)
 - [Tailwind CSS Docs](https://tailwindcss.com/docs)
@@ -1533,7 +1539,7 @@ npm run storybook        # Start Storybook (http://localhost:6006)
 
 ---
 
-**Last Updated**: 2026-01-05
+**Last Updated**: 2026-01-10
 **Maintainers**: Development Team
 
 For questions or suggestions about these guidelines, please open an issue or submit a pull request.

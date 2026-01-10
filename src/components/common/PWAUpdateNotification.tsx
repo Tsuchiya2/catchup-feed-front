@@ -4,7 +4,7 @@
  * PWA Update Notification Component
  *
  * Displays a notification when a new version of the PWA is available.
- * Uses Workbox Window to detect updates and provides a reload button.
+ * Uses Serwist to detect updates and provides a reload button.
  *
  * Features:
  * - Detects service worker updates
@@ -45,20 +45,20 @@ export function PWAUpdateNotification() {
       return;
     }
 
-    let wb: InstanceType<typeof import('workbox-window').Workbox> | null = null;
+    let serwist: InstanceType<typeof import('@serwist/window').Serwist> | null = null;
 
-    // Import Workbox Window dynamically
-    import('workbox-window')
-      .then(({ Workbox }) => {
+    // Import Serwist Window dynamically
+    import('@serwist/window')
+      .then(({ Serwist }) => {
         // Check if running in production and PWA is enabled
         if (process.env.NODE_ENV !== 'production') {
           return;
         }
 
-        wb = new Workbox('/sw.js');
+        serwist = new Serwist('/sw.js');
 
         // Listen for waiting event
-        wb.addEventListener('waiting', (event) => {
+        serwist.addEventListener('waiting', (event) => {
           console.log('New service worker is waiting');
           setWaitingWorker(event.sw ?? null);
           setShowNotification(true);
@@ -66,18 +66,18 @@ export function PWAUpdateNotification() {
         });
 
         // Listen for controlling event (new SW has taken control)
-        wb.addEventListener('controlling', () => {
+        serwist.addEventListener('controlling', () => {
           console.log('New service worker is controlling');
           window.location.reload();
         });
 
         // Register the service worker
-        wb.register().catch((error) => {
+        serwist.register().catch((error) => {
           console.error('Service worker registration failed:', error);
         });
       })
       .catch((error) => {
-        console.error('Failed to load Workbox:', error);
+        console.error('Failed to load Serwist:', error);
       });
 
     // Also listen for updates using native API as fallback
@@ -104,7 +104,7 @@ export function PWAUpdateNotification() {
 
     return () => {
       clearInterval(interval);
-      // Note: Workbox event listeners are automatically cleaned up when the
+      // Note: Serwist event listeners are automatically cleaned up when the
       // service worker is unregistered or replaced
     };
   }, []);

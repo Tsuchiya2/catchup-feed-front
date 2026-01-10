@@ -56,8 +56,8 @@ docs/designs/
 # Storybook build artifacts
 storybook-static/
 
-# PWA generated files
+# Serwist generated files
 public/sw.js
 public/sw.js.map
-public/workbox-*.js
-public/workbox-*.js.map
+public/swe-worker-*.js
+public/swe-worker-*.js.map

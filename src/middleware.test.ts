@@ -1,7 +1,7 @@
 /**
- * Middleware Integration Tests for CSRF Protection
+ * Proxy Function Integration Tests for CSRF Protection
  *
- * Tests CSRF token validation logic in Next.js middleware, covering:
+ * Tests CSRF token validation logic in Next.js 16 proxy function, covering:
  * - State-changing methods (POST, PUT, PATCH, DELETE) require valid CSRF token
  * - Safe methods (GET, HEAD, OPTIONS) do not require CSRF token
  * - Exempt routes skip CSRF validation
@@ -11,7 +11,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { NextRequest, NextResponse } from 'next/server';
-import { middleware } from './middleware';
+import { proxy } from './proxy';
 import * as csrfUtils from '@/lib/security/csrf';
 
 // Mock the CSRF utilities
@@ -29,7 +29,7 @@ vi.mock('jose', async () => {
   };
 });
 
-describe('Middleware - CSRF Protection Integration Tests', () => {
+describe('Proxy Function - CSRF Protection Integration Tests', () => {
   const mockValidToken = 'valid-jwt-token';
   const mockCsrfToken = 'test-csrf-token-1234567890abcdef';
 
@@ -50,7 +50,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
       });
 
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert
       expect(csrfUtils.validateCsrfToken).not.toHaveBeenCalled();
@@ -71,7 +71,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
       });
 
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert
       expect(csrfUtils.validateCsrfToken).not.toHaveBeenCalled();
@@ -86,7 +86,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
       });
 
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert
       expect(csrfUtils.validateCsrfToken).not.toHaveBeenCalled();
@@ -105,7 +105,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
       vi.mocked(csrfUtils.validateCsrfToken).mockReturnValue(false);
 
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert
       expect(csrfUtils.validateCsrfToken).toHaveBeenCalledWith(request);
@@ -141,7 +141,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
       vi.mocked(csrfUtils.validateCsrfToken).mockReturnValue(true);
 
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert
       expect(csrfUtils.validateCsrfToken).toHaveBeenCalledWith(request);
@@ -163,7 +163,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
       vi.mocked(csrfUtils.validateCsrfToken).mockReturnValue(false);
 
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert
       expect(csrfUtils.validateCsrfToken).toHaveBeenCalledWith(request);
@@ -183,7 +183,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
       vi.mocked(csrfUtils.validateCsrfToken).mockReturnValue(false);
 
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert
       expect(response.status).toBe(403);
@@ -202,7 +202,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
       vi.mocked(csrfUtils.validateCsrfToken).mockReturnValue(false);
 
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert
       expect(response.status).toBe(403);
@@ -220,7 +220,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
       vi.mocked(csrfUtils.validateCsrfToken).mockReturnValue(false);
 
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert
       expect(csrfUtils.validateCsrfToken).toHaveBeenCalledWith(request);
@@ -246,7 +246,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
       vi.mocked(csrfUtils.validateCsrfToken).mockReturnValue(true);
 
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert
       expect(csrfUtils.validateCsrfToken).toHaveBeenCalledWith(request);
@@ -263,7 +263,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
       vi.mocked(csrfUtils.validateCsrfToken).mockReturnValue(false);
 
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert
       expect(csrfUtils.validateCsrfToken).toHaveBeenCalledWith(request);
@@ -289,7 +289,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
       vi.mocked(csrfUtils.validateCsrfToken).mockReturnValue(true);
 
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert
       expect(csrfUtils.validateCsrfToken).toHaveBeenCalledWith(request);
@@ -306,7 +306,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
       vi.mocked(csrfUtils.validateCsrfToken).mockReturnValue(false);
 
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert
       expect(csrfUtils.validateCsrfToken).toHaveBeenCalledWith(request);
@@ -332,7 +332,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
       vi.mocked(csrfUtils.validateCsrfToken).mockReturnValue(true);
 
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert
       expect(csrfUtils.validateCsrfToken).toHaveBeenCalledWith(request);
@@ -349,7 +349,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
 
       // No CSRF token set
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert - validateCsrfToken should not be called for exempt routes
       expect(csrfUtils.validateCsrfToken).not.toHaveBeenCalled();
@@ -364,7 +364,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
 
       // No CSRF token set
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert
       expect(csrfUtils.validateCsrfToken).not.toHaveBeenCalled();
@@ -379,7 +379,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
 
       // No CSRF token set
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert
       expect(csrfUtils.validateCsrfToken).not.toHaveBeenCalled();
@@ -401,7 +401,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
       });
 
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert
       expect(csrfUtils.setCsrfToken).toHaveBeenCalledWith(expect.any(NextResponse));
@@ -415,7 +415,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
 
       // No auth token (user not logged in)
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert
       expect(csrfUtils.setCsrfToken).toHaveBeenCalledWith(expect.any(NextResponse));
@@ -429,7 +429,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
 
       // No auth token
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert
       expect(csrfUtils.setCsrfToken).not.toHaveBeenCalled();
@@ -454,7 +454,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
       vi.mocked(csrfUtils.validateCsrfToken).mockReturnValue(true);
 
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert
       expect(csrfUtils.setCsrfToken).toHaveBeenCalledWith(expect.any(NextResponse));
@@ -472,7 +472,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
       vi.mocked(csrfUtils.validateCsrfToken).mockReturnValue(false);
 
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert
       expect(response.status).toBe(403);
@@ -495,7 +495,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
       vi.mocked(csrfUtils.validateCsrfToken).mockReturnValue(false);
 
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert
       expect(response.status).toBe(403);
@@ -513,7 +513,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
         method: 'GET',
       });
 
-      const loginResponse = middleware(loginRequest);
+      const loginResponse = proxy(loginRequest);
 
       // Assert: CSRF token should be set on login page
       expect(csrfUtils.setCsrfToken).toHaveBeenCalled();
@@ -535,7 +535,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
       // Mock CSRF validation to succeed
       vi.mocked(csrfUtils.validateCsrfToken).mockReturnValue(true);
 
-      const postResponse = middleware(postRequest);
+      const postResponse = proxy(postRequest);
 
       // Assert: Request should succeed
       expect(csrfUtils.validateCsrfToken).toHaveBeenCalledWith(postRequest);
@@ -553,7 +553,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
       vi.mocked(csrfUtils.validateCsrfToken).mockReturnValue(false);
 
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert: CSRF validation runs first, should return 403
       expect(csrfUtils.validateCsrfToken).toHaveBeenCalledWith(request);
@@ -578,7 +578,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
       vi.mocked(csrfUtils.validateCsrfToken).mockReturnValue(false);
 
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert: CSRF validation should fail even with valid auth
       expect(csrfUtils.validateCsrfToken).toHaveBeenCalledWith(request);
@@ -595,7 +595,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
 
       // No auth token
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert
       expect(response.status).toBe(307); // Temporary redirect
@@ -618,7 +618,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
       });
 
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert
       expect(response.status).toBe(307);
@@ -647,7 +647,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
       });
 
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert
       expect(response.status).toBe(307);
@@ -669,7 +669,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
       });
 
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert
       expect(response.status).toBe(307);
@@ -691,7 +691,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
       });
 
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert - Should redirect to login due to invalid token
       expect(response.status).toBe(307);
@@ -714,7 +714,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
       });
 
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert - Should allow access (backend will verify)
       expect(response.status).not.toBe(307);
@@ -733,7 +733,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
       vi.mocked(csrfUtils.validateCsrfToken).mockReturnValue(false);
 
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert - Even public routes require CSRF for state-changing methods
       expect(csrfUtils.validateCsrfToken).toHaveBeenCalledWith(request);
@@ -748,7 +748,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
 
       // No CSRF token
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert - OPTIONS is not a state-changing method
       expect(csrfUtils.validateCsrfToken).not.toHaveBeenCalled();
@@ -763,7 +763,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
 
       // No CSRF token
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert - HEAD is a safe method
       expect(csrfUtils.validateCsrfToken).not.toHaveBeenCalled();
@@ -784,7 +784,7 @@ describe('Middleware - CSRF Protection Integration Tests', () => {
       vi.mocked(csrfUtils.validateCsrfToken).mockReturnValue(false);
 
       // Act
-      const response = middleware(request);
+      const response = proxy(request);
 
       // Assert
       expect(csrfUtils.validateCsrfToken).toHaveBeenCalledWith(request);

@@ -2,7 +2,7 @@
 
 **Project**: Catchup Feed Web
 **Version**: 1.1.0
-**Last Updated**: 2026-01-05
+**Last Updated**: 2026-01-10
 **Type**: Next.js Frontend Application
 
 ---
@@ -27,11 +27,11 @@
 
 ## Overview
 
-Catchup Feed Web is a modern RSS/Atom feed reader frontend built with Next.js 15, featuring AI-powered article summaries. This document details the functional design of all features, including API contracts, data models, business logic, and component specifications.
+Catchup Feed Web is a modern RSS/Atom feed reader frontend built with Next.js 16.1.1, featuring AI-powered article summaries. This document details the functional design of all features, including API contracts, data models, business logic, and component specifications.
 
 ### Core Technologies
 
-- **Framework**: Next.js 15 (App Router)
+- **Framework**: Next.js 16.1.1 (App Router)
 - **Language**: TypeScript (Strict mode)
 - **Data Fetching**: TanStack Query 5
 - **Forms**: React Hook Form + Zod validation
@@ -210,7 +210,7 @@ api: {
 
 #### Feature: Route Protection
 
-**Middleware**: `/src/middleware.ts`
+**Proxy**: `/src/proxy.ts` (renamed from middleware.ts in Next.js 16)
 
 **Protected Routes**:
 - `/dashboard`
@@ -1528,14 +1528,14 @@ interface EmptyStateProps {
 
 **Implementation**: Double Submit Cookie pattern
 
-**Middleware**: `/src/middleware.ts`
+**Proxy**: `/src/proxy.ts` (renamed from middleware.ts in Next.js 16)
 
 **Token Manager**: `/src/lib/security/CsrfTokenManager.ts`
 
 #### Flow
 
 1. **Token Generation** (Server):
-   - Middleware generates random UUID
+   - Proxy function generates random UUID
    - Sets `x-csrf-token` cookie (HttpOnly, Secure, SameSite=Lax)
    - Returns token in response header
 

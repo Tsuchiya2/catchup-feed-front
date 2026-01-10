@@ -3,7 +3,7 @@
 **Product Name**: Catchup Feed Web
 **Version**: 1.1.0
 **Document Version**: 1.0
-**Last Updated**: 2026-01-05
+**Last Updated**: 2026-01-10
 
 ---
 
@@ -222,7 +222,7 @@ Weekly maintenance:
 
 **Code Reference**:
 ```typescript
-// src/middleware.ts (lines 42-157)
+// src/proxy.ts (lines 42-157) - renamed from middleware.ts in Next.js 16
 // Protected routes: /dashboard, /articles, /sources
 // Public routes: /, /login
 // Token validation with 30-second clock skew buffer
@@ -1075,8 +1075,8 @@ performance.measure('API: getArticles', start, end);
 - URLs: RFC 3986 compliant
 
 **Third-Party Dependencies**:
-- React 19
-- Next.js 15
+- React 19.2.3
+- Next.js 16.1.1
 - TanStack Query 5
 - Tailwind CSS 4
 
@@ -1174,8 +1174,8 @@ performance.measure('API: getArticles', start, end);
 ### Platform Constraints
 
 **Frontend Framework**:
-- Next.js 15 (App Router)
-- React 19 (Server Components)
+- Next.js 16.1.1 (App Router with Turbopack)
+- React 19.2.3 (Server Components)
 - Constraint: Cannot use class components (hooks only)
 - Constraint: Server components cannot use browser APIs
 
@@ -1269,8 +1269,8 @@ performance.measure('API: getArticles', start, end);
 ### Third-Party Dependencies
 
 **Required Libraries**:
-- React 19 (framework)
-- Next.js 15 (meta-framework)
+- React 19.2.3 (framework)
+- Next.js 16.1.1 (meta-framework)
 - TanStack Query 5 (state management)
 - Tailwind CSS 4 (styling)
 - Radix UI (component primitives)
@@ -1279,7 +1279,7 @@ performance.measure('API: getArticles', start, end);
 
 **Optional Libraries**:
 - Sentry (observability)
-- next-pwa (PWA support)
+- @serwist/next (PWA support, replaces next-pwa)
 - Storybook (component development)
 
 **Version Constraints**:
@@ -1343,8 +1343,8 @@ GET    /api/health                    Frontend health check
 ### Technology Stack Details
 
 **Frontend**:
-- Framework: Next.js 15.0.0 (App Router, React Server Components)
-- UI Library: React 19.0.0
+- Framework: Next.js 16.1.1 (App Router, React Server Components, Turbopack)
+- UI Library: React 19.2.3
 - Language: TypeScript 5.x (strict mode)
 - Styling: Tailwind CSS 4.0.0
 - UI Components: shadcn/ui (Radix UI primitives)
@@ -1366,8 +1366,8 @@ GET    /api/health                    Frontend health check
 - Distributed Tracing: Custom implementation with trace IDs
 
 **PWA**:
-- Service Worker: next-pwa 5.6.0
-- Workbox: 7.4.0
+- Service Worker: @serwist/next 9.0.0 (replaces next-pwa)
+- Serwist: 9.0.0
 
 ### Environment Variables
 
@@ -1443,4 +1443,5 @@ interface PaginationMetadata {
 
 **Document History**:
 - 2026-01-05: Initial version created based on codebase analysis
+- 2026-01-10: Updated for Next.js 16.1.1, React 19.2.3, and @serwist/next PWA migration
 - Generated from actual source code in /Users/yujitsuchiya/catchup-feed-frontend

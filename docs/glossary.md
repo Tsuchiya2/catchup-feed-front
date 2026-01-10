@@ -361,7 +361,7 @@ An API route that handles specific operations.
 
 ### App Router
 
-Next.js 15 routing system based on file-system conventions.
+Next.js 16 routing system based on file-system conventions.
 
 **Route Groups:**
 - `(auth)`: Public authentication routes (/login)
@@ -408,11 +408,11 @@ React component rendered in the browser.
 
 ---
 
-### Middleware
+### Proxy (Next.js 16)
 
 Edge runtime function that runs before route handlers.
 
-**Location:** `src/middleware.ts`
+**Location:** `src/proxy.ts` (renamed from `middleware.ts` in Next.js 16)
 
 **Responsibilities:**
 - Route protection (authentication check)
@@ -420,7 +420,30 @@ Edge runtime function that runs before route handlers.
 - CSRF token generation for authenticated users
 - Redirect unauthenticated users to login
 
+**Breaking Change:** Next.js 16 requires function export named `proxy` instead of `middleware`
+
 **Execution:** Runs on Cloudflare/Vercel Edge (no Node.js APIs)
+
+---
+
+### Serwist
+
+Modern service worker library for Progressive Web Apps.
+
+**Purpose:** Provides Workbox-compatible API for PWA functionality with active maintenance
+
+**Features:**
+- Service worker generation and registration
+- Runtime caching strategies (CacheFirst, NetworkFirst, StaleWhileRevalidate)
+- Precaching with automatic manifest injection
+- Cache expiration and cleanup
+- TypeScript support
+
+**Integration:** `@serwist/next` package for Next.js, `serwist` for runtime
+
+**Migration:** Replaces unmaintained `next-pwa` library
+
+**Location:** `src/sw.ts` (source), `public/sw.js` (generated)
 
 ---
 
@@ -699,9 +722,10 @@ Web application with native-like capabilities.
 - App-like experience
 
 **Implementation:**
-- next-pwa plugin
-- Service worker registration
-- Web manifest (`manifest.json`)
+- @serwist/next plugin (replaces next-pwa)
+- Service worker registration (`src/sw.ts`)
+- Web manifest (`public/manifest.json`)
+- 5 caching strategies for different resource types
 
 ---
 
@@ -1006,4 +1030,4 @@ Google's metrics for web performance.
 
 ---
 
-**Last Updated:** 2025-01-05
+**Last Updated:** 2026-01-10
