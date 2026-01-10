@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.1](https://github.com/Tsuchiya2/catchup-feed-frontend/compare/catchup-feed-web-v1.5.0...catchup-feed-web-v1.5.1) (2026-01-10)
+
+
+### Bug Fixes
+
+* **test:** wrap window.dispatchEvent in act() for PWAInstallPrompt tests ([98f83a0](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/98f83a09c2fe656d35b245706a662d7896a24cbf))
+* **test:** wrap window.dispatchEvent in act() for PWAInstallPrompt tests ([d84f327](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/d84f327188d68848dcb99d60daad558398a869ea))
+
 ## [1.5.0](https://github.com/Tsuchiya2/catchup-feed-frontend/compare/catchup-feed-web-v1.4.0...catchup-feed-web-v1.5.0) (2026-01-10)
 
 
