@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.0](https://github.com/Tsuchiya2/catchup-feed-frontend/compare/catchup-feed-web-v1.3.0...catchup-feed-web-v1.4.0) (2026-01-09)
+
+
+### Features
+
+* **search:** filter Articles page source dropdown to show active sou… ([a3a64fa](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/a3a64fa4fdcd0faca43e79fc7fd5c66d6672b30f))
+* **search:** filter Articles page source dropdown to show active sources only ([d74111c](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/d74111c3af44851b3972a57a152804024f36a4f5))
+
 ## [1.3.0](https://github.com/Tsuchiya2/catchup-feed-frontend/compare/catchup-feed-web-v1.2.0...catchup-feed-web-v1.3.0) (2026-01-05)
 
 
