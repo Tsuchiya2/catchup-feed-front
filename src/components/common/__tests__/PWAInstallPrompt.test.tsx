@@ -9,7 +9,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { PWAInstallPrompt } from '../PWAInstallPrompt';
 
@@ -75,7 +75,9 @@ describe('PWAInstallPrompt', () => {
       // Simulate beforeinstallprompt event
       const event = new Event('beforeinstallprompt') as any;
       Object.assign(event, mockPromptEvent);
-      window.dispatchEvent(event);
+      await act(async () => {
+        window.dispatchEvent(event);
+      });
 
       await waitFor(() => {
         expect(screen.getByText('Install Catchup Feed')).toBeInTheDocument();
@@ -87,7 +89,9 @@ describe('PWAInstallPrompt', () => {
 
       const event = new Event('beforeinstallprompt') as any;
       Object.assign(event, mockPromptEvent);
-      window.dispatchEvent(event);
+      await act(async () => {
+        window.dispatchEvent(event);
+      });
 
       expect(mockPromptEvent.preventDefault).toHaveBeenCalled();
     });
@@ -98,7 +102,9 @@ describe('PWAInstallPrompt', () => {
       // Show prompt
       const promptEvent = new Event('beforeinstallprompt') as any;
       Object.assign(promptEvent, mockPromptEvent);
-      window.dispatchEvent(promptEvent);
+      await act(async () => {
+        window.dispatchEvent(promptEvent);
+      });
 
       await waitFor(() => {
         expect(screen.getByText('Install Catchup Feed')).toBeInTheDocument();
@@ -106,7 +112,9 @@ describe('PWAInstallPrompt', () => {
 
       // Trigger app installed
       const installedEvent = new Event('appinstalled');
-      window.dispatchEvent(installedEvent);
+      await act(async () => {
+        window.dispatchEvent(installedEvent);
+      });
 
       await waitFor(() => {
         expect(screen.queryByText('Install Catchup Feed')).not.toBeInTheDocument();
@@ -122,7 +130,9 @@ describe('PWAInstallPrompt', () => {
       // Show prompt
       const event = new Event('beforeinstallprompt') as any;
       Object.assign(event, mockPromptEvent);
-      window.dispatchEvent(event);
+      await act(async () => {
+        window.dispatchEvent(event);
+      });
 
       await waitFor(() => {
         expect(screen.getByText('Install App')).toBeInTheDocument();
@@ -141,7 +151,9 @@ describe('PWAInstallPrompt', () => {
       // Show prompt
       const event = new Event('beforeinstallprompt') as any;
       Object.assign(event, mockPromptEvent);
-      window.dispatchEvent(event);
+      await act(async () => {
+        window.dispatchEvent(event);
+      });
 
       await waitFor(() => {
         expect(screen.getByText('Install App')).toBeInTheDocument();
@@ -164,7 +176,9 @@ describe('PWAInstallPrompt', () => {
       // Show prompt
       const event = new Event('beforeinstallprompt') as any;
       Object.assign(event, mockPromptEvent);
-      window.dispatchEvent(event);
+      await act(async () => {
+        window.dispatchEvent(event);
+      });
 
       await waitFor(() => {
         expect(screen.getByText('Install App')).toBeInTheDocument();
@@ -187,7 +201,9 @@ describe('PWAInstallPrompt', () => {
       // Show prompt
       const event = new Event('beforeinstallprompt') as any;
       Object.assign(event, mockPromptEvent);
-      window.dispatchEvent(event);
+      await act(async () => {
+        window.dispatchEvent(event);
+      });
 
       await waitFor(() => {
         expect(screen.getByLabelText('Dismiss install prompt')).toBeInTheDocument();
@@ -208,7 +224,9 @@ describe('PWAInstallPrompt', () => {
       // Show prompt
       const event = new Event('beforeinstallprompt') as any;
       Object.assign(event, mockPromptEvent);
-      window.dispatchEvent(event);
+      await act(async () => {
+        window.dispatchEvent(event);
+      });
 
       await waitFor(() => {
         expect(screen.getByLabelText('Dismiss install prompt')).toBeInTheDocument();
@@ -223,7 +241,7 @@ describe('PWAInstallPrompt', () => {
       );
     });
 
-    it('should not show prompt if dismissed recently', () => {
+    it('should not show prompt if dismissed recently', async () => {
       // Set dismissal time to 1 day ago
       const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
       localStorageMock['pwa-install-prompt-dismissed'] = oneDayAgo.toString();
@@ -233,7 +251,9 @@ describe('PWAInstallPrompt', () => {
       // Trigger event
       const event = new Event('beforeinstallprompt') as any;
       Object.assign(event, mockPromptEvent);
-      window.dispatchEvent(event);
+      await act(async () => {
+        window.dispatchEvent(event);
+      });
 
       // Prompt should not appear
       expect(screen.queryByText('Install Catchup Feed')).not.toBeInTheDocument();
@@ -249,7 +269,9 @@ describe('PWAInstallPrompt', () => {
       // Trigger event
       const event = new Event('beforeinstallprompt') as any;
       Object.assign(event, mockPromptEvent);
-      window.dispatchEvent(event);
+      await act(async () => {
+        window.dispatchEvent(event);
+      });
 
       await waitFor(() => {
         expect(screen.getByText('Install Catchup Feed')).toBeInTheDocument();
@@ -264,7 +286,9 @@ describe('PWAInstallPrompt', () => {
       // Show prompt
       const event = new Event('beforeinstallprompt') as any;
       Object.assign(event, mockPromptEvent);
-      window.dispatchEvent(event);
+      await act(async () => {
+        window.dispatchEvent(event);
+      });
 
       await waitFor(() => {
         const dialog = screen.getByRole('dialog');
@@ -280,7 +304,9 @@ describe('PWAInstallPrompt', () => {
       // Show prompt
       const event = new Event('beforeinstallprompt') as any;
       Object.assign(event, mockPromptEvent);
-      window.dispatchEvent(event);
+      await act(async () => {
+        window.dispatchEvent(event);
+      });
 
       await waitFor(() => {
         expect(screen.getByText('Install App')).toBeInTheDocument();
@@ -300,7 +326,9 @@ describe('PWAInstallPrompt', () => {
       // Show prompt
       const event = new Event('beforeinstallprompt') as any;
       Object.assign(event, mockPromptEvent);
-      window.dispatchEvent(event);
+      await act(async () => {
+        window.dispatchEvent(event);
+      });
 
       await waitFor(() => {
         expect(screen.getByLabelText('Dismiss install prompt')).toBeInTheDocument();
