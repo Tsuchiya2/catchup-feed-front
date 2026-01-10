@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.6.0](https://github.com/Tsuchiya2/catchup-feed-frontend/compare/catchup-feed-web-v1.5.1...catchup-feed-web-v1.6.0) (2026-01-10)
+
+
+### Features
+
+* **deps:** upgrade Next.js 16.1.1, React 19.2.3, migrate to [@serwist](https://github.com/serwist)… ([4ef5f70](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/4ef5f704a2b9b66dbe43401e37a67066cab05ed9))
+* **deps:** upgrade Next.js 16.1.1, React 19.2.3, migrate to @serwist/next ([9318a78](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/9318a7816b5eeff4657d2d846141dc370354b1fe))
+
+
+### Bug Fixes
+
+* add .npmrc for legacy-peer-deps and format API endpoints ([a990275](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/a9902750742881e5e16e63cb3933d654780daedf))
+* address CodeRabbit review feedback ([c234895](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/c23489540c0e8b7f6d78a8af3e4cc04de7f1ce15))
+* **ci:** add --legacy-peer-deps for Next.js 16 peer dependency conflicts ([8839082](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/88390827f54f14ad78e986daaffa9706e539b3fd))
+* **vercel:** use webpack build for Serwist compatibility ([c2827ec](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/c2827ec2b9f73cb39b10e7ea71e63c8f5666df18))
+
 ## [1.5.1](https://github.com/Tsuchiya2/catchup-feed-frontend/compare/catchup-feed-web-v1.5.0...catchup-feed-web-v1.5.1) (2026-01-10)
 
 
