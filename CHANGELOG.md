@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.5.0](https://github.com/Tsuchiya2/catchup-feed-frontend/compare/catchup-feed-web-v1.4.0...catchup-feed-web-v1.5.0) (2026-01-10)
+
+
+### Features
+
+* **sources:** ADMIN_USERによるSource削除機能を追加 ([fd7142a](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/fd7142a108542bc0114de383cddbc5b4a59973ba))
+
+
+### Bug Fixes
+
+* **sources:** address CodeRabbitAI review comments for delete performance tests ([3e82ee8](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/3e82ee8fd36ff8a9b1bdd7f83be715b940008b1c))
+* **sources:** fix performance measurement timing in delete E2E test ([ff0ff50](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/ff0ff5008b0e5f515a1f62b4d52669ca971bf23d))
+* **sources:** resolve TypeScript compilation errors ([d16afdc](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/d16afdc8df2d9667a034d52e3a8d58fa1b84caf9))
+
 ## [1.4.0](https://github.com/Tsuchiya2/catchup-feed-frontend/compare/catchup-feed-web-v1.3.0...catchup-feed-web-v1.4.0) (2026-01-09)
 
 
