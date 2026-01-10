@@ -91,9 +91,13 @@ try {
           ],
         }),
       },
-      // Strategy 5: API Requests
+      // Strategy 5: API Requests (excluding real-time monitoring endpoints)
       {
-        matcher: ({ url }) => url.pathname.startsWith('/api/'),
+        matcher: ({ url }) =>
+          url.pathname.startsWith('/api/') &&
+          !url.pathname.startsWith('/api/health') &&
+          !url.pathname.startsWith('/api/metrics') &&
+          !url.pathname.startsWith('/api/readiness'),
         handler: new NetworkFirst({
           cacheName: 'api-cache',
           networkTimeoutSeconds: 10,

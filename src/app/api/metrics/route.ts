@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server';
 
+// Ensure Node.js runtime for process.memoryUsage() access
+export const runtime = 'nodejs';
+
 /**
  * Application metrics for Prometheus monitoring
  */

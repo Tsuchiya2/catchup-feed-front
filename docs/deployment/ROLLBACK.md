@@ -86,16 +86,24 @@ git push -u origin rollback/v1.5.0-emergency
 
 If service worker issues persist after code rollback:
 
-```bash
-# 1. Deploy empty service worker to unregister all clients
-# In public/sw.js:
+```javascript
+// 1. Deploy empty service worker to unregister itself
+// Replace public/sw.js with:
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', () => {
-  self.clients.matchAll().then(clients => {
-    clients.forEach(client => client.navigate(client.url));
+  // Unregister this service worker
+  self.registration.unregister().then(() => {
+    // Notify all clients to refresh (optional)
+    self.clients.matchAll().then(clients => {
+      clients.forEach(client => {
+        client.postMessage({ type: 'SW_UNREGISTERED' });
+      });
+    });
   });
 });
+```
 
+```bash
 # 2. Deploy and wait for propagation (up to 24 hours for all clients)
 
 # 3. Once confirmed, deploy actual rollback version

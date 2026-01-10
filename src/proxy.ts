@@ -28,7 +28,7 @@ const STATE_CHANGING_METHODS = ['POST', 'PUT', 'PATCH', 'DELETE'];
 /**
  * Routes exempt from CSRF validation (webhooks, health checks, etc.)
  */
-const CSRF_EXEMPT_ROUTES = ['/api/health', '/api/webhooks'];
+const CSRF_EXEMPT_ROUTES = ['/api/health', '/api/webhooks', '/api/metrics', '/api/readiness'];
 
 /**
  * Protected route patterns
