@@ -74,7 +74,7 @@ export async function GET(): Promise<NextResponse<ReadinessResponse>> {
 
   // Determine overall readiness
   // For frontend, only application check is critical
-  const isReady = checks.find(c => c.name === 'application')?.status === 'pass';
+  const isReady = checks.find((c) => c.name === 'application')?.status === 'pass';
 
   const response: ReadinessResponse = {
     status: isReady ? 'ready' : 'not_ready',

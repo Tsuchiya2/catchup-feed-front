@@ -64,7 +64,9 @@ function formatPrometheusMetrics(metrics: AppMetrics): string {
   // Application info
   lines.push('# HELP app_info Application information');
   lines.push('# TYPE app_info gauge');
-  lines.push(`app_info{version="${metrics.app_info.version}",environment="${metrics.app_info.environment}",node_version="${metrics.app_info.node_version}"} 1`);
+  lines.push(
+    `app_info{version="${metrics.app_info.version}",environment="${metrics.app_info.environment}",node_version="${metrics.app_info.node_version}"} 1`
+  );
 
   // Request counters
   lines.push('# HELP http_requests_total Total number of HTTP requests');
