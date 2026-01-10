@@ -99,9 +99,13 @@ describe('DeleteSourceDialog Performance', () => {
   );
 
   bench(
-    'dialog with error state renders in < 50ms',
+    'dialog with long source name renders in < 50ms',
     () => {
       const Wrapper = createWrapper();
+      const longNameSource: Source = {
+        ...mockSource,
+        name: 'A Very Long Source Name That Tests Rendering Performance With Extended Text Content',
+      };
       render(
         React.createElement(
           Wrapper,
@@ -109,7 +113,7 @@ describe('DeleteSourceDialog Performance', () => {
           React.createElement(DeleteSourceDialog, {
             isOpen: true,
             onClose: () => {},
-            source: mockSource,
+            source: longNameSource,
           })
         )
       );

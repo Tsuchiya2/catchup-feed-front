@@ -56,14 +56,14 @@ test.describe('Source Delete Performance @performance', () => {
     const startTime = await page.evaluate(() => performance.now());
 
     // Click delete button (assumes admin user)
-    const deleteButton = page.locator('[data-testid="delete-button"]').first();
+    const deleteButton = page.locator('[data-testid="source-delete-button"]').first();
 
     // If delete button exists (admin user), click it
     if (await deleteButton.isVisible()) {
       await deleteButton.click();
 
       // Wait for dialog to appear
-      await page.waitForSelector('[data-testid="delete-dialog"]');
+      await page.waitForSelector('[data-testid="source-delete-dialog"]');
 
       const endTime = await page.evaluate(() => performance.now());
       const duration = endTime - startTime;
@@ -81,20 +81,20 @@ test.describe('Source Delete Performance @performance', () => {
     await page.goto('/sources');
     await page.waitForSelector('[data-testid="source-card"]');
 
-    const deleteButton = page.locator('[data-testid="delete-button"]').first();
+    const deleteButton = page.locator('[data-testid="source-delete-button"]').first();
 
     if (await deleteButton.isVisible()) {
       await deleteButton.click();
-      await page.waitForSelector('[data-testid="delete-dialog"]');
+      await page.waitForSelector('[data-testid="source-delete-dialog"]');
 
       // Measure delete operation time
       const startTime = await page.evaluate(() => performance.now());
 
       // Click confirm delete
-      await page.click('[data-testid="delete-confirm-button"]');
+      await page.click('[data-testid="source-delete-confirm-button"]');
 
       // Wait for dialog to close (indicates success)
-      await page.waitForSelector('[data-testid="delete-dialog"]', { state: 'hidden' });
+      await page.waitForSelector('[data-testid="source-delete-dialog"]', { state: 'hidden' });
 
       const endTime = await page.evaluate(() => performance.now());
       const duration = endTime - startTime;
@@ -116,16 +116,16 @@ test.describe('Source Delete Performance @performance', () => {
 
     // Perform up to 10 sequential deletes
     for (let i = 0; i < 10; i++) {
-      const deleteButton = page.locator('[data-testid="delete-button"]').first();
+      const deleteButton = page.locator('[data-testid="source-delete-button"]').first();
 
       if (!(await deleteButton.isVisible())) break;
 
       const startTime = await page.evaluate(() => performance.now());
 
       await deleteButton.click();
-      await page.waitForSelector('[data-testid="delete-dialog"]');
-      await page.click('[data-testid="delete-confirm-button"]');
-      await page.waitForSelector('[data-testid="delete-dialog"]', { state: 'hidden' });
+      await page.waitForSelector('[data-testid="source-delete-dialog"]');
+      await page.click('[data-testid="source-delete-confirm-button"]');
+      await page.waitForSelector('[data-testid="source-delete-dialog"]', { state: 'hidden' });
 
       const endTime = await page.evaluate(() => performance.now());
       durations.push(endTime - startTime);
@@ -160,13 +160,13 @@ test.describe('Source Delete Performance @performance', () => {
     await page.goto('/sources');
     await page.waitForSelector('[data-testid="source-card"]', { timeout: 30000 });
 
-    const deleteButton = page.locator('[data-testid="delete-button"]').first();
+    const deleteButton = page.locator('[data-testid="source-delete-button"]').first();
 
     if (await deleteButton.isVisible()) {
       await deleteButton.click();
 
       const dialogStart = await page.evaluate(() => performance.now());
-      await page.waitForSelector('[data-testid="delete-dialog"]');
+      await page.waitForSelector('[data-testid="source-delete-dialog"]');
       const dialogEnd = await page.evaluate(() => performance.now());
 
       const dialogOpenTime = dialogEnd - dialogStart;
@@ -193,14 +193,14 @@ test.describe('Source Delete Performance @performance', () => {
 
     // Perform multiple delete cancel operations (doesn't actually delete)
     for (let i = 0; i < 20; i++) {
-      const deleteButton = page.locator('[data-testid="delete-button"]').first();
+      const deleteButton = page.locator('[data-testid="source-delete-button"]').first();
 
       if (!(await deleteButton.isVisible())) break;
 
       await deleteButton.click();
-      await page.waitForSelector('[data-testid="delete-dialog"]');
-      await page.click('[data-testid="delete-cancel-button"]');
-      await page.waitForSelector('[data-testid="delete-dialog"]', { state: 'hidden' });
+      await page.waitForSelector('[data-testid="source-delete-dialog"]');
+      await page.click('[data-testid="source-delete-cancel-button"]');
+      await page.waitForSelector('[data-testid="source-delete-dialog"]', { state: 'hidden' });
     }
 
     // Force garbage collection if available
