@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.6.1](https://github.com/Tsuchiya2/catchup-feed-frontend/compare/catchup-feed-web-v1.6.0...catchup-feed-web-v1.6.1) (2026-01-15)
+
+
+### Bug Fixes
+
+* **bench:** resolve CI benchmark job hanging issue ([34cc8fa](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/34cc8fa43c879414030ae1bb92ecb24df85f5005))
+* **bench:** resolve CI benchmark job hanging issue ([984aa2b](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/984aa2bc566295803f9f58800722838e98d7120b))
+* **pwa:** update icons to use catch-feed-icon.webp design ([f119cce](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/f119ccea2a3932077272e5c8e4518bdbe3d5f60d))
+* **pwa:** update icons to use catch-feed-icon.webp design ([9d15ec6](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/9d15ec689b9a6fef72d3523819fa81733c75a379))
+
 ## [1.6.0](https://github.com/Tsuchiya2/catchup-feed-frontend/compare/catchup-feed-web-v1.5.1...catchup-feed-web-v1.6.0) (2026-01-10)
 
 
