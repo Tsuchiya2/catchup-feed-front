@@ -8,9 +8,9 @@
   <a href="#機能">機能</a> •
   <a href="#技術スタック">技術スタック</a> •
   <a href="#アーキテクチャ">アーキテクチャ</a> •
+  <a href="#スクリーンショット">スクリーンショット</a> •
   <a href="#セットアップ">セットアップ</a> •
-  <a href="#テスト">テスト</a> •
-  <a href="#プロジェクト構成">プロジェクト構成</a>
+  <a href="#テスト">テスト</a>
 </p>
 
 ---
@@ -27,6 +27,22 @@
 - **型安全な開発**: OpenAPI 仕様から生成された API 型による End-to-End の TypeScript 活用
 - **モダンな React パターン**: Server Components、TanStack Query、カスタムフック
 - **本番環境対応**: 認証、エラーハンドリング、アクセシビリティ対応
+
+---
+
+## スクリーンショット
+
+### ソース管理
+![Sources](docs/images/screenshots/sources.webp)
+*RSS/Atomフィードの管理画面。Active/Inactiveステータスの切り替えが可能*
+
+### 記事一覧
+![Articles](docs/images/screenshots/articles-list.webp)
+*ソース・日付・キーワードによる検索・フィルタ機能*
+
+### 記事詳細（AI要約）
+![Article Detail](docs/images/screenshots/article-detail.webp)
+*AIによる日本語要約と元記事へのリンク*
 
 ---
 
