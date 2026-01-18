@@ -1,7 +1,6 @@
 # Changelog
 
-## [1.6.1](https://github.com/Tsuchiya2/catchup-feed-frontend/compare/catchup-feed-web-v1.6.0...catchup-feed-web-v1.6.1) (2026-01-15)
-
+## [1.6.1](https://github.com/Tsuchiya2/catchup-feed-frontend/compare/catchup-feed-frontend-v1.6.0...catchup-feed-frontend-v1.6.1) (2026-01-15)
 
 ### Bug Fixes
 
@@ -10,8 +9,7 @@
 * **pwa:** update icons to use catch-feed-icon.webp design ([f119cce](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/f119ccea2a3932077272e5c8e4518bdbe3d5f60d))
 * **pwa:** update icons to use catch-feed-icon.webp design ([9d15ec6](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/9d15ec689b9a6fef72d3523819fa81733c75a379))
 
-## [1.6.0](https://github.com/Tsuchiya2/catchup-feed-frontend/compare/catchup-feed-web-v1.5.1...catchup-feed-web-v1.6.0) (2026-01-10)
-
+## [1.6.0](https://github.com/Tsuchiya2/catchup-feed-frontend/compare/catchup-feed-frontend-v1.5.1...catchup-feed-frontend-v1.6.0) (2026-01-10)
 
 ### Features
 
@@ -26,7 +24,7 @@
 * **ci:** add --legacy-peer-deps for Next.js 16 peer dependency conflicts ([8839082](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/88390827f54f14ad78e986daaffa9706e539b3fd))
 * **vercel:** use webpack build for Serwist compatibility ([c2827ec](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/c2827ec2b9f73cb39b10e7ea71e63c8f5666df18))
 
-## [1.5.1](https://github.com/Tsuchiya2/catchup-feed-frontend/compare/catchup-feed-web-v1.5.0...catchup-feed-web-v1.5.1) (2026-01-10)
+## [1.5.1](https://github.com/Tsuchiya2/catchup-feed-frontend/compare/catchup-feed-frontend-v1.5.0...catchup-feed-frontend-v1.5.1) (2026-01-10)
 
 
 ### Bug Fixes
@@ -34,7 +32,7 @@
 * **test:** wrap window.dispatchEvent in act() for PWAInstallPrompt tests ([98f83a0](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/98f83a09c2fe656d35b245706a662d7896a24cbf))
 * **test:** wrap window.dispatchEvent in act() for PWAInstallPrompt tests ([d84f327](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/d84f327188d68848dcb99d60daad558398a869ea))
 
-## [1.5.0](https://github.com/Tsuchiya2/catchup-feed-frontend/compare/catchup-feed-web-v1.4.0...catchup-feed-web-v1.5.0) (2026-01-10)
+## [1.5.0](https://github.com/Tsuchiya2/catchup-feed-frontend/compare/catchup-feed-frontend-v1.4.0...catchup-feed-frontend-v1.5.0) (2026-01-10)
 
 
 ### Features
@@ -48,7 +46,7 @@
 * **sources:** fix performance measurement timing in delete E2E test ([ff0ff50](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/ff0ff5008b0e5f515a1f62b4d52669ca971bf23d))
 * **sources:** resolve TypeScript compilation errors ([d16afdc](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/d16afdc8df2d9667a034d52e3a8d58fa1b84caf9))
 
-## [1.4.0](https://github.com/Tsuchiya2/catchup-feed-frontend/compare/catchup-feed-web-v1.3.0...catchup-feed-web-v1.4.0) (2026-01-09)
+## [1.4.0](https://github.com/Tsuchiya2/catchup-feed-frontend/compare/catchup-feed-frontend-v1.3.0...catchup-feed-frontend-v1.4.0) (2026-01-09)
 
 
 ### Features
@@ -56,7 +54,7 @@
 * **search:** filter Articles page source dropdown to show active sou… ([a3a64fa](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/a3a64fa4fdcd0faca43e79fc7fd5c66d6672b30f))
 * **search:** filter Articles page source dropdown to show active sources only ([d74111c](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/d74111c3af44851b3972a57a152804024f36a4f5))
 
-## [1.3.0](https://github.com/Tsuchiya2/catchup-feed-frontend/compare/catchup-feed-web-v1.2.0...catchup-feed-web-v1.3.0) (2026-01-05)
+## [1.3.0](https://github.com/Tsuchiya2/catchup-feed-frontend/compare/catchup-feed-frontend-v1.2.0...catchup-feed-frontend-v1.3.0) (2026-01-05)
 
 
 ### Features

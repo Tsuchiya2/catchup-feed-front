@@ -1,5 +1,5 @@
 # =============================================================================
-# catchup-feed-web Docker Compose (Development Only)
+# catchup-feed-frontend Docker Compose (Development Only)
 # =============================================================================
 # This configuration is for local development only.
 # Production deployment is handled by Vercel.

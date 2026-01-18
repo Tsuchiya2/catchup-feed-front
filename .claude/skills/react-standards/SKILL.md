@@ -1,6 +1,6 @@
-# React Coding Standards for catchup-feed-web
+# React Coding Standards for catchup-feed-frontend
 
-**Project**: catchup-feed-web
+**Project**: catchup-feed-frontend
 **Framework**: Next.js 15 with App Router
 **React Version**: 19
 **State Management**: TanStack Query (React Query) for server state, React hooks for local state

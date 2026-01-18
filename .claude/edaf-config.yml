@@ -11,7 +11,7 @@ docker:
 
 project:
   type: node
-  name: catchup-feed-web
+  name: catchup-feed-frontend
   language: TypeScript
   frameworks:
     - Next.js

@@ -1,8 +1,8 @@
-# Security Standards for catchup-feed-web
+# Security Standards for catchup-feed-frontend
 
 ## Overview
 
-This document defines security standards for the catchup-feed-web project based on actual implementation patterns. All security-related code must follow these standards to maintain consistency and prevent vulnerabilities.
+This document defines security standards for the catchup-feed-frontend project based on actual implementation patterns. All security-related code must follow these standards to maintain consistency and prevent vulnerabilities.
 
 **Project Security Stack:**
 - JWT authentication with refresh tokens
@@ -1210,4 +1210,4 @@ if (timingSafeEqual(cookieToken, headerToken)) { /* ... */ }
 
 **Last Updated:** 2026-01-05
 **Version:** 1.0
-**Applies To:** catchup-feed-web frontend application
+**Applies To:** catchup-feed-frontend frontend application

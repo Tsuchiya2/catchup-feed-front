@@ -1,100 +1,103 @@
 # Catchup Feed Web
 
 <p align="center">
-  <strong>A modern RSS/Atom feed reader with AI-powered article summaries</strong>
+  <strong>AIによる記事要約機能を備えたモダンなRSS/Atomフィードリーダー</strong>
 </p>
 
 <p align="center">
-  <a href="#features">Features</a> •
-  <a href="#tech-stack">Tech Stack</a> •
-  <a href="#architecture">Architecture</a> •
-  <a href="#getting-started">Getting Started</a> •
-  <a href="#testing">Testing</a> •
-  <a href="#project-structure">Project Structure</a>
+  <a href="#機能">機能</a> •
+  <a href="#技術スタック">技術スタック</a> •
+  <a href="#アーキテクチャ">アーキテクチャ</a> •
+  <a href="#セットアップ">セットアップ</a> •
+  <a href="#テスト">テスト</a> •
+  <a href="#プロジェクト構成">プロジェクト構成</a>
 </p>
 
 ---
 
-## Overview
+## 概要
 
-**Catchup Feed Web** is a Next.js frontend application for the [Catchup Feed](https://github.com/Tsuchiya2/catchup-feed) ecosystem — an automated RSS/Atom feed aggregation service with AI-powered article summarization.
+**Catchup Feed Frontend** は、[Catchup Feed Backend](https://github.com/Tsuchiya2/catchup-feed-backend) と連携する Next.js フロントエンドアプリケーションです。RSS/Atom フィードの自動収集と AI による記事要約機能を提供します。
 
-This project demonstrates modern full-stack development practices through a clean microservices architecture, comprehensive testing, and type-safe API integration.
+本プロジェクトは、クリーンなマイクロサービスアーキテクチャ、包括的なテスト、型安全な API 連携を通じて、モダンなフルスタック開発のベストプラクティスを実践しています。
 
-### Key Highlights
+### 主な特徴
 
-- **Microservices Architecture**: Decoupled frontend and backend for independent scaling and deployment
-- **Type-Safe Development**: End-to-end TypeScript with API types generated from OpenAPI specification
-- **Modern React Patterns**: Server components, TanStack Query, and custom hooks
-- **Production Ready**: Authentication, error handling, and accessibility compliance
-
----
-
-## Features
-
-### Authentication & Security
-- JWT-based authentication with secure token management
-- Protected routes with middleware-level access control
-- Automatic session handling and redirect flows
-
-### Content Management
-- **Dashboard**: Overview statistics and recent article feed
-- **Article Browser**: Paginated list with responsive card layout
-- **Article Detail**: Full content view with AI-generated summaries
-- **Source Catalog**: Browse registered RSS/Atom feed sources
-
-### User Experience
-- Responsive design (mobile-first approach)
-- Loading states with skeleton placeholders
-- Error boundaries with retry functionality
-- Empty state handling for all scenarios
+- **マイクロサービスアーキテクチャ**: フロントエンドとバックエンドを分離し、独立したスケーリングとデプロイを実現
+- **型安全な開発**: OpenAPI 仕様から生成された API 型による End-to-End の TypeScript 活用
+- **モダンな React パターン**: Server Components、TanStack Query、カスタムフック
+- **本番環境対応**: 認証、エラーハンドリング、アクセシビリティ対応
 
 ---
 
-## Tech Stack
+## 機能
 
-| Category | Technology | Purpose |
-|----------|------------|---------|
-| **Framework** | [Next.js 15](https://nextjs.org/) (App Router) | Server-side rendering & routing |
-| **Language** | [TypeScript](https://www.typescriptlang.org/) (Strict) | Type safety |
-| **Styling** | [Tailwind CSS 4](https://tailwindcss.com/) | Utility-first styling |
-| **UI Components** | [shadcn/ui](https://ui.shadcn.com/) | Accessible, customizable components |
-| **Data Fetching** | [TanStack Query 5](https://tanstack.com/query) | Server state management & caching |
-| **Forms** | [React Hook Form](https://react-hook-form.com/) + [Zod](https://zod.dev/) | Type-safe validation |
-| **Testing** | [Vitest](https://vitest.dev/) + [Testing Library](https://testing-library.com/) | Unit & integration tests |
-| **API Types** | [openapi-typescript](https://openapi-ts.pages.dev/) | Generated from OpenAPI spec |
-| **Linting** | [ESLint](https://eslint.org/) + [Prettier](https://prettier.io/) | Code quality |
+### 認証・セキュリティ
+- セキュアなトークン管理による JWT ベースの認証
+- ミドルウェアレベルのアクセス制御による保護されたルート
+- 自動セッション管理とリダイレクトフロー
+
+### コンテンツ管理
+- **ダッシュボード**: 統計概要と最新記事フィード
+- **記事一覧**: レスポンシブなカードレイアウトによるページネーション付きリスト
+- **記事詳細**: AI 生成要約付きの全文表示
+- **ソースカタログ**: 登録済み RSS/Atom フィードソースの閲覧
+
+### ユーザーエクスペリエンス
+- レスポンシブデザイン（モバイルファーストアプローチ）
+- スケルトンプレースホルダーによるローディング状態
+- リトライ機能付きエラーバウンダリ
+- 全シナリオに対応した空状態のハンドリング
 
 ---
 
-## Architecture
+## 技術スタック
 
-This project follows a **microservices architecture**, separating concerns between the frontend and backend:
+| カテゴリ | 技術 | 目的 |
+|----------|------|------|
+| **フレームワーク** | [Next.js 16](https://nextjs.org/) (App Router) | サーバーサイドレンダリング・ルーティング |
+| **言語** | [TypeScript](https://www.typescriptlang.org/) (Strict) | 型安全性 |
+| **スタイリング** | [Tailwind CSS 4](https://tailwindcss.com/) | ユーティリティファーストなスタイリング |
+| **UIコンポーネント** | [shadcn/ui](https://ui.shadcn.com/) | アクセシブルでカスタマイズ可能なコンポーネント |
+| **データ取得** | [TanStack Query 5](https://tanstack.com/query) | サーバー状態管理・キャッシング |
+| **フォーム** | [React Hook Form](https://react-hook-form.com/) + [Zod](https://zod.dev/) | 型安全なバリデーション |
+| **テスト** | [Vitest](https://vitest.dev/) + [Testing Library](https://testing-library.com/) + [Playwright](https://playwright.dev/) | ユニット・統合・E2E テスト |
+| **API型** | [openapi-typescript](https://openapi-ts.pages.dev/) | OpenAPI 仕様からの自動生成 |
+| **監視** | [Sentry](https://sentry.io/) | エラートラッキング・パフォーマンス監視 |
+| **PWA** | [Serwist](https://serwist.pages.dev/) | Service Worker・オフライン対応 |
+| **UIカタログ** | [Storybook](https://storybook.js.org/) | コンポーネント開発・ドキュメント |
+| **リンティング** | [ESLint](https://eslint.org/) + [Prettier](https://prettier.io/) | コード品質 |
+
+---
+
+## アーキテクチャ
+
+本プロジェクトは**マイクロサービスアーキテクチャ**を採用し、フロントエンドとバックエンドの関心を分離しています。
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    Frontend (This Repo)                      │
-│                     catchup-feed-web                         │
+│                 フロントエンド（本リポジトリ）                  │
+│                   catchup-feed-frontend                      │
 │                        (Next.js)                             │
 │                                                              │
-│   • Server-Side Rendering (SSR)                              │
-│   • JWT Authentication                                       │
-│   • Type-safe API Client                                     │
-│   • Deployment: Vercel / Cloudflare Pages                    │
+│   • サーバーサイドレンダリング (SSR)                           │
+│   • JWT 認証                                                 │
+│   • 型安全な API クライアント                                  │
+│   • デプロイ: Vercel / Cloudflare Pages                      │
 └─────────────────────────────────────────────────────────────┘
                             │
                             │ REST API (OpenAPI)
                             │ JWT Bearer Token
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                         Backend                              │
-│              github.com/Tsuchiya2/catchup-feed               │
+│                        バックエンド                           │
+│            github.com/Tsuchiya2/catchup-feed-backend         │
 │                        (Go API)                              │
 │                                                              │
-│   • Article & Source Management                              │
-│   • AI Summarization (Claude / OpenAI)                       │
-│   • RSS/Atom Feed Crawling                                   │
-│   • Notification System (Discord, Slack)                     │
+│   • 記事・ソース管理                                          │
+│   • AI 要約 (Claude / OpenAI)                                │
+│   • RSS/Atom フィードクローリング                              │
+│   • 通知システム (Discord, Slack)                             │
 └─────────────────────────────────────────────────────────────┘
                             │
                             ▼
@@ -103,156 +106,172 @@ This project follows a **microservices architecture**, separating concerns betwe
                    └─────────────────┘
 ```
 
-### API Integration
+### API 連携
 
-Type-safe API communication is achieved through:
+以下の方法で型安全な API 通信を実現しています：
 
-1. **Generated Types**: API types are auto-generated from the backend's OpenAPI specification
-2. **Custom HTTP Client**: Centralized client with automatic token injection and error handling
-3. **Domain-Specific Endpoints**: Organized endpoint functions for auth, articles, and sources
+1. **型の自動生成**: バックエンドの OpenAPI 仕様から API 型を自動生成
+2. **カスタム HTTP クライアント**: 自動トークン注入とエラーハンドリングを備えた統一クライアント
+3. **ドメイン別エンドポイント**: 認証・記事・ソース用に整理されたエンドポイント関数
 
 ---
 
-## Getting Started
+## セットアップ
 
-### Prerequisites
+### 前提条件
 
-- Node.js 18+
-- npm (or pnpm/yarn)
-- Backend API running ([catchup-feed](https://github.com/Tsuchiya2/catchup-feed))
+- Docker / Docker Compose
+- [Catchup Feed Backend](https://github.com/Tsuchiya2/catchup-feed-backend) が起動済みであること
+  - バックエンドの Docker ネットワーク `catchup-feed_backend` が必要
 
-### Installation
+### セットアップ
 
 ```bash
-# Clone the repository
-git clone https://github.com/Tsuchiya2/catchup-feed-web.git
-cd catchup-feed-web
+# リポジトリをクローン
+git clone https://github.com/Tsuchiya2/catchup-feed-frontend.git
+cd catchup-feed-frontend
 
-# Install dependencies
-npm install
-
-# Generate API types from OpenAPI spec (optional)
-npm run generate:api
+# 環境変数ファイルを作成
+cp .env.example .env
 ```
 
-### Development
+### 環境変数
+
+主要な環境変数（詳細は `.env.example` を参照）：
 
 ```bash
-# Start development server
-npm run dev
+# .env
+NEXT_PUBLIC_API_URL=http://app:8080  # Docker ネットワーク経由のバックエンド API URL
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-### Environment Variables
+### 開発サーバーの起動
 
 ```bash
-# .env.local
-NEXT_PUBLIC_API_URL=http://localhost:8080  # Backend API URL
-```
-
-### Docker
-
-```bash
-# Run with Docker Compose
+# Docker Compose で開発環境を起動
 docker compose up -d
+
+# ログを確認
+docker compose logs -f web
 ```
 
----
+ブラウザで [http://localhost:3001](http://localhost:3001) を開いてください。
 
-## Testing
+> **Note**: ポート 3001 を使用しています（Grafana との競合回避のため）
 
-This project maintains comprehensive test coverage using Vitest and Testing Library.
+### その他のコマンド
 
 ```bash
-# Run all tests
-npm test
+# コンテナを停止
+docker compose down
 
-# Run tests in watch mode
-npm run test:ui
-
-# Generate coverage report
-npm run test:coverage
+# コンテナを再ビルド（依存関係更新時など）
+docker compose up -d --build
 ```
-
-### Test Coverage
-
-| Area | Coverage |
-|------|----------|
-| Components | UI components, forms, cards |
-| Hooks | Custom React hooks |
-| API Client | HTTP client and error handling |
-| Utilities | Date formatting, token management |
 
 ---
 
-## Project Structure
+## テスト
+
+本プロジェクトは Vitest と Testing Library を使用して包括的なテストカバレッジを維持しています。
+
+```bash
+# 全テストを実行
+docker compose exec web npm test
+
+# カバレッジレポートを生成
+docker compose exec web npm run test:coverage
+
+# E2E テストを実行（Playwright）
+docker compose exec web npm run test:e2e
+```
+
+### テストカバレッジ
+
+| 領域 | テスト種別 | 内容 |
+|------|------------|------|
+| コンポーネント | ユニット | UI コンポーネント、フォーム、カード |
+| フック | ユニット | カスタム React フック |
+| API クライアント | 統合 | HTTP クライアントとエラーハンドリング |
+| ユーティリティ | ユニット | 日付フォーマット、トークン管理 |
+| ユーザーフロー | E2E | ログイン、記事閲覧、検索 |
+
+---
+
+## プロジェクト構成
 
 ```
 src/
 ├── app/                        # Next.js App Router
-│   ├── (auth)/                 # Auth routes (login)
-│   ├── (protected)/            # Protected routes
-│   │   ├── articles/           # Article pages
-│   │   ├── dashboard/          # Dashboard
-│   │   └── sources/            # Source pages
-│   └── api/                    # API routes
+│   ├── (auth)/                 # 認証ルート（ログイン）
+│   ├── (legal)/                # 法的ページ（利用規約、プライバシー）
+│   ├── (protected)/            # 保護されたルート
+│   │   ├── articles/           # 記事ページ
+│   │   ├── dashboard/          # ダッシュボード
+│   │   └── sources/            # ソースページ
+│   └── api/                    # API ルート
 ├── components/
-│   ├── ui/                     # shadcn/ui base components
-│   ├── articles/               # Article components
-│   ├── auth/                   # Auth components
-│   ├── dashboard/              # Dashboard components
-│   ├── layout/                 # Layout components
-│   └── common/                 # Shared components
+│   ├── ui/                     # shadcn/ui ベースコンポーネント
+│   ├── articles/               # 記事コンポーネント
+│   ├── auth/                   # 認証コンポーネント
+│   ├── common/                 # 共有コンポーネント
+│   ├── dashboard/              # ダッシュボードコンポーネント
+│   ├── errors/                 # エラー表示コンポーネント
+│   ├── layout/                 # レイアウトコンポーネント
+│   ├── search/                 # 検索関連コンポーネント
+│   └── sources/                # ソース関連コンポーネント
+├── config/                     # アプリケーション設定
+├── constants/                  # 定数定義
+├── hooks/                      # カスタム React フック
 ├── lib/
-│   ├── api/                    # API client & endpoints
-│   └── auth/                   # Auth utilities
-├── hooks/                      # Custom React hooks
-├── providers/                  # Context providers
-├── types/                      # TypeScript types
-└── middleware.ts               # Route protection
+│   ├── api/                    # API クライアント・エンドポイント
+│   ├── auth/                   # 認証ユーティリティ
+│   ├── observability/          # 監視・ロギング
+│   └── security/               # セキュリティ関連
+├── providers/                  # コンテキストプロバイダー
+├── types/                      # TypeScript 型定義
+└── utils/                      # ユーティリティ関数
 ```
 
 ---
 
-## Code Quality
+## コード品質
 
-### Standards & Practices
+### 基準・プラクティス
 
-- **TypeScript Strict Mode**: Full type coverage with no implicit any
-- **Component Documentation**: JSDoc comments on public APIs
-- **Accessibility**: WCAG 2.1 AA compliance target
-- **Error Handling**: Comprehensive error boundaries and user feedback
+- **TypeScript Strict Mode**: 暗黙的 any を許容しない完全な型カバレッジ
+- **コンポーネントドキュメント**: パブリック API への JSDoc コメント
+- **アクセシビリティ**: WCAG 2.1 AA 準拠を目標
+- **エラーハンドリング**: 包括的なエラーバウンダリとユーザーフィードバック
 
-### Linting & Formatting
+### リンティング・フォーマット
 
 ```bash
-# Check code quality
-npm run lint
+# コード品質をチェック
+docker compose exec web npm run lint
 
-# Format code
-npm run format
+# コードをフォーマット
+docker compose exec web npm run format
 ```
 
-### Commit Convention
+### コミット規約
 
-This project uses [Conventional Commits](https://www.conventionalcommits.org/) for automatic versioning and changelog generation.
+本プロジェクトは自動バージョニングと変更履歴生成のため [Conventional Commits](https://www.conventionalcommits.org/) を使用しています。
 
-| Type | Description | Version Impact |
-|------|-------------|----------------|
-| `feat:` | New feature | Minor (0.x.0) |
-| `fix:` | Bug fix | Patch (0.0.x) |
-| `docs:` | Documentation only | Patch |
-| `style:` | Code style (formatting) | No release |
-| `refactor:` | Code refactoring | Patch |
-| `perf:` | Performance improvement | Patch |
-| `test:` | Adding tests | No release |
-| `chore:` | Maintenance tasks | No release |
-| `ci:` | CI/CD changes | No release |
+| タイプ | 説明 | バージョン影響 |
+|--------|------|----------------|
+| `feat:` | 新機能 | マイナー (0.x.0) |
+| `fix:` | バグ修正 | パッチ (0.0.x) |
+| `docs:` | ドキュメントのみ | パッチ |
+| `style:` | コードスタイル（フォーマット） | リリースなし |
+| `refactor:` | コードリファクタリング | パッチ |
+| `perf:` | パフォーマンス改善 | パッチ |
+| `test:` | テスト追加 | リリースなし |
+| `chore:` | メンテナンスタスク | リリースなし |
+| `ci:` | CI/CD 変更 | リリースなし |
 
-**Breaking Changes**: Add `BREAKING CHANGE:` in commit body or `!` after type (e.g., `feat!:`) for major version bump.
+**破壊的変更**: メジャーバージョンアップには、コミット本文に `BREAKING CHANGE:` を追加するか、タイプの後に `!` を付けます（例：`feat!:`）。
 
-**Examples**:
+**例**:
 ```bash
 feat: add article bookmarking
 fix: resolve authentication redirect loop
@@ -261,56 +280,111 @@ feat!: redesign API response format
 
 ---
 
-## API Endpoints
+## API エンドポイント
 
-| Endpoint | Method | Auth | Description |
-|----------|--------|------|-------------|
-| `/auth/token` | POST | No | Obtain JWT token |
-| `/articles` | GET | Yes | List articles (paginated) |
-| `/articles/{id}` | GET | Yes | Get article with AI summary |
-| `/sources` | GET | Yes | List feed sources |
-| `/sources/{id}` | GET | Yes | Get source details |
-| `/health` | GET | No | Health check |
-
----
-
-## Roadmap
-
-### Planned Features
-
-- [ ] Article bookmarking
-- [ ] Advanced search & filtering
-- [ ] Dark mode toggle
-- [ ] User preferences
-- [ ] E2E tests with Playwright
-
-### Future Enhancements
-
-- Token refresh mechanism
-- PWA support
-- RSS feed subscription management
-- Custom notification preferences
+| エンドポイント | メソッド | 認証 | 説明 |
+|----------------|----------|------|------|
+| `/auth/token` | POST | 不要 | JWT トークンの取得 |
+| `/articles` | GET | 必要 | 記事一覧（ページネーション） |
+| `/articles/{id}` | GET | 必要 | AI 要約付き記事詳細 |
+| `/sources` | GET | 必要 | フィードソース一覧 |
+| `/sources/{id}` | GET | 必要 | ソース詳細 |
+| `/health` | GET | 不要 | ヘルスチェック |
 
 ---
 
-## Related Projects
+## ロードマップ
 
-- **[catchup-feed](https://github.com/Tsuchiya2/catchup-feed)** - Go backend API for feed aggregation and AI summarization
+### 実装済み機能
+
+- [x] ダークモード切り替え（next-themes）
+- [x] PWA 対応（Serwist）
+- [x] トークンリフレッシュ機構
+- [x] Playwright による E2E テスト
+- [x] 記事・ソース検索機能
+
+### 予定している機能
+
+- [ ] 記事ブックマーク
+- [ ] ユーザー設定画面
+- [ ] RSS フィード購読管理
+- [ ] カスタム通知設定
 
 ---
 
-## Documentation
+## 本番環境
 
-- [Requirements Document](./docs/requirements.md) - Detailed project requirements and specifications
+### デモサイト
+
+本プロジェクトは実際に稼働しているサービスです。
+
+| 環境 | URL |
+|------|-----|
+| **フロントエンド** | [pulse.catchup-feed.com](https://pulse.catchup-feed.com) |
+| **バックエンド API** | [catchup.catchup-feed.com](https://catchup.catchup-feed.com) |
+
+### インフラ構成
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         catchup-feed.com                                 │
+│                      (Cloudflare DNS Zone)                               │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  ┌───────────────────────┐         ┌───────────────────────┐            │
+│  │pulse.catchup-feed.com │         │catchup.catchup-feed.com│            │
+│  │       (CNAME)         │         │       (CNAME)          │            │
+│  │          ↓            │         │          ↓             │            │
+│  │    Vercel Edge        │         │   Cloudflare Tunnel    │            │
+│  │    (Next.js SSR)      │         │          ↓             │            │
+│  │                       │         │    Raspberry Pi 5      │            │
+│  │ catchup-feed-frontend │←───────→│ catchup-feed-backend   │            │
+│  │      (Frontend)       │   API   │   (Go API + Claude)    │            │
+│  └───────────────────────┘         └───────────────────────┘            │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+### 技術的なポイント
+
+| 項目 | 内容 |
+|------|------|
+| **フロントエンド** | Vercel Edge Network によるグローバル CDN 配信 |
+| **バックエンド** | Cloudflare Tunnel による Raspberry Pi 5 のセキュアな公開 |
+| **CI/CD** | GitHub Actions + Vercel による自動デプロイ |
+| **SSL/TLS** | 自動証明書管理（Vercel / Cloudflare） |
+
+### サブドメイン命名について
+
+`pulse.catchup-feed.com` という名前は、「情報の鼓動（Pulse）」をコンセプトに選定しました。RSS フィードから収集される最新情報のリアルタイムな流れを表現しています。
 
 ---
 
-## License
+## 関連プロジェクト
 
-MIT License - see [LICENSE](./LICENSE) for details.
+- **[Catchup Feed Backend](https://github.com/Tsuchiya2/catchup-feed-backend)** - フィード収集と AI 要約のための Go バックエンド API
+
+---
+
+## ドキュメント
+
+| ドキュメント | 説明 |
+|--------------|------|
+| [製品要件](./docs/product-requirements.md) | プロジェクトの要件と仕様 |
+| [機能設計](./docs/functional-design.md) | 機能の詳細設計 |
+| [アーキテクチャ](./docs/architecture.md) | システム構成と設計思想 |
+| [開発ガイドライン](./docs/development-guidelines.md) | コーディング規約とベストプラクティス |
+| [リポジトリ構造](./docs/repository-structure.md) | ディレクトリ構成の説明 |
+| [用語集](./docs/glossary.md) | プロジェクト固有の用語定義 |
+
+---
+
+## ライセンス
+
+MIT License - 詳細は [LICENSE](./LICENSE) を参照してください。
 
 ---
 
 <p align="center">
-  Built with Next.js, TypeScript, and Tailwind CSS
+  Next.js、TypeScript、Tailwind CSS で構築
 </p>

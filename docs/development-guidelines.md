@@ -1,8 +1,8 @@
 # Development Guidelines
 
-> Coding standards, conventions, and best practices for catchup-feed-web
+> Coding standards, conventions, and best practices for catchup-feed-frontend
 
-**Project**: catchup-feed-web
+**Project**: catchup-feed-frontend
 **Stack**: Next.js 16.1.1 (App Router), React 19.2.3, TypeScript 5, Tailwind CSS 4
 **Last Updated**: 2026-01-10
 
