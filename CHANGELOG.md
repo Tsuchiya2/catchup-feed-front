@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.7.1](https://github.com/Tsuchiya2/catchup-feed-frontend/compare/catchup-feed-frontend-v1.7.0...catchup-feed-frontend-v1.7.1) (2026-01-18)
+
+
+### Documentation
+
+* **readme:** add screenshots section for portfolio presentation ([99c61f1](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/99c61f1bc24c7adcbf24ff7326afa6648063a69d))
+* **readme:** add screenshots section for portfolio presentation ([3a7d086](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/3a7d08664bd876734827ce9912a2e132dcfc834a))
+
 ## [1.7.0](https://github.com/Tsuchiya2/catchup-feed-frontend/compare/catchup-feed-frontend-v1.6.1...catchup-feed-frontend-v1.7.0) (2026-01-18)
 
 
