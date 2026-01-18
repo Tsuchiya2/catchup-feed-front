@@ -1,5 +1,5 @@
 # =============================================================================
-# catchup-feed-web Dockerfile (Development Only)
+# catchup-feed-frontend Dockerfile (Development Only)
 # =============================================================================
 # This Dockerfile is for local development only.
 # Production deployment is handled by Vercel.

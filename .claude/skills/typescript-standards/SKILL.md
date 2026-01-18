@@ -1,13 +1,13 @@
 # TypeScript Coding Standards
 
-**Project**: catchup-feed-web
+**Project**: catchup-feed-frontend
 **Language**: TypeScript (strict mode)
 **Framework**: Next.js 14+ with React 18+
 **Last Updated**: 2026-01-05
 
 ## Overview
 
-This document defines TypeScript coding standards for the catchup-feed-web project, based on actual code patterns observed in the codebase. All standards are derived from real implementations and are enforced through strict TypeScript configuration.
+This document defines TypeScript coding standards for the catchup-feed-frontend project, based on actual code patterns observed in the codebase. All standards are derived from real implementations and are enforced through strict TypeScript configuration.
 
 ## TypeScript Configuration
 

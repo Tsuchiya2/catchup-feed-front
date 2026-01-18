@@ -1,4 +1,4 @@
-# Test Standards for catchup-feed-web
+# Test Standards for catchup-feed-frontend
 
 **Purpose**: Enforce consistent test patterns across unit, integration, and E2E tests based on actual codebase conventions.
 
@@ -843,5 +843,5 @@ describe('myApiFunction', () => {
 ---
 
 **Last Updated**: 2026-01-05
-**Based on**: Actual test patterns from catchup-feed-web codebase
+**Based on**: Actual test patterns from catchup-feed-frontend codebase
 **Enforced by**: Code review process and CI/CD pipeline

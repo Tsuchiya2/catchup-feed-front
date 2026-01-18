@@ -1,6 +1,6 @@
 # System Architecture
 
-**Project**: catchup-feed-web
+**Project**: catchup-feed-frontend
 **Version**: 1.1.0
 **Last Updated**: 2026-01-10
 

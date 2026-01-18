@@ -4,7 +4,7 @@
 
 Catchup Feed is a Next.js 16.1.1 TypeScript application using the App Router architecture. The project follows a modern frontend stack with React 19, TanStack Query for data fetching, Tailwind CSS for styling, and comprehensive testing with Vitest and Playwright.
 
-**Project Name**: catchup-feed-web
+**Project Name**: catchup-feed-frontend
 **Version**: 1.1.0
 **Framework**: Next.js 16.1.1 (App Router with Turbopack)
 **Language**: TypeScript 5.0
