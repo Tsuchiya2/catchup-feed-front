@@ -12,8 +12,7 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(rm -rf:*)",
-      "Bash(git push --force:*)",
-      "Bash(docker rm:*)"
+      "Bash(git push --force:*)"
     ],
     "ask": []
   },
