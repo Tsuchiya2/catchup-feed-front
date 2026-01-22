@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.7.3](https://github.com/Tsuchiya2/catchup-feed-frontend/compare/catchup-feed-frontend-v1.7.2...catchup-feed-frontend-v1.7.3) (2026-01-22)
+
+
+### Miscellaneous
+
+* **claude:** chore(claude):  ([fde970e](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/fde970e9e3b672d9648857f2be66cc07032aca69))
+* **claude:** chore(claude):  ([0282849](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/0282849439b091621d3a88dd9974dfbdf2345aae))
+* **claude:** update docker command permissions ([117cf5e](https://github.com/Tsuchiya2/catchup-feed-frontend/commit/117cf5efd7fdcb8cf1d3507552946b1cb79b2f1c))
+
 ## [1.7.2](https://github.com/Tsuchiya2/catchup-feed-frontend/compare/catchup-feed-frontend-v1.7.1...catchup-feed-frontend-v1.7.2) (2026-01-18)
 
 
